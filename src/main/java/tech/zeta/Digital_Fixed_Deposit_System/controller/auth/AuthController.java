@@ -1,5 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.auth;
 
+import jakarta.validation.Valid;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.AuthResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
@@ -34,7 +35,7 @@ public class AuthController {
     // Register a new user.
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
         User user = authService.register(request);
         String token = tokenService.generateToken(user);
@@ -47,7 +48,7 @@ public class AuthController {
     // Login existing user.
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request
     ) {
         User user = authService.login(request);
         String token = tokenService.generateToken(user);

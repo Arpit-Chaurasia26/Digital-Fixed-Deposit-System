@@ -2,6 +2,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
@@ -44,6 +45,21 @@ public class GlobalExceptionHandler {
                         HttpStatus.NOT_FOUND.value()
                 ));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse> handleValidationException(
+            MethodArgumentNotValidException ex
+    ) {
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        return ResponseEntity
+                .badRequest()
+                .body(new ApiResponse(message, 400));
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(
