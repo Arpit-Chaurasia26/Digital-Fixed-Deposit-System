@@ -130,6 +130,23 @@ public class FixedDepositService {
     }
 
 
+    @Transactional(readOnly = true)
+    public List<FixedDeposit> getFixedDepositsByStatus(Long userId, FDStatus status) {
+        List<FixedDeposit> fds;
+
+        if (status == null) {
+            fds = fixedDepositRepository.findByUserId(userId);
+        } else {
+            fds = fixedDepositRepository.findByUserIdAndStatus(userId, status);
+        }
+
+        // Enrich with dynamic interest
+        fds.forEach(this::enrichWithAccruedInterest);
+
+        return fds;
+    }
+
+
     // Helper methods
 
     private void enrichWithAccruedInterest(FixedDeposit fd) {

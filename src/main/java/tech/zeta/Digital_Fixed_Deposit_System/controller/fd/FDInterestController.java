@@ -34,17 +34,14 @@ public class FDInterestController {
 
     // Get current accrued interest for a Fixed Deposit.
     @GetMapping("/{fdId}/interest")
-    public ResponseEntity<FDInterestResponse> getAccruedInterest(
-            @PathVariable Long fdId
-    ) {
+    public ResponseEntity<FDInterestResponse> getAccruedInterest(@PathVariable Long fdId) {
         Long userId = currentUserProvider.getCurrentUserId();
 
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fixed Deposit not found for user"));
 
-        BigDecimal accruedInterest =
-                interestCalculationService.calculateAccruedInterest(fd);
+        BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(fd);
 
         FDInterestResponse response =
                 new FDInterestResponse(
