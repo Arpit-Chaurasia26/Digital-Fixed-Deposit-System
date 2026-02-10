@@ -131,18 +131,29 @@ public class FixedDepositService {
 
 
     @Transactional(readOnly = true)
-    public List<FixedDeposit> getFixedDepositsByStatus(Long userId, FDStatus status) {
+    public List<FixedDeposit> getFixedDepositsByFilters(
+            Long userId, FDStatus status, BigDecimal minAmount, BigDecimal maxAmount) {
+        BigDecimal effectiveMin = (minAmount != null) ? minAmount : BigDecimal.ZERO;
+
+        BigDecimal effectiveMax = (maxAmount != null) ? maxAmount : BigDecimal.valueOf(Long.MAX_VALUE);
+
+        boolean hasAmountFilter = minAmount != null || maxAmount != null;
+
         List<FixedDeposit> fds;
 
-        if (status == null) {
-            fds = fixedDepositRepository.findByUserId(userId);
-        } else {
+        if (status != null && hasAmountFilter) {
+            fds = fixedDepositRepository
+                    .findByUserIdAndStatusAndAmountBetween(userId, status, effectiveMin, effectiveMax);
+        } else if (status != null) {
             fds = fixedDepositRepository.findByUserIdAndStatus(userId, status);
+        } else if (hasAmountFilter) {
+            fds = fixedDepositRepository
+                    .findByUserIdAndAmountBetween(userId, effectiveMin, effectiveMax);
+        } else {
+            fds = fixedDepositRepository.findByUserId(userId);
         }
 
-        // Enrich with dynamic interest
         fds.forEach(this::enrichWithAccruedInterest);
-
         return fds;
     }
 

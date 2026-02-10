@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,17 +38,22 @@ public class FixedDepositController {
                 .body(fd);
     }
 
-    // Fetch Fixed Deposits of logged-in user (optionally filtered by status)
+    // Fetch Fixed Deposits of logged-in user (optionally filtered by status and amount range)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FixedDeposit>> getUserFixedDeposits(
-            @PathVariable Long userId, @RequestParam(required = false) FDStatus status) {
+            @PathVariable Long userId,
+            @RequestParam(required = false) FDStatus status,
+            @RequestParam(required = false) BigDecimal minAmount,
+            @RequestParam(required = false) BigDecimal maxAmount
+    ) {
         Long authenticatedUserId = currentUserProvider.getCurrentUserId();
 
         if (!authenticatedUserId.equals(userId)) {
             throw new UnauthorizedException("You are not allowed to access other user's FDs");
         }
 
-        List<FixedDeposit> fds = fixedDepositService.getFixedDepositsByStatus(userId, status);
+        List<FixedDeposit> fds =
+                fixedDepositService.getFixedDepositsByFilters(userId, status, minAmount, maxAmount);
 
         return ResponseEntity.ok(fds);
     }
