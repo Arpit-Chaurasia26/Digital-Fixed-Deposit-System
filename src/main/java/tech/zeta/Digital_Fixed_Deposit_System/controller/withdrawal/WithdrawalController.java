@@ -9,7 +9,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.withdrawal.WithdrawalServi
 
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/fd")
 public class WithdrawalController {
 
     private WithdrawalService withdrawalService;
@@ -21,20 +21,25 @@ public class WithdrawalController {
 
     }
 
-    @PostMapping("/{id}/withdrawal-preview")
-    public ResponseEntity<WithdrawalPreview> getWithdrawalPreview(@PathVariable int id){
+    @GetMapping("/{id}/break-preview")
+    public ResponseEntity<WithdrawalPreview> getWithdrawalPreview(@PathVariable Long id){
         System.out.println("Controller Called");
         WithdrawalPreview withdrawalPreview = withdrawalService.getWithdrawalPreview(id);
         return ResponseEntity.ok(withdrawalPreview);
 
     }
 
-    @PostMapping("/{id}/withdrawal-confirmation")
-    public ResponseEntity<WithdrawalReceipt> confirmWithdrawal(@PathVariable int id){
+    @PostMapping("/{id}/break")
+    public ResponseEntity<WithdrawalReceipt> confirmWithdrawal(@PathVariable Long id){
 
         WithdrawalReceipt withdrawalReceipt = withdrawalService.confirmWithdrawal(id);
         return ResponseEntity.ok(withdrawalReceipt);
 
+    }
+
+    @GetMapping("/{id}/withdrawal-eligibility")
+    public ResponseEntity<Boolean> confirmationWithdrawal(@PathVariable Long id){
+        return null;
     }
 
 
