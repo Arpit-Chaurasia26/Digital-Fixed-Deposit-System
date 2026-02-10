@@ -1,6 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
@@ -157,6 +158,35 @@ public class FixedDepositService {
         return fds;
     }
 
+    // Fetch fixed deposits maturing within N days
+    @Transactional(readOnly = true)
+    public List<FDMaturityResponse> getUserFDsMaturingWithinDays(Long userId, int days) {
+        if (days <= 0) throw new BusinessException("Days must be positive");
+
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(days);
+
+        List<FixedDeposit> fds =
+                fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate);
+
+        return mapToMaturityResponse(fds, today);
+    }
+
+    // Fetch all fixed deposits maturing within N days
+    @Transactional(readOnly = true)
+    public List<FDMaturityResponse> getAllFDsMaturingWithinDays(int days) {
+        if (days <= 0) throw new BusinessException("Days must be positive");
+
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(days);
+
+        List<FixedDeposit> fds =
+                fixedDepositRepository.findByMaturityDateBetween(today, endDate);
+
+        return mapToMaturityResponse(fds, today);
+    }
+
+
 
     // Helper methods
 
@@ -173,4 +203,20 @@ public class FixedDepositService {
             throw new BusinessException("Minimum Fixed Deposit amount is " + MIN_FD_AMOUNT);
         }
     }
+
+    private List<FDMaturityResponse> mapToMaturityResponse(List<FixedDeposit> fds, LocalDate today) {
+        return fds.stream()
+                .map(fd -> new FDMaturityResponse(
+                        fd.getId(),
+                        fd.getUserId(),
+                        fd.getAmount(),
+                        fd.getMaturityDate(),
+                        java.time.temporal.ChronoUnit.DAYS.between(
+                                today, fd.getMaturityDate()
+                        ),
+                        fd.getStatus()
+                ))
+                .toList();
+    }
+
 }

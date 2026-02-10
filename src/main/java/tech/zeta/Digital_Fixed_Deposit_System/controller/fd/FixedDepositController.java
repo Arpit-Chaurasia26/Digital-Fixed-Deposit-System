@@ -2,6 +2,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.controller.fd;
 
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
@@ -71,5 +72,22 @@ public class FixedDepositController {
 
         return ResponseEntity.ok(fd);
     }
+
+    // Fetch fixed deposits maturing within N days
+    @GetMapping("/user/{userId}/maturing")
+    public ResponseEntity<List<FDMaturityResponse>> getUserMaturingFDs(
+            @PathVariable Long userId, @RequestParam(defaultValue = "7") int days) {
+        Long authenticatedUserId = currentUserProvider.getCurrentUserId();
+
+        if (!authenticatedUserId.equals(userId)) {
+            throw new UnauthorizedException("You are not allowed to access other user's FDs");
+        }
+
+        List<FDMaturityResponse> response =
+                fixedDepositService.getUserFDsMaturingWithinDays(userId, days);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 
