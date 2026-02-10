@@ -34,6 +34,8 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(
             ResourceNotFoundException ex
@@ -58,6 +60,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(new ApiResponse(message, 400));
+    }
+
+    //AccountNotFound
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleAccountNotFoundException(
+            AccountNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value()
+                ));
     }
 
 
