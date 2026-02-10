@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.UpdateFDStatusRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.service.fd.FixedDepositService;
 
@@ -55,5 +52,20 @@ public class AdminFDController {
     public ResponseEntity<FDPortfolioResponse> getUserPortfolioAsAdmin(@PathVariable Long userId) {
         return ResponseEntity.ok(fixedDepositService.getUserFDPortfolio(userId));
     }
+
+    // Fetch FD interest accrual timeline
+    @GetMapping("/{fdId}/interest/timeline")
+    public ResponseEntity<FDInterestTimelineResponse> getInterestTimelineAsAdmin(
+            @PathVariable Long fdId,
+            @RequestParam(required = false) String interval
+    ) {
+        FixedDeposit fd = fixedDepositService.getFixedDepositByIdForAdmin(fdId);
+
+        String effectiveInterval =
+                (interval != null) ? interval : fd.getInterestScheme().getInterestFrequency().name();
+
+        return ResponseEntity.ok(fixedDepositService.getInterestTimeline(fd, effectiveInterval));
+    }
+
 
 }

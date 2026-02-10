@@ -1,10 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.fd;
 
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
@@ -119,6 +116,29 @@ public class FixedDepositController {
     }
 
 
+    // Fetch FD interest accrual timeline
+    @GetMapping("/{fdId}/interest/timeline")
+    public ResponseEntity<FDInterestTimelineResponse> getInterestTimeline(
+            @PathVariable Long fdId,
+            @RequestParam(required = false) String interval
+    ) {
+        Long userId = currentUserProvider.getCurrentUserId();
+
+        FixedDeposit fd = fixedDepositService.getFixedDepositById(userId, fdId);
+
+        String effectiveInterval =
+                (interval != null) ? interval : fd.getInterestScheme().getInterestFrequency().name();
+
+        return ResponseEntity.ok(fixedDepositService.getInterestTimeline(fd, effectiveInterval));
+    }
+
+    // Get current accrued interest for a Fixed Deposit.
+    @GetMapping("/{fdId}/interest")
+    public ResponseEntity<FDInterestResponse> getAccruedInterest(@PathVariable Long fdId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+
+        return ResponseEntity.ok(fixedDepositService.getCurrentInterestForUser(userId, fdId));
+    }
 
 }
 

@@ -1,9 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
@@ -17,6 +14,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.util.DateUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -261,6 +259,90 @@ public class FixedDepositService {
     }
 
 
+    @Transactional(readOnly = true)
+    public FixedDeposit getFixedDepositByIdForAdmin(Long fdId) {
+
+        return fixedDepositRepository
+                .findById(fdId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Fixed Deposit not found with id: " + fdId)
+                );
+    }
+
+
+
+    // Fetch FD interest accrual timeline
+    @Transactional(readOnly = true)
+    public FDInterestTimelineResponse getInterestTimeline(FixedDeposit fd, String interval) {
+        List<InterestTimelinePoint> timeline = new ArrayList<>();
+
+        LocalDate startDate = fd.getStartDate();
+
+        LocalDate endDate =
+                LocalDate.now().isAfter(fd.getMaturityDate()) ? fd.getMaturityDate() : LocalDate.now();
+
+        LocalDate cursor = startDate;
+
+        while (cursor.isBefore(endDate)) {
+
+            LocalDate nextDate;
+            String label;
+
+            if ("YEARLY".equalsIgnoreCase(interval)) {
+                nextDate = cursor.plusYears(1);
+                label = String.valueOf(cursor.getYear());
+            } else {
+                nextDate = cursor.plusMonths(1);
+                label = cursor.getYear() + "-" + String.format("%02d", cursor.getMonthValue());
+            }
+
+            if (nextDate.isAfter(endDate)) {
+                nextDate = endDate;
+            }
+
+            // Snapshot created via helper method
+            FixedDeposit snapshot = buildInterestSnapshot(fd, nextDate);
+
+            BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(snapshot);
+
+            timeline.add(new InterestTimelinePoint(label, accruedInterest));
+
+            cursor = nextDate;
+        }
+
+        return new FDInterestTimelineResponse(
+                fd.getId(),
+                fd.getAmount(),
+                fd.getInterestRate(),
+                interval,
+                timeline
+        );
+    }
+
+
+    // Get current accrued interest for a Fixed Deposit of a particular user
+    @Transactional(readOnly = true)
+    public FDInterestResponse getCurrentInterestForUser(Long userId, Long fdId) {
+        FixedDeposit fd = fixedDepositRepository
+                .findByIdAndUserId(fdId, userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Fixed Deposit not found for user")
+                );
+
+        BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(fd);
+
+        return new FDInterestResponse(
+                fd.getId(),
+                fd.getStatus(),
+                fd.getAmount(),
+                accruedInterest,
+                fd.getInterestRate(),
+                fd.getInterestScheme().getInterestFrequency(),
+                fd.getStartDate(),
+                fd.getMaturityDate()
+        );
+    }
+
 
 
 
@@ -300,6 +382,23 @@ public class FixedDepositService {
                 totalPrincipal,
                 totalInterest
         );
+    }
+
+    private FixedDeposit buildInterestSnapshot(FixedDeposit original, LocalDate asOfDate) {
+        FixedDeposit snapshot = new FixedDeposit();
+
+        snapshot.setAmount(original.getAmount());
+        snapshot.setInterestRate(original.getInterestRate());
+        snapshot.setInterestScheme(original.getInterestScheme());
+        snapshot.setStartDate(original.getStartDate());
+
+        // cap calculation at "asOfDate"
+        snapshot.setMaturityDate(asOfDate);
+
+        // Always ACTIVE for calculation purposes
+        snapshot.setStatus(FDStatus.ACTIVE);
+
+        return snapshot;
     }
 
 
