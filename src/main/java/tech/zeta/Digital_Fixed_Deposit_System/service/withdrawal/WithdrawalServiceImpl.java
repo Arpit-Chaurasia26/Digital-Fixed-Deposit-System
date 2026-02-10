@@ -1,6 +1,5 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.withdrawal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import tech.zeta.Digital_Fixed_Deposit_System.constants.FDConstants;
@@ -9,7 +8,6 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.withdrawal.WithdrawalPreview;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.withdrawal.WithdrawalReceipt;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
-import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestFrequency;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.AccountNotFoundException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.InvalidOperationException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;

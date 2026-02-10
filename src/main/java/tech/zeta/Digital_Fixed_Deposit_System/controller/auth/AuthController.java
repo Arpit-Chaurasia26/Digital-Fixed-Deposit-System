@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.AuthResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
@@ -30,7 +29,7 @@ public class AuthController {
     //  REGISTER
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(
+    public ResponseEntity<Void> register(
             @Valid @RequestBody RegisterRequest request,
             HttpServletResponse response
     ) {
@@ -39,13 +38,13 @@ public class AuthController {
         cookieUtil.setAccessToken(response, tokens.accessToken());
         cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-        return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
+        return ResponseEntity.ok().build();
     }
 
     // LOGIN
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<Void> login(
             @Valid @RequestBody LoginRequest request,
             HttpServletResponse response
     ) {
@@ -54,13 +53,13 @@ public class AuthController {
         cookieUtil.setAccessToken(response, tokens.accessToken());
         cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-        return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
+        return ResponseEntity.ok().build();
     }
 
     // REFRESH
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(
+    public ResponseEntity<Void> refresh(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -76,7 +75,7 @@ public class AuthController {
             cookieUtil.setAccessToken(response, tokens.accessToken());
             cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-            return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
+            return ResponseEntity.ok().build();
         } catch (UnauthorizedException ex) {
             cookieUtil.clearAuthCookies(response);
             throw ex;
