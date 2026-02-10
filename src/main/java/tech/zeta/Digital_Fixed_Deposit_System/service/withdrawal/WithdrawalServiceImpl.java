@@ -92,7 +92,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     }
 
     @Override
-    public WithdrawalReceipt confirmWithdrawal(int id) {
+    public WithdrawalReceipt confirmWithdrawal(Long id) {
 
         FixedDeposit fixedDeposit = fixedDepositRepository.findById(id)
                 .orElseThrow(()->new AccountNotFoundException("FD account not found"));
