@@ -31,6 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .cors(org.springframework.security.config.Customizer.withDefaults())
+
                 // Disable CSRF (JWT is stateless)
                 .csrf(csrf -> csrf.disable())
 
@@ -49,7 +51,9 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(
                                 "/auth/register",
-                                "/auth/login"
+                                "/auth/login",
+                                "/auth/logout",
+                                "/auth/refresh"
                         ).permitAll()
 
                         // Admin-only endpoints

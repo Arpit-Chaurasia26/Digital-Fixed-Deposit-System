@@ -2,6 +2,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.RefreshToken;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.user.Role;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.user.User;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.BusinessException;
@@ -17,17 +18,25 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+    private final IRefreshTokenService iRefreshTokenService;
 
     public AuthService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            TokenService tokenService,
+            IRefreshTokenService iRefreshTokenService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
+        this.iRefreshTokenService = iRefreshTokenService;
     }
 
+    //  REGISTER
+
     @Transactional
-    public User register(RegisterRequest request) {
+    public AuthTokens register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException("Email already registered");
@@ -40,19 +49,76 @@ public class AuthService {
                 Role.USER
         );
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        String accessToken =
+                tokenService.generateAccessToken(
+                        user.getId(),
+                        user.getRole().name()
+                );
+
+        RefreshToken refreshToken =
+                iRefreshTokenService.createRefreshToken(user.getId());
+
+        return new AuthTokens(accessToken, refreshToken.getToken());
     }
 
-    @Transactional(readOnly = true)
-    public User login(LoginRequest request) {
+    // LOGIN
+
+    @Transactional
+    public AuthTokens login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+                .orElseThrow(() ->
+                        new UnauthorizedException("Invalid email or password")
+                );
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid email or password");
         }
 
-        return user;
+        String accessToken =
+                tokenService.generateAccessToken(
+                        user.getId(),
+                        user.getRole().name()
+                );
+
+        RefreshToken refreshToken =
+                iRefreshTokenService.createRefreshToken(user.getId());
+
+        return new AuthTokens(accessToken, refreshToken.getToken());
+    }
+
+    //  REFRESH
+
+    @Transactional
+    public AuthTokens refresh(String refreshTokenValue) {
+
+        RefreshToken refreshToken =
+                iRefreshTokenService.validateRefreshToken(refreshTokenValue);
+
+        User user = userRepository.findById(refreshToken.getUserId())
+                .orElseThrow(() ->
+                        new UnauthorizedException("User not found")
+                );
+
+        String accessToken = tokenService.generateAccessToken(
+                user.getId(),
+                user.getRole().name()
+        );
+
+        RefreshToken newRefreshToken =
+                iRefreshTokenService.createRefreshToken(user.getId());
+
+        iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
+
+        return new AuthTokens(accessToken, newRefreshToken.getToken());
+    }
+
+    // ================= LOGOUT =================
+
+    @Transactional
+    public void logout(String refreshTokenValue) {
+        iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
     }
 }

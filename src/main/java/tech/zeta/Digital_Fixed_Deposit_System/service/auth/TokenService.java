@@ -1,71 +1,73 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
-import tech.zeta.Digital_Fixed_Deposit_System.entity.user.Role;
-import tech.zeta.Digital_Fixed_Deposit_System.entity.user.User;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 
 import java.security.Key;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
-public class TokenService {
+public class TokenService implements  ITokenService{
+
+    private static final long ACCESS_TOKEN_EXPIRY_HOURS = 1;
 
     private final Key signingKey;
-    private final long jwtExpirationMillis;
 
     public TokenService(
-            @Value("${security.jwt.secret}") String secret,
-            @Value("${security.jwt.expiration-ms}") long jwtExpirationMillis
+            @Value("${security.jwt.secret}") String secret
     ) {
-        this.signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-        this.jwtExpirationMillis = jwtExpirationMillis;
+        this.signingKey =
+                Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    public String generateToken(User user) {
+    // Generates ACCESS token (1 hour)
+    @Override
+    public String generateAccessToken(Long userId, String role) {
 
         Instant now = Instant.now();
-        Instant expiry = now.plusMillis(jwtExpirationMillis);
+        Instant expiry =
+                now.plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS);
 
         return Jwts.builder()
-                .setSubject(user.getId().toString())
-                .claim("role", user.getRole().name())
+                .setSubject(userId.toString())
+                .claim("role", role)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiry))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Long extractUserId(String token) {
-        return Long.parseLong(extractAllClaims(token).getSubject());
-    }
+    // Validates ACCESS token and returns claims. Throws exception if invalid or expired.
+    @Override
+    public Claims validateAccessToken(String token) {
 
-    public Role extractRole(String token) {
-        return Role.valueOf(extractAllClaims(token).get("role", String.class));
-    }
-
-    public boolean isTokenValid(String token) {
         try {
-            Claims claims = extractAllClaims(token);
-            return !claims.getExpiration().before(new Date());
-        } catch (Exception ex) {
-            return false;
+            return Jwts.parserBuilder()
+                    .setSigningKey(signingKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+        } catch (JwtException ex) {
+            throw new UnauthorizedException(
+                    "Invalid or expired access token"
+            );
         }
     }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(signingKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    @Override
+    public Long extractUserId(Claims claims) {
+        return Long.parseLong(claims.getSubject());
+    }
+    @Override
+    public String extractRole(Claims claims) {
+        return claims.get("role", String.class);
     }
 }

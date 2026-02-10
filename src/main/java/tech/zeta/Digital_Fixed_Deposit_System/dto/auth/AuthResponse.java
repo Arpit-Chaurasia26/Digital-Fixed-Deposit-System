@@ -1,21 +1,14 @@
 package tech.zeta.Digital_Fixed_Deposit_System.dto.auth;
 
-// Response DTO returned after successful authentication.
-
 public class AuthResponse {
 
-    private final String token;
-    private final String tokenType = "Bearer";
+    private final String accessToken;
 
-    public AuthResponse(String token) {
-        this.token = token;
+    public AuthResponse(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public String getTokenType() {
-        return tokenType;
+    public String getAccessToken() {
+        return accessToken;
     }
 }

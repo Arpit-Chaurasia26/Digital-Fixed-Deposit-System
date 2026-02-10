@@ -1,65 +1,106 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.AuthResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
-import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UserProfileResponse;
-import tech.zeta.Digital_Fixed_Deposit_System.entity.user.User;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthService;
-import tech.zeta.Digital_Fixed_Deposit_System.service.auth.TokenService;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import tech.zeta.Digital_Fixed_Deposit_System.service.user.UserService;
+import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
+import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final TokenService tokenService;
-    private final UserService userService;
+    private final CookieUtil cookieUtil;
 
-    public AuthController(
-            AuthService authService,
-            TokenService tokenService,
-            UserService userService
-    ) {
+    public AuthController(AuthService authService, CookieUtil cookieUtil) {
         this.authService = authService;
-        this.tokenService = tokenService;
-        this.userService = userService;
+        this.cookieUtil = cookieUtil;
     }
 
-    // Register a new user.
+    //  REGISTER
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request,
+            HttpServletResponse response
     ) {
-        User user = authService.register(request);
-        String token = tokenService.generateToken(user);
+        AuthTokens tokens = authService.register(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new AuthResponse(token));
+        cookieUtil.setAccessToken(response, tokens.accessToken());
+        cookieUtil.setRefreshToken(response, tokens.refreshToken());
+
+        return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
     }
 
-    // Login existing user.
+    // LOGIN
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request,
+            HttpServletResponse response
     ) {
-        User user = authService.login(request);
-        String token = tokenService.generateToken(user);
+        AuthTokens tokens = authService.login(request);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        cookieUtil.setAccessToken(response, tokens.accessToken());
+        cookieUtil.setRefreshToken(response, tokens.refreshToken());
+
+        return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
     }
 
-    // Fetch logged-in user's profile.
-    @GetMapping("/me")
-    public ResponseEntity<UserProfileResponse> getProfile() {
-        return ResponseEntity.ok(userService.getCurrentUserProfile());
+    // REFRESH
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String refreshToken = cookieUtil.extractRefreshToken(request);
+
+        if (refreshToken == null) {
+            cookieUtil.clearAuthCookies(response);
+            throw new UnauthorizedException("Refresh token missing");
+        }
+
+        try {
+            AuthTokens tokens = authService.refresh(refreshToken);
+            cookieUtil.setAccessToken(response, tokens.accessToken());
+            cookieUtil.setRefreshToken(response, tokens.refreshToken());
+
+            return ResponseEntity.ok(new AuthResponse(tokens.accessToken()));
+        } catch (UnauthorizedException ex) {
+            cookieUtil.clearAuthCookies(response);
+            throw ex;
+        }
     }
 
+    // LOGOUT
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String refreshToken = cookieUtil.extractRefreshToken(request);
+
+        if (refreshToken != null) {
+            try {
+                authService.logout(refreshToken);
+            } catch (UnauthorizedException ex) {
+                // Idempotent logout: ignore invalid/expired token
+            }
+        }
+
+        cookieUtil.clearAuthCookies(response);
+        return ResponseEntity.noContent().build();
+    }
 }

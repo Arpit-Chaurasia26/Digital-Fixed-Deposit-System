@@ -1,10 +1,11 @@
 package tech.zeta.Digital_Fixed_Deposit_System.config.security;
 
-import tech.zeta.Digital_Fixed_Deposit_System.entity.user.Role;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.TokenService;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String ACCESS_TOKEN_COOKIE = "accessToken";
     private final TokenService tokenService;
 
     public JwtAuthenticationFilter(TokenService tokenService) {
@@ -34,46 +36,67 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String token = null;
+
+        // Try to get token from Authorization header first
         final String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
 
-        // No Authorization header → continue filter chain
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // If no token in header, try to get from cookie
+        if (token == null) {
+            token = extractTokenFromCookie(request);
+        }
+
+        // No token found → continue filter chain
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract token
-        String token = authHeader.substring(7);
+        try {
+            // Validate access token (throws if invalid/expired)
+            Claims claims = tokenService.validateAccessToken(token);
 
-        // Validate token
-        if (!tokenService.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
+            Long userId = tokenService.extractUserId(claims);
+            String role = tokenService.extractRole(claims);
+
+            SimpleGrantedAuthority authority =
+                    new SimpleGrantedAuthority("ROLE_" + role);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId,
+                            null,
+                            List.of(authority)
+                    );
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource()
+                            .buildDetails(request)
+            );
+
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
+
+        } catch (Exception ex) {
+            // Invalid or expired token → ignore & continue
+            SecurityContextHolder.clearContext();
         }
 
-        // Extract user details from token
-        Long userId = tokenService.extractUserId(token);
-        Role role = tokenService.extractRole(token);
-
-        // Build Authentication object
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority("ROLE_" + role.name());
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userId,
-                        null,
-                        List.of(authority)
-                );
-
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
-        );
-
-        // Set authentication in SecurityContext
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Continue filter chain
         filterChain.doFilter(request, response);
+    }
+
+    private String extractTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if (ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }
