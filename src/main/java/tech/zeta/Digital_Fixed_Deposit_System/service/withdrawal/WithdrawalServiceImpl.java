@@ -30,7 +30,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
 
 
     @Override
-    public WithdrawalPreview getWithdrawalPreview(int id) {
+    public WithdrawalPreview getWithdrawalPreview(Long id) {
         System.out.println("I have been Called");
         FixedDeposit fixedDeposit = fixedDepositRepository.findById(id)
               .orElseThrow(()->new AccountNotFoundException("FD account not found"));
