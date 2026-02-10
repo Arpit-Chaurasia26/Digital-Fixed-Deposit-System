@@ -3,6 +3,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
@@ -214,6 +215,51 @@ public class FixedDepositService {
 
         return buildFinancialYearSummary(fds, fy);
     }
+
+    // Fetch user fixed deposit portfolio
+    @Transactional(readOnly = true)
+    public FDPortfolioResponse getUserFDPortfolio(Long userId) {
+        List<FixedDeposit> fds = fixedDepositRepository.findByUserId(userId);
+
+        long totalFDs = fds.size();
+
+        long activeFDs = fds.stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
+                        .count();
+
+        long maturedFDs = fds.stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.MATURED)
+                        .count();
+
+        long brokenFDs = fds.stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.BROKEN)
+                        .count();
+
+        BigDecimal totalPrincipal = fds.stream()
+                        .map(FixedDeposit::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalInterest = fds.stream()
+                        .map(interestCalculationService::calculateAccruedInterest)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        LocalDate nextMaturityDate = fds.stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
+                        .map(FixedDeposit::getMaturityDate)
+                        .min(LocalDate::compareTo)
+                        .orElse(null);
+
+        return new FDPortfolioResponse(
+                totalFDs,
+                activeFDs,
+                maturedFDs,
+                brokenFDs,
+                totalPrincipal,
+                totalInterest,
+                nextMaturityDate
+        );
+    }
+
 
 
 

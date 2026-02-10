@@ -4,6 +4,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvide
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
@@ -104,6 +105,19 @@ public class FixedDepositController {
 
         return ResponseEntity.ok(fixedDepositService.getUserFinancialYearSummary(userId, year));
     }
+
+    // Fetch user fixed deposit portfolio
+    @GetMapping("/user/{userId}/portfolio")
+    public ResponseEntity<FDPortfolioResponse> getUserFDPortfolio(@PathVariable Long userId) {
+        Long authenticatedUserId = currentUserProvider.getCurrentUserId();
+
+        if (!authenticatedUserId.equals(userId)) {
+            throw new UnauthorizedException("You are not allowed to access other user's portfolio");
+        }
+
+        return ResponseEntity.ok(fixedDepositService.getUserFDPortfolio(userId));
+    }
+
 
 
 }

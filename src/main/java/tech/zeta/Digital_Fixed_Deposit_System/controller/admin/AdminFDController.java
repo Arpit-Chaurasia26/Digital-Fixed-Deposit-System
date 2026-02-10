@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDPortfolioResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.UpdateFDStatusRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.service.fd.FixedDepositService;
@@ -13,7 +14,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.fd.FixedDepositService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fd")
+@RequestMapping("/admin/fd")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminFDController {
 
@@ -47,6 +48,12 @@ public class AdminFDController {
             @RequestParam(required = false) Integer year
     ) {
         return ResponseEntity.ok(fixedDepositService.getAdminFinancialYearSummary(year));
+    }
+
+    // Fetch user fixed deposit portfolio
+    @GetMapping("/user/{userId}/portfolio")
+    public ResponseEntity<FDPortfolioResponse> getUserPortfolioAsAdmin(@PathVariable Long userId) {
+        return ResponseEntity.ok(fixedDepositService.getUserFDPortfolio(userId));
     }
 
 }
