@@ -29,4 +29,8 @@ public interface FixedDepositRepository extends JpaRepository<FixedDeposit, Long
     List<FixedDeposit> findByUserIdAndMaturityDateBetween(Long userId, LocalDate startDate, LocalDate endDate);
 
     List<FixedDeposit> findByMaturityDateBetween(LocalDate startDate, LocalDate endDate);
+
+    List<FixedDeposit> findByUserIdAndCreatedAtBetween(Long userId, LocalDate startDate, LocalDate endDate);
+
+    List<FixedDeposit> findByCreatedAtBetween(LocalDate startDate, LocalDate endDate);
 }

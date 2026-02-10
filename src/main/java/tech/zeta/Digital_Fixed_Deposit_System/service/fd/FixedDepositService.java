@@ -1,6 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
@@ -11,6 +12,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundExceptio
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;
+import tech.zeta.Digital_Fixed_Deposit_System.util.DateUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -186,6 +188,35 @@ public class FixedDepositService {
         return mapToMaturityResponse(fds, today);
     }
 
+    // Fetch financial year fixed deposit summary analytics for user
+    @Transactional(readOnly = true)
+    public FDFinancialYearSummaryResponse getUserFinancialYearSummary(Long userId, Integer year) {
+        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
+
+        LocalDate start = DateUtils.getFinancialYearStart(fy);
+        LocalDate end = DateUtils.getFinancialYearEnd(fy);
+
+        List<FixedDeposit> fds =
+                fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+
+        return buildFinancialYearSummary(fds, fy);
+    }
+
+    // Fetch financial year fixed deposit summary analytics for admin
+    @Transactional(readOnly = true)
+    public FDFinancialYearSummaryResponse getAdminFinancialYearSummary(Integer year) {
+        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
+
+        LocalDate start = DateUtils.getFinancialYearStart(fy);
+        LocalDate end = DateUtils.getFinancialYearEnd(fy);
+
+        List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(start, end);
+
+        return buildFinancialYearSummary(fds, fy);
+    }
+
+
+
 
 
     // Helper methods
@@ -203,6 +234,28 @@ public class FixedDepositService {
             throw new BusinessException("Minimum Fixed Deposit amount is " + MIN_FD_AMOUNT);
         }
     }
+
+    private FDFinancialYearSummaryResponse buildFinancialYearSummary(List<FixedDeposit> fds, int financialYear) {
+        long totalFDs = fds.size();
+
+        BigDecimal totalPrincipal =
+                fds.stream()
+                        .map(FixedDeposit::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalInterest =
+                fds.stream()
+                        .map(interestCalculationService::calculateAccruedInterest)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new FDFinancialYearSummaryResponse(
+                financialYear + "-" + (financialYear + 1),
+                totalFDs,
+                totalPrincipal,
+                totalInterest
+        );
+    }
+
 
     private List<FDMaturityResponse> mapToMaturityResponse(List<FixedDeposit> fds, LocalDate today) {
         return fds.stream()

@@ -2,6 +2,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.controller.fd;
 
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.BookFDRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
@@ -88,6 +89,22 @@ public class FixedDepositController {
 
         return ResponseEntity.ok(response);
     }
+
+    // Fetch financial year fixed deposit summary analytics for user
+    @GetMapping("/user/{userId}/summary/financial-year")
+    public ResponseEntity<FDFinancialYearSummaryResponse> getUserFinancialYearSummary(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Integer year
+    ) {
+        Long authenticatedUserId = currentUserProvider.getCurrentUserId();
+
+        if (!authenticatedUserId.equals(userId)) {
+            throw new UnauthorizedException("You are not allowed to access other user's summary");
+        }
+
+        return ResponseEntity.ok(fixedDepositService.getUserFinancialYearSummary(userId, year));
+    }
+
 
 }
 

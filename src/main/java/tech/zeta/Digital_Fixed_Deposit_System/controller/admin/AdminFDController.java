@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDFinancialYearSummaryResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.FDMaturityResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.UpdateFDStatusRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
@@ -33,10 +34,19 @@ public class AdminFDController {
 
 
     // Fetch all fixed deposits maturing within N days
-    @GetMapping("/users/maturing")
+    @GetMapping("/maturing")
     public ResponseEntity<List<FDMaturityResponse>> getAllMaturingFDs(@RequestParam(defaultValue = "7") int days) {
         List<FDMaturityResponse> response = fixedDepositService.getAllFDsMaturingWithinDays(days);
 
         return ResponseEntity.ok(response);
     }
+
+    // Fetch financial year fixed deposit summary analytics for admin
+    @GetMapping("/summary/financial-year")
+    public ResponseEntity<FDFinancialYearSummaryResponse> getAdminFinancialYearSummary(
+            @RequestParam(required = false) Integer year
+    ) {
+        return ResponseEntity.ok(fixedDepositService.getAdminFinancialYearSummary(year));
+    }
+
 }
