@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
-public class WithdrawalEligibility {
-    private boolean isEligible;
-    private String rootCause;
-
+public class WithdrawalHistory {
+    private Long fdId;
+    private BigDecimal withdrawalAmount;
+    private BigDecimal interestPaid;
 }

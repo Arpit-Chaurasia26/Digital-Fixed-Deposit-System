@@ -154,4 +154,5 @@ public class FixedDeposit {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
 }
