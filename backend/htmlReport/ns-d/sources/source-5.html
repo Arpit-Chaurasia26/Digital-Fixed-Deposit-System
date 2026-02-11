@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FDMaturityResponse</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.dto.fd</a>
+</div>
+
+<h1>Coverage Summary for Class: FDMaturityResponse (tech.zeta.Digital_Fixed_Deposit_System.dto.fd)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FDMaturityResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.dto.fd;
+&nbsp;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.time.LocalDate;
+&nbsp;
+&nbsp;public class FDMaturityResponse {
+&nbsp;
+&nbsp;    private Long fdId;
+&nbsp;    private Long userId;
+&nbsp;    private BigDecimal amount;
+&nbsp;    private LocalDate maturityDate;
+&nbsp;    private long daysRemaining;
+&nbsp;    private FDStatus status;
+&nbsp;
+&nbsp;    public FDMaturityResponse(
+&nbsp;            Long fdId,
+&nbsp;            Long userId,
+&nbsp;            BigDecimal amount,
+&nbsp;            LocalDate maturityDate,
+&nbsp;            long daysRemaining,
+&nbsp;            FDStatus status
+<b class="fc">&nbsp;    ) {</b>
+<b class="fc">&nbsp;        this.fdId = fdId;</b>
+<b class="fc">&nbsp;        this.userId = userId;</b>
+<b class="fc">&nbsp;        this.amount = amount;</b>
+<b class="fc">&nbsp;        this.maturityDate = maturityDate;</b>
+<b class="fc">&nbsp;        this.daysRemaining = daysRemaining;</b>
+<b class="fc">&nbsp;        this.status = status;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public Long getFdId() { return fdId; }</b>
+<b class="fc">&nbsp;    public Long getUserId() { return userId; }</b>
+<b class="nc">&nbsp;    public BigDecimal getAmount() { return amount; }</b>
+<b class="nc">&nbsp;    public LocalDate getMaturityDate() { return maturityDate; }</b>
+<b class="fc">&nbsp;    public long getDaysRemaining() { return daysRemaining; }</b>
+<b class="fc">&nbsp;    public FDStatus getStatus() { return status; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>
