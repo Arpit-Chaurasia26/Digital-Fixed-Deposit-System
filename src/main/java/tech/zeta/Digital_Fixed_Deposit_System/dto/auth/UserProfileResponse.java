@@ -1,10 +1,14 @@
 package tech.zeta.Digital_Fixed_Deposit_System.dto.auth;
 
 import tech.zeta.Digital_Fixed_Deposit_System.entity.user.Role;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.time.Instant;
 
 // Response DTO for authenticated user's profile.
 public class UserProfileResponse {
+
+    private static final Logger logger = LogManager.getLogger(UserProfileResponse.class);
 
     private final Long id;
     private final String name;
@@ -44,5 +48,10 @@ public class UserProfileResponse {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfileResponse{id=" + id + ", name='" + name + "', email='" + email + "', role=" + role + ", createdAt=" + createdAt + "}";
     }
 }

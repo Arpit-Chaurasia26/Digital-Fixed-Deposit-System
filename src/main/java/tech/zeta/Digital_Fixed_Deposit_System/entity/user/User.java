@@ -1,6 +1,9 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 
 import jakarta.persistence.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.Instant;
 
 @Entity
@@ -11,6 +14,8 @@ import java.time.Instant;
         }
 )
 public class User {
+
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +57,7 @@ public class User {
         if (role == null) {
             role = Role.USER;
         }
+        logger.debug("User entity pre-persist initialized");
     }
 
     // Getters & Setters
@@ -96,8 +102,3 @@ public class User {
         this.role = role;
     }
 }
-
-
-
-
-

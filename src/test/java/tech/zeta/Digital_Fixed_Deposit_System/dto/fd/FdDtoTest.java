@@ -34,6 +34,8 @@ public class FdDtoTest {
         assertEquals(new BigDecimal("12.34"), response.getAccruedInterest());
         assertEquals(new BigDecimal("5.50"), response.getInterestRate());
         assertEquals(InterestFrequency.MONTHLY, response.getInterestFrequency());
+        assertNotNull(response.getStartDate());
+        assertNotNull(response.getMaturityDate());
     }
 
     @Test
@@ -54,6 +56,7 @@ public class FdDtoTest {
         assertEquals(1, response.getBrokenFDs());
         assertEquals(new BigDecimal("10000"), response.getTotalPrincipal());
         assertEquals(new BigDecimal("250"), response.getTotalInterestAccrued());
+        assertNotNull(response.getNextMaturityDate());
     }
 
     @Test
@@ -90,17 +93,30 @@ public class FdDtoTest {
 
     @Test
     void interestTimelineResponse_gettersReturnValues() {
+        InterestTimelinePoint point = new InterestTimelinePoint("2024-01", new BigDecimal("12.34"));
         FDInterestTimelineResponse response = new FDInterestTimelineResponse(
                 9L,
                 new BigDecimal("7000"),
                 new BigDecimal("6.50"),
                 "MONTHLY",
-                List.of(new InterestTimelinePoint("2024-01", new BigDecimal("12.34")))
+                List.of(point)
         );
 
         assertEquals(9L, response.getFdId());
+        assertEquals(new BigDecimal("7000"), response.getPrincipal());
+        assertEquals(new BigDecimal("6.50"), response.getInterestRate());
         assertEquals("MONTHLY", response.getInterval());
         assertEquals(1, response.getTimeline().size());
+        assertEquals("2024-01", response.getTimeline().get(0).getPeriod());
+        assertEquals(new BigDecimal("12.34"), response.getTimeline().get(0).getAccruedInterest());
+    }
+
+    @Test
+    void interestTimelinePoint_gettersReturnValues() {
+        InterestTimelinePoint point = new InterestTimelinePoint("2024-02", new BigDecimal("9.99"));
+
+        assertEquals("2024-02", point.getPeriod());
+        assertEquals(new BigDecimal("9.99"), point.getAccruedInterest());
     }
 
     @Test

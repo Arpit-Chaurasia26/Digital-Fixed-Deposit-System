@@ -1,9 +1,13 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import jakarta.transaction.Transactional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.RefreshToken;
 
 public interface IRefreshTokenService {
+
+    Logger logger = LogManager.getLogger(IRefreshTokenService.class);
 
     //Creates and persists a refresh token for a user.
 

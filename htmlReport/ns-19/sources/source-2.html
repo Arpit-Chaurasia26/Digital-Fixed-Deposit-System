@@ -1,0 +1,112 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SupportTicketService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.service.support</a>
+</div>
+
+<h1>Coverage Summary for Class: SupportTicketService (tech.zeta.Digital_Fixed_Deposit_System.service.support)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">SupportTicketService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.service.support;
+&nbsp;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketRequestDTO;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketResponseDTO;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface SupportTicketService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a new support ticket for logged-in user.
+&nbsp;     */
+&nbsp;    SupportTicketResponseDTO createTicket(SupportTicketRequestDTO requestDTO);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a ticket by ID.
+&nbsp;     * Users can access only their tickets, admin can access all.
+&nbsp;     */
+&nbsp;    SupportTicketResponseDTO getTicketById(Long ticketId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get all tickets of the logged-in user.
+&nbsp;     */
+&nbsp;    List&lt;SupportTicketResponseDTO&gt; getTicketsByUserId();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get all tickets in the system (admin only).
+&nbsp;     */
+&nbsp;    public Page&lt;SupportTicketResponseDTO&gt; getAllTickets(TicketStatus status, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update the status of a ticket (RESOLVED by admin, CLOSED by user).
+&nbsp;     */
+&nbsp;    SupportTicketResponseDTO updateTicketStatus(Long ticketId, TicketStatus status);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update the response of a ticket (admin only).
+&nbsp;     */
+&nbsp;    SupportTicketResponseDTO updateTicketResponse(Long ticketId, String response);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>

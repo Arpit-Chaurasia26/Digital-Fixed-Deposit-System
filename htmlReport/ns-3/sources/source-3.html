@@ -1,0 +1,225 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JwtAuthenticationFilter</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.config.security</a>
+</div>
+
+<h1>Coverage Summary for Class: JwtAuthenticationFilter (tech.zeta.Digital_Fixed_Deposit_System.config.security)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JwtAuthenticationFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (8/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (28/32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.config.security;
+&nbsp;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.service.auth.TokenService;
+&nbsp;
+&nbsp;import io.jsonwebtoken.Claims;
+&nbsp;import jakarta.servlet.FilterChain;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.http.Cookie;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+&nbsp;import org.springframework.security.core.authority.SimpleGrantedAuthority;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.filter.OncePerRequestFilter;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Component
+&nbsp;public class JwtAuthenticationFilter extends OncePerRequestFilter {
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);</b>
+&nbsp;    private static final String ACCESS_TOKEN_COOKIE = &quot;accessToken&quot;;
+&nbsp;    private final TokenService tokenService;
+&nbsp;
+<b class="fc">&nbsp;    public JwtAuthenticationFilter(TokenService tokenService) {</b>
+<b class="fc">&nbsp;        this.tokenService = tokenService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doFilterInternal(
+&nbsp;            HttpServletRequest request,
+&nbsp;            HttpServletResponse response,
+&nbsp;            FilterChain filterChain
+&nbsp;    ) throws ServletException, IOException {
+&nbsp;
+<b class="fc">&nbsp;        String token = null;</b>
+&nbsp;
+&nbsp;        // Try to get token from Authorization header first
+<b class="fc">&nbsp;        final String authHeader = request.getHeader(&quot;Authorization&quot;);</b>
+<b class="pc">&nbsp;        if (authHeader != null &amp;&amp; authHeader.startsWith(&quot;Bearer &quot;)) {</b>
+<b class="fc">&nbsp;            token = authHeader.substring(7);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // If no token in header, try to get from cookie
+<b class="fc">&nbsp;        if (token == null) {</b>
+<b class="fc">&nbsp;            token = extractTokenFromCookie(request);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // No token found → continue filter chain
+<b class="fc">&nbsp;        if (token == null) {</b>
+<b class="fc">&nbsp;            logger.debug(&quot;No access token found for request path={}&quot;, request.getRequestURI());</b>
+<b class="fc">&nbsp;            filterChain.doFilter(request, response);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Validate access token (throws if invalid/expired)
+<b class="fc">&nbsp;            Claims claims = tokenService.validateAccessToken(token);</b>
+&nbsp;
+<b class="fc">&nbsp;            Long userId = tokenService.extractUserId(claims);</b>
+<b class="fc">&nbsp;            String role = tokenService.extractRole(claims);</b>
+&nbsp;
+<b class="fc">&nbsp;            SimpleGrantedAuthority authority =</b>
+&nbsp;                    new SimpleGrantedAuthority(&quot;ROLE_&quot; + role);
+&nbsp;
+<b class="fc">&nbsp;            UsernamePasswordAuthenticationToken authentication =</b>
+&nbsp;                    new UsernamePasswordAuthenticationToken(
+&nbsp;                            userId,
+&nbsp;                            null,
+<b class="fc">&nbsp;                            List.of(authority)</b>
+&nbsp;                    );
+&nbsp;
+<b class="fc">&nbsp;            authentication.setDetails(</b>
+&nbsp;                    new WebAuthenticationDetailsSource()
+<b class="fc">&nbsp;                            .buildDetails(request)</b>
+&nbsp;            );
+&nbsp;
+<b class="fc">&nbsp;            SecurityContextHolder.getContext()</b>
+<b class="fc">&nbsp;                    .setAuthentication(authentication);</b>
+&nbsp;
+<b class="fc">&nbsp;            logger.debug(&quot;Security context set for user id={}&quot;, userId);</b>
+&nbsp;
+&nbsp;        } catch (Exception ex) {
+&nbsp;            // Invalid or expired token → ignore &amp; continue
+<b class="fc">&nbsp;            SecurityContextHolder.clearContext();</b>
+<b class="fc">&nbsp;            logger.warn(&quot;Access token rejected&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        filterChain.doFilter(request, response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String extractTokenFromCookie(HttpServletRequest request) {
+<b class="pc">&nbsp;        if (request.getCookies() == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for (Cookie cookie : request.getCookies()) {</b>
+<b class="nc">&nbsp;            if (ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {</b>
+<b class="nc">&nbsp;                return cookie.getValue();</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>
