@@ -18,8 +18,38 @@ export const fdService = {
     const response = await apiClient.get('/fd/schemes');
     return response.data?.data ?? response.data;
   },
-
   
+ // Book a new Fixed Deposit
+ async bookFD(data: BookFDRequest): Promise<FixedDeposit> {
+   const response = await apiClient.post('/fd/book', data);
+   return response.data;
+ },
+
+ // Get user's FDs with filters
+ async getUserFDs(
+   userId: number,
+   filters?: {
+     status?: FDStatus;
+     minAmount?: number;
+     maxAmount?: number;
+   }
+ ): Promise<FixedDeposit[]> {
+   const params = new URLSearchParams();
+   if (filters?.status) params.append('status', filters.status);
+   if (filters?.minAmount) params.append('minAmount', filters.minAmount.toString());
+   if (filters?.maxAmount) params.append('maxAmount', filters.maxAmount.toString());
+
+
+   const response = await apiClient.get(`/fd/user/${userId}?${params.toString()}`);
+   return response.data;
+ },
+
+
+ // Get specific FD by ID
+ async getFDById(userId: number, fdId: number): Promise<FixedDeposit> {
+   const response = await apiClient.get(`/fd/user/${userId}/${fdId}`);
+   return response.data;
+ },
 
   // Get FDs maturing within N days
   async getMaturingFDs(userId: number, days: number = 7): Promise<FDMaturityResponse[]> {

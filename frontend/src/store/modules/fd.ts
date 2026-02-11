@@ -101,52 +101,7 @@ const fdModule = {
   },
 
   actions: {
-    async bookFD({ commit }: ActionCtx, data: BookFDRequest) {
-      commit('SET_LOADING', true);
-      commit('CLEAR_ERROR');
-      try {
-        const fd = await fdService.bookFD(data);
-        commit('ADD_FD', fd);
-        return fd;
-      } catch (error: any) {
-        const message = error.response?.data?.message || 'Failed to book FD';
-        commit('SET_ERROR', message);
-        throw error;
-      } finally {
-        commit('SET_LOADING', false);
-      }
-    },
 
-    async fetchUserFDs({ commit }: ActionCtx, { userId, filters }: { userId: number; filters?: any }) {
-      commit('SET_LOADING', true);
-      commit('CLEAR_ERROR');
-      try {
-        const fds = await fdService.getUserFDs(userId, filters);
-        commit('SET_FDS', fds);
-      } catch (error: any) {
-        const message = error.response?.data?.message || 'Failed to fetch FDs';
-        commit('SET_ERROR', message);
-        throw error;
-      } finally {
-        commit('SET_LOADING', false);
-      }
-    },
-
-    async fetchFDById({ commit }: ActionCtx, { userId, fdId }: { userId: number; fdId: number }) {
-      commit('SET_LOADING', true);
-      commit('CLEAR_ERROR');
-      try {
-        const fd = await fdService.getFDById(userId, fdId);
-        commit('SET_CURRENT_FD', fd);
-        return fd;
-      } catch (error: any) {
-        const message = error.response?.data?.message || 'Failed to fetch FD';
-        commit('SET_ERROR', message);
-        throw error;
-      } finally {
-        commit('SET_LOADING', false);
-      }
-    },
 
     async fetchMaturingFDs({ commit }: ActionCtx, { userId, days }: { userId: number; days?: number }) {
       commit('SET_LOADING', true);
