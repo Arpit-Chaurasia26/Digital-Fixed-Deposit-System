@@ -31,8 +31,8 @@ public class ExceptionTest {
     }
 
     @Test
-    void invalidOperationException_hasNullMessage() {
+    void invalidOperationException_setsMessage() {
         InvalidOperationException ex = new InvalidOperationException("ignored");
-        assertNull(ex.getMessage());
+        assertEquals("ignored", ex.getMessage());
     }
 }
