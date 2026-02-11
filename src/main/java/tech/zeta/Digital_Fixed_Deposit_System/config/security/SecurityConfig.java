@@ -1,5 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.config.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig {
+
+    private static final Logger logger = LogManager.getLogger(SecurityConfig.class);
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
@@ -70,6 +74,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
 
+        logger.info("Security filter chain configured");
         return http.build();
     }
 
@@ -78,6 +83,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
     ) throws Exception {
+        logger.info("AuthenticationManager bean created");
         return configuration.getAuthenticationManager();
     }
 }

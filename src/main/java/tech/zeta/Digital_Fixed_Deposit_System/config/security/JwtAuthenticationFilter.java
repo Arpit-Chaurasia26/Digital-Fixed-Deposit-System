@@ -9,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
     private static final String ACCESS_TOKEN_COOKIE = "accessToken";
     private final TokenService tokenService;
 
@@ -51,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // No token found → continue filter chain
         if (token == null) {
+            logger.debug("No access token found for request path={}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -80,9 +84,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
 
+            logger.debug("Security context set for user id={}", userId);
+
         } catch (Exception ex) {
             // Invalid or expired token → ignore & continue
             SecurityContextHolder.clearContext();
+            logger.warn("Access token rejected");
         }
 
         filterChain.doFilter(request, response);

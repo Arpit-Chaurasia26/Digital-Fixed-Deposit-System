@@ -1,5 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    private static final Logger logger = LogManager.getLogger(WebConfig.class);
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -25,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
+        logger.info("CORS configuration registered");
         return source;
     }
 

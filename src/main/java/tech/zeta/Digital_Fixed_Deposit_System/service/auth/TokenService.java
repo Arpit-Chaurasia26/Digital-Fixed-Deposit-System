@@ -4,6 +4,8 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
@@ -15,6 +17,8 @@ import java.util.Date;
 
 @Service
 public class TokenService implements  ITokenService{
+
+    private static final Logger logger = LogManager.getLogger(TokenService.class);
 
     private static final long ACCESS_TOKEN_EXPIRY_HOURS = 1;
 
@@ -35,13 +39,16 @@ public class TokenService implements  ITokenService{
         Instant expiry =
                 now.plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(userId.toString())
                 .claim("role", role)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiry))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
+
+        logger.debug("Access token generated for user id={} role={}", userId, role);
+        return token;
     }
 
     // Validates ACCESS token and returns claims. Throws exception if invalid or expired.
@@ -49,13 +56,17 @@ public class TokenService implements  ITokenService{
     public Claims validateAccessToken(String token) {
 
         try {
-            return Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(signingKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
 
+            logger.debug("Access token validated");
+            return claims;
+
         } catch (JwtException ex) {
+            logger.warn("Access token validation failed");
             throw new UnauthorizedException(
                     "Invalid or expired access token"
             );

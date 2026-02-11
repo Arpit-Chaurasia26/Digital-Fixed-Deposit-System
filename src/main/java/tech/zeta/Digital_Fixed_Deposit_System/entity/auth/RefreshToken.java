@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 
@@ -19,6 +21,8 @@ import java.time.Instant;
 )
 @AllArgsConstructor
 public class RefreshToken {
+
+    private static final Logger logger = LogManager.getLogger(RefreshToken.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +58,8 @@ public class RefreshToken {
     }
 
     public boolean isExpired() {
-        return Instant.now().isAfter(expiresAt);
+        boolean expired = Instant.now().isAfter(expiresAt);
+        logger.trace("Refresh token expiry check result={}", expired);
+        return expired;
     }
 }

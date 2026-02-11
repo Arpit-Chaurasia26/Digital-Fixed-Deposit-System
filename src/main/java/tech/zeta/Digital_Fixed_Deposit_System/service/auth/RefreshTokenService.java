@@ -1,5 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.RefreshToken;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @Service
 public class RefreshTokenService implements IRefreshTokenService{
 
+    private static final Logger logger = LogManager.getLogger(RefreshTokenService.class);
     private static final long REFRESH_TOKEN_DAYS = 7;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -33,7 +36,9 @@ public class RefreshTokenService implements IRefreshTokenService{
                 .createdAt(creationOfToken)
                 .revoked(false)
                 .build();
-       return refreshTokenRepository.save(refreshToken);
+       RefreshToken saved = refreshTokenRepository.save(refreshToken);
+       logger.info("Refresh token created for user id={}", userId);
+       return saved;
     }
 
     @Transactional(readOnly = true)
@@ -46,13 +51,16 @@ public class RefreshTokenService implements IRefreshTokenService{
                         );
 
         if (refreshToken.isRevoked()) {
+            logger.warn("Refresh token revoked");
             throw new UnauthorizedException("Refresh token has been revoked");
         }
 
         if (refreshToken.isExpired()) {
+            logger.warn("Refresh token expired");
             throw new UnauthorizedException("Refresh token has expired");
         }
 
+        logger.debug("Refresh token validated");
         return refreshToken;
     }
 
@@ -66,5 +74,6 @@ public class RefreshTokenService implements IRefreshTokenService{
                                 new UnauthorizedException("Invalid refresh token")
                         );
         refreshTokenRepository.delete(refreshToken);
+        logger.info("Refresh token revoked for user id={}", refreshToken.getUserId());
     }
 }

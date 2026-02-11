@@ -4,10 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 //Jackson does not need setters, it automatically sets the fields through reflection
 
 public class RegisterRequest {
+
+    private static final Logger logger = LogManager.getLogger(RegisterRequest.class);
 
     @NotBlank(message = "Name must not be blank")
     private String name;

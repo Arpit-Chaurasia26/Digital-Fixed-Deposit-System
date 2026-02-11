@@ -9,12 +9,16 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.BusinessException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
+
+    private static final Logger logger = LogManager.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +42,10 @@ public class AuthService {
     @Transactional
     public AuthTokens register(RegisterRequest request) {
 
+        logger.info("Register request received");
+
         if (userRepository.existsByEmail(request.getEmail())) {
+            logger.warn("Register blocked: email already registered");
             throw new BusinessException("Email already registered");
         }
 
@@ -50,6 +57,7 @@ public class AuthService {
         );
 
         userRepository.save(user);
+        logger.info("User registered with id={}", user.getId());
 
         String accessToken =
                 tokenService.generateAccessToken(
@@ -60,6 +68,7 @@ public class AuthService {
         RefreshToken refreshToken =
                 iRefreshTokenService.createRefreshToken(user.getId());
 
+        logger.debug("Auth tokens generated for user id={}", user.getId());
         return new AuthTokens(accessToken, refreshToken.getToken());
     }
 
@@ -68,12 +77,15 @@ public class AuthService {
     @Transactional
     public AuthTokens login(LoginRequest request) {
 
+        logger.info("Login request received");
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() ->
                         new UnauthorizedException("Invalid email or password")
                 );
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            logger.warn("Login failed: invalid credentials");
             throw new UnauthorizedException("Invalid email or password");
         }
 
@@ -86,6 +98,7 @@ public class AuthService {
         RefreshToken refreshToken =
                 iRefreshTokenService.createRefreshToken(user.getId());
 
+        logger.info("Login succeeded for user id={}", user.getId());
         return new AuthTokens(accessToken, refreshToken.getToken());
     }
 
@@ -93,6 +106,8 @@ public class AuthService {
 
     @Transactional
     public AuthTokens refresh(String refreshTokenValue) {
+
+        logger.info("Refresh token request received");
 
         RefreshToken refreshToken =
                 iRefreshTokenService.validateRefreshToken(refreshTokenValue);
@@ -112,6 +127,7 @@ public class AuthService {
 
         iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
 
+        logger.info("Refresh token rotated for user id={}", user.getId());
         return new AuthTokens(accessToken, newRefreshToken.getToken());
     }
 
@@ -119,6 +135,8 @@ public class AuthService {
 
     @Transactional
     public void logout(String refreshTokenValue) {
+        logger.info("Logout request received");
         iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
+        logger.info("Logout completed");
     }
 }
