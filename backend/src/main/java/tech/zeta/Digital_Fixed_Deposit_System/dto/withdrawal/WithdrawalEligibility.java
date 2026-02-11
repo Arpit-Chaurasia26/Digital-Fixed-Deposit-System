@@ -6,14 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class WithdrawalEligibility {
-
-    public WithdrawalEligibility(boolean isEligible, String rootCause) {
-        this.isEligible = isEligible;
-        this.rootCause = rootCause;
-    }
-
     private boolean isEligible;
     private String rootCause;
+
 }
  
