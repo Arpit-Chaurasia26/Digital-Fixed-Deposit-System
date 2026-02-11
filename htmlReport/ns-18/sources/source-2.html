@@ -1,0 +1,627 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FixedDepositService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.service.fd</a>
+</div>
+
+<h1>Coverage Summary for Class: FixedDepositService (tech.zeta.Digital_Fixed_Deposit_System.service.fd)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FixedDepositService</td>
+<td class="coverageStat">
+  <span class="percent">
+    29.6%
+  </span>
+  <span class="absValue">
+    (8/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.5%
+  </span>
+  <span class="absValue">
+    (8/84)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19.3%
+  </span>
+  <span class="absValue">
+    (44/228)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FixedDepositService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    29.6%
+  </span>
+  <span class="absValue">
+    (8/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.5%
+  </span>
+  <span class="absValue">
+    (8/84)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19.3%
+  </span>
+  <span class="absValue">
+    (44/228)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.exception.BusinessException;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.data.domain.Sort;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.util.DateUtils;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class FixedDepositService {
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LogManager.getLogger(FixedDepositService.class);</b>
+&nbsp;
+<b class="fc">&nbsp;    private static final BigDecimal MIN_FD_AMOUNT = new BigDecimal(&quot;5000&quot;);</b>
+&nbsp;
+&nbsp;    private final FixedDepositRepository fixedDepositRepository;
+&nbsp;    private final InterestCalculationService interestCalculationService;
+&nbsp;
+&nbsp;    public FixedDepositService(
+&nbsp;            FixedDepositRepository fixedDepositRepository,
+&nbsp;            InterestCalculationService interestCalculationService
+<b class="fc">&nbsp;    ) {</b>
+<b class="fc">&nbsp;        this.fixedDepositRepository = fixedDepositRepository;</b>
+<b class="fc">&nbsp;        this.interestCalculationService = interestCalculationService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Book a new Fixed Deposit.
+&nbsp;    @Transactional
+&nbsp;    public FixedDeposit bookFixedDeposit(Long userId, BookFDRequest request) {
+<b class="fc">&nbsp;        logger.info(&quot;Booking fixed deposit: userId={}, amount={}, scheme={}&quot;, userId, request.getAmount(), request.getInterestScheme());</b>
+&nbsp;
+<b class="fc">&nbsp;        validateAmount(request.getAmount());</b>
+&nbsp;
+<b class="fc">&nbsp;        InterestScheme scheme = request.getInterestScheme();</b>
+<b class="pc">&nbsp;        if (scheme == null) {</b>
+<b class="nc">&nbsp;            logger.warn(&quot;Booking failed: missing interest scheme for userId={}&quot;, userId);</b>
+<b class="nc">&nbsp;            throw new BusinessException(&quot;Interest scheme must be selected&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        LocalDate startDate = LocalDate.now();</b>
+<b class="fc">&nbsp;        LocalDate maturityDate = startDate.plusMonths(scheme.getTenureInMonths());</b>
+&nbsp;
+<b class="fc">&nbsp;        FixedDeposit fd = new FixedDeposit();</b>
+&nbsp;
+<b class="fc">&nbsp;        fd.setUserId(userId);</b>
+<b class="fc">&nbsp;        fd.setAmount(request.getAmount());</b>
+<b class="fc">&nbsp;        fd.setInterestScheme(scheme);</b>
+<b class="fc">&nbsp;        fd.setInterestRate(scheme.getAnnualInterestRate());</b>
+<b class="fc">&nbsp;        fd.setTenureMonths(scheme.getTenureInMonths());</b>
+<b class="fc">&nbsp;        fd.setStartDate(startDate);</b>
+<b class="fc">&nbsp;        fd.setMaturityDate(maturityDate);</b>
+<b class="fc">&nbsp;        fd.setStatus(FDStatus.ACTIVE);</b>
+<b class="fc">&nbsp;        fd.setAccruedInterest(BigDecimal.ZERO);</b>
+&nbsp;
+<b class="fc">&nbsp;        FixedDeposit saved = fixedDepositRepository.save(fd);</b>
+<b class="fc">&nbsp;        logger.info(&quot;Fixed deposit booked: fdId={}, userId={}&quot;, saved.getId(), userId);</b>
+<b class="fc">&nbsp;        return saved;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch all Fixed Deposits of a user with dynamically calculated accrued interest.
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;FixedDeposit&gt; getFixedDepositsByUser(Long userId) {
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds = fixedDepositRepository.findByUserId(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        fds.forEach(this::enrichWithAccruedInterest);</b>
+&nbsp;
+<b class="nc">&nbsp;        return fds;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch a specific Fixed Deposit of a user.
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FixedDeposit getFixedDepositById(Long userId, Long fdId) {
+&nbsp;
+<b class="fc">&nbsp;        FixedDeposit fd = fixedDepositRepository</b>
+<b class="fc">&nbsp;                .findByIdAndUserId(fdId, userId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; {</b>
+<b class="fc">&nbsp;                    logger.warn(&quot;Fixed deposit not found for user: userId={}, fdId={}&quot;, userId, fdId);</b>
+<b class="fc">&nbsp;                    return new ResourceNotFoundException(&quot;Fixed Deposit not found for user&quot;);</b>
+&nbsp;                });
+&nbsp;
+<b class="nc">&nbsp;        enrichWithAccruedInterest(fd);</b>
+<b class="nc">&nbsp;        return fd;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Update Fixed Deposit Status of a particular FD of a user
+&nbsp;    @Transactional
+&nbsp;    public FixedDeposit updateFixedDepositStatus(
+&nbsp;            Long fdId,
+&nbsp;            FDStatus newStatus
+&nbsp;    ) {
+<b class="fc">&nbsp;        logger.info(&quot;Updating FD status: fdId={}, newStatus={}&quot;, fdId, newStatus);</b>
+<b class="fc">&nbsp;        FixedDeposit fd = fixedDepositRepository</b>
+<b class="fc">&nbsp;                .findById(fdId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; {</b>
+<b class="nc">&nbsp;                    logger.warn(&quot;Fixed deposit not found for status update: fdId={}&quot;, fdId);</b>
+<b class="nc">&nbsp;                    return new ResourceNotFoundException(&quot;Fixed Deposit not found for user&quot;);</b>
+&nbsp;                });
+&nbsp;
+<b class="fc">&nbsp;        FDStatus currentStatus = fd.getStatus();</b>
+&nbsp;
+&nbsp;        // ACTIVE -&gt; MATURED
+<b class="pc">&nbsp;        if (currentStatus == FDStatus.ACTIVE &amp;&amp; newStatus == FDStatus.MATURED) {</b>
+<b class="pc">&nbsp;            if (LocalDate.now().isBefore(fd.getMaturityDate())) {</b>
+<b class="fc">&nbsp;                logger.warn(&quot;FD not yet matured: fdId={}, maturityDate={}&quot;, fdId, fd.getMaturityDate());</b>
+<b class="fc">&nbsp;                throw new BusinessException(&quot;FD has not yet reached maturity date&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            fd.setStatus(FDStatus.MATURED);</b>
+<b class="nc">&nbsp;            return fixedDepositRepository.save(fd);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // ACTIVE -&gt; BROKEN
+<b class="nc">&nbsp;        if (currentStatus == FDStatus.ACTIVE &amp;&amp; newStatus == FDStatus.BROKEN) {</b>
+<b class="nc">&nbsp;            if (!fd.getInterestScheme().isPrematureBreakAllowed()) {</b>
+<b class="nc">&nbsp;                logger.warn(&quot;Premature break not allowed: fdId={}, scheme={}&quot;, fdId, fd.getInterestScheme());</b>
+<b class="nc">&nbsp;                throw new BusinessException(&quot;Premature withdrawal is not allowed for this FD scheme&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (!LocalDate.now().isBefore(fd.getMaturityDate())) {</b>
+<b class="nc">&nbsp;                logger.warn(&quot;FD already matured, cannot break: fdId={}&quot;, fdId);</b>
+<b class="nc">&nbsp;                throw new BusinessException(&quot;FD has already matured; use withdrawal instead&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            fd.setStatus(FDStatus.BROKEN);</b>
+<b class="nc">&nbsp;            return fixedDepositRepository.save(fd);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // MATURED -&gt; CLOSED
+<b class="nc">&nbsp;        if (currentStatus == FDStatus.MATURED &amp;&amp; newStatus == FDStatus.CLOSED) {</b>
+<b class="nc">&nbsp;            if (LocalDate.now().isBefore(fd.getMaturityDate())) {</b>
+<b class="nc">&nbsp;                logger.warn(&quot;FD cannot be closed before maturity: fdId={}, maturityDate={}&quot;, fdId, fd.getMaturityDate());</b>
+<b class="nc">&nbsp;                throw new BusinessException(&quot;FD cannot be closed before maturity date&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            fd.setStatus(FDStatus.CLOSED);</b>
+<b class="nc">&nbsp;            return fixedDepositRepository.save(fd);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // INVALID Transition
+<b class="nc">&nbsp;        logger.warn(&quot;Invalid FD status transition: fdId={}, from={}, to={}&quot;, fdId, currentStatus, newStatus);</b>
+<b class="nc">&nbsp;        throw new BusinessException(String.format(&quot;Invalid FD status transition from %s to %s&quot;, currentStatus, newStatus));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;FixedDeposit&gt; getFixedDepositsByFilters(
+&nbsp;            Long userId, FDStatus status, BigDecimal minAmount, BigDecimal maxAmount) {
+<b class="nc">&nbsp;        BigDecimal effectiveMin = (minAmount != null) ? minAmount : BigDecimal.ZERO;</b>
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal effectiveMax = (maxAmount != null) ? maxAmount : BigDecimal.valueOf(Long.MAX_VALUE);</b>
+&nbsp;
+<b class="nc">&nbsp;        boolean hasAmountFilter = minAmount != null || maxAmount != null;</b>
+&nbsp;
+&nbsp;        List&lt;FixedDeposit&gt; fds;
+&nbsp;
+<b class="nc">&nbsp;        if (status != null &amp;&amp; hasAmountFilter) {</b>
+<b class="nc">&nbsp;            fds = fixedDepositRepository</b>
+<b class="nc">&nbsp;                    .findByUserIdAndStatusAndAmountBetween(userId, status, effectiveMin, effectiveMax);</b>
+<b class="nc">&nbsp;        } else if (status != null) {</b>
+<b class="nc">&nbsp;            fds = fixedDepositRepository.findByUserIdAndStatus(userId, status);</b>
+<b class="nc">&nbsp;        } else if (hasAmountFilter) {</b>
+<b class="nc">&nbsp;            fds = fixedDepositRepository</b>
+<b class="nc">&nbsp;                    .findByUserIdAndAmountBetween(userId, effectiveMin, effectiveMax);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            fds = fixedDepositRepository.findByUserId(userId);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        fds.forEach(this::enrichWithAccruedInterest);</b>
+<b class="nc">&nbsp;        return fds;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch fixed deposits maturing within N days
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;FDMaturityResponse&gt; getUserFDsMaturingWithinDays(Long userId, int days) {
+<b class="pc">&nbsp;        if (days &lt;= 0) {</b>
+<b class="fc">&nbsp;            logger.warn(&quot;Invalid days parameter for user maturing FDs: userId={}, days={}&quot;, userId, days);</b>
+<b class="fc">&nbsp;            throw new BusinessException(&quot;Days must be positive&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        LocalDate today = LocalDate.now();</b>
+<b class="nc">&nbsp;        LocalDate endDate = today.plusDays(days);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds =</b>
+<b class="nc">&nbsp;            fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate)</b>
+<b class="nc">&nbsp;                .stream()</b>
+<b class="nc">&nbsp;                .filter(fd -&gt; fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)</b>
+<b class="nc">&nbsp;                .toList();</b>
+&nbsp;
+<b class="nc">&nbsp;        return mapToMaturityResponse(fds, today);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch all fixed deposits maturing within N days
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;FDMaturityResponse&gt; getAllFDsMaturingWithinDays(int days) {
+<b class="nc">&nbsp;        if (days &lt;= 0) {</b>
+<b class="nc">&nbsp;            logger.warn(&quot;Invalid days parameter for all maturing FDs: days={}&quot;, days);</b>
+<b class="nc">&nbsp;            throw new BusinessException(&quot;Days must be positive&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        LocalDate today = LocalDate.now();</b>
+<b class="nc">&nbsp;        LocalDate endDate = today.plusDays(days);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds =</b>
+<b class="nc">&nbsp;            fixedDepositRepository.findByMaturityDateBetween(today, endDate)</b>
+<b class="nc">&nbsp;                .stream()</b>
+<b class="nc">&nbsp;                .filter(fd -&gt; fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)</b>
+<b class="nc">&nbsp;                .toList();</b>
+&nbsp;
+<b class="nc">&nbsp;        return mapToMaturityResponse(fds, today);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch financial year fixed deposit summary analytics for user
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FDFinancialYearSummaryResponse getUserFinancialYearSummary(Long userId, Integer year) {
+<b class="nc">&nbsp;        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate start = DateUtils.getFinancialYearStart(fy);</b>
+<b class="nc">&nbsp;        LocalDate end = DateUtils.getFinancialYearEnd(fy);</b>
+&nbsp;
+<b class="nc">&nbsp;        java.time.LocalDateTime startDateTime = start.atStartOfDay();</b>
+<b class="nc">&nbsp;        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds =</b>
+<b class="nc">&nbsp;            fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, startDateTime, endDateTime);</b>
+&nbsp;
+<b class="nc">&nbsp;        return buildFinancialYearSummary(fds, fy);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch financial year fixed deposit summary analytics for admin
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FDFinancialYearSummaryResponse getAdminFinancialYearSummary(Integer year) {
+<b class="nc">&nbsp;        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate start = DateUtils.getFinancialYearStart(fy);</b>
+<b class="nc">&nbsp;        LocalDate end = DateUtils.getFinancialYearEnd(fy);</b>
+&nbsp;
+<b class="nc">&nbsp;        java.time.LocalDateTime startDateTime = start.atStartOfDay();</b>
+<b class="nc">&nbsp;        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);</b>
+&nbsp;
+<b class="nc">&nbsp;        return buildFinancialYearSummary(fds, fy);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Fetch all fixed deposits created in a financial year (admin)
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;FixedDeposit&gt; getAdminFDsByFinancialYear(Integer year) {
+<b class="nc">&nbsp;        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate start = DateUtils.getFinancialYearStart(fy);</b>
+<b class="nc">&nbsp;        LocalDate end = DateUtils.getFinancialYearEnd(fy);</b>
+&nbsp;
+<b class="nc">&nbsp;        java.time.LocalDateTime startDateTime = start.atStartOfDay();</b>
+<b class="nc">&nbsp;        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);</b>
+<b class="nc">&nbsp;        fds.forEach(this::enrichWithAccruedInterest);</b>
+<b class="nc">&nbsp;        return fds;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;        // Fetch all fixed deposits in chronological order (admin)
+&nbsp;        @Transactional(readOnly = true)
+&nbsp;        public List&lt;FixedDeposit&gt; getAllFDsChronological(String order) {
+<b class="nc">&nbsp;            Sort sort = &quot;asc&quot;.equalsIgnoreCase(order)</b>
+<b class="nc">&nbsp;                    ? Sort.by(&quot;createdAt&quot;).ascending()</b>
+<b class="nc">&nbsp;                    : Sort.by(&quot;createdAt&quot;).descending();</b>
+&nbsp;
+<b class="nc">&nbsp;            List&lt;FixedDeposit&gt; fds = fixedDepositRepository.findAll(sort);</b>
+<b class="nc">&nbsp;            fds.forEach(this::enrichWithAccruedInterest);</b>
+<b class="nc">&nbsp;            return fds;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    // Fetch user fixed deposit portfolio
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FDPortfolioResponse getUserFDPortfolio(Long userId) {
+<b class="nc">&nbsp;        List&lt;FixedDeposit&gt; fds = fixedDepositRepository.findByUserId(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        long totalFDs = fds.size();</b>
+&nbsp;
+<b class="nc">&nbsp;        long activeFDs = fds.stream()</b>
+<b class="nc">&nbsp;                        .filter(fd -&gt; fd.getStatus() == FDStatus.ACTIVE)</b>
+<b class="nc">&nbsp;                        .count();</b>
+&nbsp;
+<b class="nc">&nbsp;        long maturedFDs = fds.stream()</b>
+<b class="nc">&nbsp;                        .filter(fd -&gt; fd.getStatus() == FDStatus.MATURED)</b>
+<b class="nc">&nbsp;                        .count();</b>
+&nbsp;
+<b class="nc">&nbsp;        long brokenFDs = fds.stream()</b>
+<b class="nc">&nbsp;                        .filter(fd -&gt; fd.getStatus() == FDStatus.BROKEN)</b>
+<b class="nc">&nbsp;                        .count();</b>
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal totalPrincipal = fds.stream()</b>
+<b class="nc">&nbsp;                        .map(FixedDeposit::getAmount)</b>
+<b class="nc">&nbsp;                        .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal totalInterest = fds.stream()</b>
+<b class="nc">&nbsp;                        .map(interestCalculationService::calculateAccruedInterest)</b>
+<b class="nc">&nbsp;                        .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate nextMaturityDate = fds.stream()</b>
+<b class="nc">&nbsp;                        .filter(fd -&gt; fd.getStatus() == FDStatus.ACTIVE)</b>
+<b class="nc">&nbsp;                        .map(FixedDeposit::getMaturityDate)</b>
+<b class="nc">&nbsp;                        .min(LocalDate::compareTo)</b>
+<b class="nc">&nbsp;                        .orElse(null);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new FDPortfolioResponse(</b>
+&nbsp;                totalFDs,
+&nbsp;                activeFDs,
+&nbsp;                maturedFDs,
+&nbsp;                brokenFDs,
+&nbsp;                totalPrincipal,
+&nbsp;                totalInterest,
+&nbsp;                nextMaturityDate
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FixedDeposit getFixedDepositByIdForAdmin(Long fdId) {
+&nbsp;
+<b class="nc">&nbsp;        return fixedDepositRepository</b>
+<b class="nc">&nbsp;                .findById(fdId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; {</b>
+<b class="nc">&nbsp;                    logger.warn(&quot;Fixed deposit not found for admin: fdId={}&quot;, fdId);</b>
+<b class="nc">&nbsp;                    return new ResourceNotFoundException(&quot;Fixed Deposit not found with id: &quot; + fdId);</b>
+&nbsp;                });
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // Fetch FD interest accrual timeline
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FDInterestTimelineResponse getInterestTimeline(FixedDeposit fd, String interval) {
+<b class="nc">&nbsp;        List&lt;InterestTimelinePoint&gt; timeline = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate startDate = fd.getStartDate();</b>
+&nbsp;
+&nbsp;        LocalDate endDate =
+<b class="nc">&nbsp;                LocalDate.now().isAfter(fd.getMaturityDate()) ? fd.getMaturityDate() : LocalDate.now();</b>
+&nbsp;
+<b class="nc">&nbsp;        LocalDate cursor = startDate;</b>
+&nbsp;
+<b class="nc">&nbsp;        while (cursor.isBefore(endDate)) {</b>
+&nbsp;
+&nbsp;            LocalDate nextDate;
+&nbsp;            String label;
+&nbsp;
+<b class="nc">&nbsp;            if (&quot;YEARLY&quot;.equalsIgnoreCase(interval)) {</b>
+<b class="nc">&nbsp;                nextDate = cursor.plusYears(1);</b>
+<b class="nc">&nbsp;                label = String.valueOf(cursor.getYear());</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                nextDate = cursor.plusMonths(1);</b>
+<b class="nc">&nbsp;                label = cursor.getYear() + &quot;-&quot; + String.format(&quot;%02d&quot;, cursor.getMonthValue());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (nextDate.isAfter(endDate)) {</b>
+<b class="nc">&nbsp;                nextDate = endDate;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Snapshot created via helper method
+<b class="nc">&nbsp;            FixedDeposit snapshot = buildInterestSnapshot(fd, nextDate);</b>
+&nbsp;
+<b class="nc">&nbsp;            BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(snapshot);</b>
+&nbsp;
+<b class="nc">&nbsp;            timeline.add(new InterestTimelinePoint(label, accruedInterest));</b>
+&nbsp;
+<b class="nc">&nbsp;            cursor = nextDate;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return new FDInterestTimelineResponse(</b>
+<b class="nc">&nbsp;                fd.getId(),</b>
+<b class="nc">&nbsp;                fd.getAmount(),</b>
+<b class="nc">&nbsp;                fd.getInterestRate(),</b>
+&nbsp;                interval,
+&nbsp;                timeline
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // Get current accrued interest for a Fixed Deposit of a particular user
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public FDInterestResponse getCurrentInterestForUser(Long userId, Long fdId) {
+<b class="nc">&nbsp;        FixedDeposit fd = fixedDepositRepository</b>
+<b class="nc">&nbsp;                .findByIdAndUserId(fdId, userId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; {</b>
+<b class="nc">&nbsp;                    logger.warn(&quot;Fixed deposit not found for user interest: userId={}, fdId={}&quot;, userId, fdId);</b>
+<b class="nc">&nbsp;                    return new ResourceNotFoundException(&quot;Fixed Deposit not found for user&quot;);</b>
+&nbsp;                });
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(fd);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new FDInterestResponse(</b>
+<b class="nc">&nbsp;                fd.getId(),</b>
+<b class="nc">&nbsp;                fd.getStatus(),</b>
+<b class="nc">&nbsp;                fd.getAmount(),</b>
+&nbsp;                accruedInterest,
+<b class="nc">&nbsp;                fd.getInterestRate(),</b>
+<b class="nc">&nbsp;                fd.getInterestScheme().getInterestFrequency(),</b>
+<b class="nc">&nbsp;                fd.getStartDate(),</b>
+<b class="nc">&nbsp;                fd.getMaturityDate()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // Helper methods
+&nbsp;
+&nbsp;    private void enrichWithAccruedInterest(FixedDeposit fd) {
+&nbsp;
+<b class="nc">&nbsp;        if (fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED) {</b>
+&nbsp;
+<b class="nc">&nbsp;            fd.setAccruedInterest(interestCalculationService.calculateAccruedInterest(fd));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void validateAmount(BigDecimal amount) {
+<b class="pc">&nbsp;        if (amount == null || amount.compareTo(MIN_FD_AMOUNT) &lt; 0) {</b>
+<b class="fc">&nbsp;            logger.warn(&quot;Invalid FD amount: amount={}, min={}&quot;, amount, MIN_FD_AMOUNT);</b>
+<b class="fc">&nbsp;            throw new BusinessException(&quot;Minimum Fixed Deposit amount is &quot; + MIN_FD_AMOUNT);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private FDFinancialYearSummaryResponse buildFinancialYearSummary(List&lt;FixedDeposit&gt; fds, int financialYear) {
+<b class="nc">&nbsp;        long totalFDs = fds.size();</b>
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal totalPrincipal =</b>
+<b class="nc">&nbsp;                fds.stream()</b>
+<b class="nc">&nbsp;                        .map(FixedDeposit::getAmount)</b>
+<b class="nc">&nbsp;                        .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+&nbsp;
+<b class="nc">&nbsp;        BigDecimal totalInterest =</b>
+<b class="nc">&nbsp;                fds.stream()</b>
+<b class="nc">&nbsp;                        .map(interestCalculationService::calculateAccruedInterest)</b>
+<b class="nc">&nbsp;                        .reduce(BigDecimal.ZERO, BigDecimal::add);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new FDFinancialYearSummaryResponse(</b>
+&nbsp;                financialYear + &quot;-&quot; + (financialYear + 1),
+&nbsp;                totalFDs,
+&nbsp;                totalPrincipal,
+&nbsp;                totalInterest
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    private FixedDeposit buildInterestSnapshot(FixedDeposit original, LocalDate asOfDate) {
+<b class="nc">&nbsp;        FixedDeposit snapshot = new FixedDeposit();</b>
+&nbsp;
+<b class="nc">&nbsp;        snapshot.setAmount(original.getAmount());</b>
+<b class="nc">&nbsp;        snapshot.setInterestRate(original.getInterestRate());</b>
+<b class="nc">&nbsp;        snapshot.setInterestScheme(original.getInterestScheme());</b>
+<b class="nc">&nbsp;        snapshot.setStartDate(original.getStartDate());</b>
+&nbsp;
+&nbsp;        // cap calculation at &quot;asOfDate&quot;
+<b class="nc">&nbsp;        snapshot.setMaturityDate(asOfDate);</b>
+&nbsp;
+&nbsp;        // Always ACTIVE for calculation purposes
+<b class="nc">&nbsp;        snapshot.setStatus(FDStatus.ACTIVE);</b>
+&nbsp;
+<b class="nc">&nbsp;        return snapshot;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private List&lt;FDMaturityResponse&gt; mapToMaturityResponse(List&lt;FixedDeposit&gt; fds, LocalDate today) {
+<b class="nc">&nbsp;        if (fds.isEmpty()) {</b>
+<b class="nc">&nbsp;            logger.debug(&quot;No FDs found for maturity response on date={}&quot;, today);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return fds.stream()</b>
+<b class="nc">&nbsp;                .map(fd -&gt; new FDMaturityResponse(</b>
+<b class="nc">&nbsp;                        fd.getId(),</b>
+<b class="nc">&nbsp;                        fd.getUserId(),</b>
+<b class="nc">&nbsp;                        fd.getAmount(),</b>
+<b class="nc">&nbsp;                        fd.getMaturityDate(),</b>
+<b class="nc">&nbsp;                        java.time.temporal.ChronoUnit.DAYS.between(</b>
+<b class="nc">&nbsp;                                today, fd.getMaturityDate()</b>
+&nbsp;                        ),
+<b class="nc">&nbsp;                        fd.getStatus()</b>
+&nbsp;                ))
+<b class="nc">&nbsp;                .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>

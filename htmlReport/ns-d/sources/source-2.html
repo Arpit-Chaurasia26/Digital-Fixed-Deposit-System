@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FDFinancialYearSummaryResponse</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.dto.fd</a>
+</div>
+
+<h1>Coverage Summary for Class: FDFinancialYearSummaryResponse (tech.zeta.Digital_Fixed_Deposit_System.dto.fd)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FDFinancialYearSummaryResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.dto.fd;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;
+&nbsp;public class FDFinancialYearSummaryResponse {
+&nbsp;
+&nbsp;    private String financialYear;
+&nbsp;    private long totalFDsCreated;
+&nbsp;    private BigDecimal totalPrincipalDeposited;
+&nbsp;    private BigDecimal totalInterestAccruedTillDate;
+&nbsp;
+&nbsp;    public FDFinancialYearSummaryResponse(
+&nbsp;            String financialYear,
+&nbsp;            long totalFDsCreated,
+&nbsp;            BigDecimal totalPrincipalDeposited,
+&nbsp;            BigDecimal totalInterestAccruedTillDate
+<b class="fc">&nbsp;    ) {</b>
+<b class="fc">&nbsp;        this.financialYear = financialYear;</b>
+<b class="fc">&nbsp;        this.totalFDsCreated = totalFDsCreated;</b>
+<b class="fc">&nbsp;        this.totalPrincipalDeposited = totalPrincipalDeposited;</b>
+<b class="fc">&nbsp;        this.totalInterestAccruedTillDate = totalInterestAccruedTillDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFinancialYear() {
+<b class="fc">&nbsp;        return financialYear;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public long getTotalFDsCreated() {
+<b class="fc">&nbsp;        return totalFDsCreated;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BigDecimal getTotalPrincipalDeposited() {
+<b class="fc">&nbsp;        return totalPrincipalDeposited;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BigDecimal getTotalInterestAccruedTillDate() {
+<b class="fc">&nbsp;        return totalInterestAccruedTillDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>

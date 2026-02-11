@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TokenService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.service.auth</a>
+</div>
+
+<h1>Coverage Summary for Class: TokenService (tech.zeta.Digital_Fixed_Deposit_System.service.auth)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TokenService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
+&nbsp;
+&nbsp;import io.jsonwebtoken.*;
+&nbsp;import io.jsonwebtoken.io.Decoders;
+&nbsp;import io.jsonwebtoken.security.Keys;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
+&nbsp;
+&nbsp;import java.security.Key;
+&nbsp;import java.time.Instant;
+&nbsp;import java.time.temporal.ChronoUnit;
+&nbsp;import java.util.Date;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class TokenService implements  ITokenService{
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LogManager.getLogger(TokenService.class);</b>
+&nbsp;
+&nbsp;    private static final long ACCESS_TOKEN_EXPIRY_HOURS = 1;
+&nbsp;
+&nbsp;    private final Key signingKey;
+&nbsp;
+&nbsp;    public TokenService(
+&nbsp;            @Value(&quot;${security.jwt.secret}&quot;) String secret
+<b class="fc">&nbsp;    ) {</b>
+<b class="fc">&nbsp;        this.signingKey =</b>
+<b class="fc">&nbsp;                Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Generates ACCESS token (1 hour)
+&nbsp;    @Override
+&nbsp;    public String generateAccessToken(Long userId, String role) {
+&nbsp;
+<b class="fc">&nbsp;        Instant now = Instant.now();</b>
+<b class="fc">&nbsp;        Instant expiry =</b>
+<b class="fc">&nbsp;                now.plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS);</b>
+&nbsp;
+<b class="fc">&nbsp;        String token = Jwts.builder()</b>
+<b class="fc">&nbsp;                .setSubject(userId.toString())</b>
+<b class="fc">&nbsp;                .claim(&quot;role&quot;, role)</b>
+<b class="fc">&nbsp;                .setIssuedAt(Date.from(now))</b>
+<b class="fc">&nbsp;                .setExpiration(Date.from(expiry))</b>
+<b class="fc">&nbsp;                .signWith(signingKey, SignatureAlgorithm.HS256)</b>
+<b class="fc">&nbsp;                .compact();</b>
+&nbsp;
+<b class="fc">&nbsp;        logger.debug(&quot;Access token generated for user id={} role={}&quot;, userId, role);</b>
+<b class="fc">&nbsp;        return token;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Validates ACCESS token and returns claims. Throws exception if invalid or expired.
+&nbsp;    @Override
+&nbsp;    public Claims validateAccessToken(String token) {
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            Claims claims = Jwts.parserBuilder()</b>
+<b class="fc">&nbsp;                    .setSigningKey(signingKey)</b>
+<b class="fc">&nbsp;                    .build()</b>
+<b class="fc">&nbsp;                    .parseClaimsJws(token)</b>
+<b class="fc">&nbsp;                    .getBody();</b>
+&nbsp;
+<b class="fc">&nbsp;            logger.debug(&quot;Access token validated&quot;);</b>
+<b class="fc">&nbsp;            return claims;</b>
+&nbsp;
+&nbsp;        } catch (JwtException ex) {
+<b class="fc">&nbsp;            logger.warn(&quot;Access token validation failed&quot;);</b>
+<b class="fc">&nbsp;            throw new UnauthorizedException(</b>
+&nbsp;                    &quot;Invalid or expired access token&quot;
+&nbsp;            );
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Long extractUserId(Claims claims) {
+<b class="fc">&nbsp;        return Long.parseLong(claims.getSubject());</b>
+&nbsp;    }
+&nbsp;    @Override
+&nbsp;    public String extractRole(Claims claims) {
+<b class="fc">&nbsp;        return claims.get(&quot;role&quot;, String.class);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>

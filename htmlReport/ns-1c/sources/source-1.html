@@ -1,0 +1,235 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">tech.zeta.Digital_Fixed_Deposit_System.service.user</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (tech.zeta.Digital_Fixed_Deposit_System.service.user)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.5%
+  </span>
+  <span class="absValue">
+    (4/38)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UserService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.5%
+  </span>
+  <span class="absValue">
+    (4/38)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package tech.zeta.Digital_Fixed_Deposit_System.service.user;
+&nbsp;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UserProfileResponse;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UpdateUserProfileRequest;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.ChangePasswordRequest;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.entity.user.User;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.exception.BusinessException;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
+&nbsp;import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class UserService implements IUserService {
+&nbsp;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final CurrentUserProvider currentUserProvider;
+&nbsp;        private final PasswordEncoder passwordEncoder;
+&nbsp;
+&nbsp;    public UserService(
+&nbsp;            UserRepository userRepository,
+&nbsp;                        CurrentUserProvider currentUserProvider,
+&nbsp;                        PasswordEncoder passwordEncoder
+<b class="fc">&nbsp;    ) {</b>
+<b class="fc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="fc">&nbsp;        this.currentUserProvider = currentUserProvider;</b>
+<b class="fc">&nbsp;                this.passwordEncoder = passwordEncoder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public UserProfileResponse getCurrentUserProfile() {
+&nbsp;
+<b class="nc">&nbsp;        Long userId = currentUserProvider.getCurrentUserId();</b>
+&nbsp;
+<b class="nc">&nbsp;        User user = userRepository.findById(userId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt;</b>
+<b class="nc">&nbsp;                        new UnauthorizedException(&quot;User not found&quot;)</b>
+&nbsp;                );
+&nbsp;
+<b class="nc">&nbsp;        return new UserProfileResponse(</b>
+<b class="nc">&nbsp;                user.getId(),</b>
+<b class="nc">&nbsp;                user.getName(),</b>
+<b class="nc">&nbsp;                user.getEmail(),</b>
+<b class="nc">&nbsp;                user.getRole(),</b>
+<b class="nc">&nbsp;                user.getCreatedAt()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        @Transactional
+&nbsp;        public UserProfileResponse updateCurrentUserProfile(UpdateUserProfileRequest request) {
+&nbsp;
+<b class="nc">&nbsp;                Long userId = currentUserProvider.getCurrentUserId();</b>
+&nbsp;
+<b class="nc">&nbsp;                User user = userRepository.findById(userId)</b>
+<b class="nc">&nbsp;                                .orElseThrow(() -&gt; new UnauthorizedException(&quot;User not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;                String newEmail = request.getEmail().trim().toLowerCase();</b>
+<b class="nc">&nbsp;                if (!newEmail.equalsIgnoreCase(user.getEmail()) &amp;&amp; userRepository.existsByEmail(newEmail)) {</b>
+<b class="nc">&nbsp;                        throw new BusinessException(&quot;Email is already in use&quot;);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                user.setName(request.getName().trim());</b>
+<b class="nc">&nbsp;                user.setEmail(newEmail);</b>
+&nbsp;
+<b class="nc">&nbsp;                User saved = userRepository.save(user);</b>
+&nbsp;
+<b class="nc">&nbsp;                return new UserProfileResponse(</b>
+<b class="nc">&nbsp;                                saved.getId(),</b>
+<b class="nc">&nbsp;                                saved.getName(),</b>
+<b class="nc">&nbsp;                                saved.getEmail(),</b>
+<b class="nc">&nbsp;                                saved.getRole(),</b>
+<b class="nc">&nbsp;                                saved.getCreatedAt()</b>
+&nbsp;                );
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        @Transactional
+&nbsp;        public void changePassword(ChangePasswordRequest request) {
+&nbsp;
+<b class="nc">&nbsp;                if (!request.getNewPassword().equals(request.getConfirmPassword())) {</b>
+<b class="nc">&nbsp;                        throw new BusinessException(&quot;New password and confirm password do not match&quot;);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                Long userId = currentUserProvider.getCurrentUserId();</b>
+&nbsp;
+<b class="nc">&nbsp;                User user = userRepository.findById(userId)</b>
+<b class="nc">&nbsp;                                .orElseThrow(() -&gt; new UnauthorizedException(&quot;User not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;                if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {</b>
+<b class="nc">&nbsp;                        throw new BusinessException(&quot;Current password is incorrect&quot;);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                user.setPassword(passwordEncoder.encode(request.getNewPassword()));</b>
+<b class="nc">&nbsp;                userRepository.save(user);</b>
+&nbsp;        }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-02-11 12:06</div>
+</div>
+</body>
+</html>
