@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/auth/register",
                                 "/auth/login",
                                 "/auth/logout",
-                                "/auth/refresh"
+                                "/auth/refresh",
+                                "/fd/schemes"
                         ).permitAll()
 
                         // Admin-only endpoints

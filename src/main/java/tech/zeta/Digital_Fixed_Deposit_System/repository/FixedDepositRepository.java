@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public interface FixedDepositRepository extends JpaRepository<FixedDeposit, Long
 
     List<FixedDeposit> findByMaturityDateBetween(LocalDate startDate, LocalDate endDate);
 
-    List<FixedDeposit> findByUserIdAndCreatedAtBetween(Long userId, LocalDate startDate, LocalDate endDate);
+    List<FixedDeposit> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<FixedDeposit> findByCreatedAtBetween(LocalDate startDate, LocalDate endDate);
+    List<FixedDeposit> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

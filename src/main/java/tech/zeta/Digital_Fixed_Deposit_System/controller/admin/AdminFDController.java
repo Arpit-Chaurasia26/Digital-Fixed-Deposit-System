@@ -21,7 +21,7 @@ public class AdminFDController {
         this.fixedDepositService = fixedDepositService;
     }
 
-    // Admin can update FD status of ANY user.
+    // Admin can update FD status of a user's FD.
     @PutMapping("/{fdId}/status")
     public ResponseEntity<FixedDeposit> updateFDStatus(
             @PathVariable Long fdId, @Valid @RequestBody UpdateFDStatusRequest request) {
@@ -45,6 +45,22 @@ public class AdminFDController {
             @RequestParam(required = false) Integer year
     ) {
         return ResponseEntity.ok(fixedDepositService.getAdminFinancialYearSummary(year));
+    }
+
+    // Fetch all fixed deposits created in a financial year (admin)
+    @GetMapping("/yearly")
+    public ResponseEntity<List<FixedDeposit>> getFDsByFinancialYear(
+            @RequestParam Integer year
+    ) {
+        return ResponseEntity.ok(fixedDepositService.getAdminFDsByFinancialYear(year));
+    }
+
+    // Fetch all fixed deposits in chronological order (admin)
+    @GetMapping("/all")
+    public ResponseEntity<List<FixedDeposit>> getAllFDsChronological(
+            @RequestParam(defaultValue = "desc") String order
+    ) {
+        return ResponseEntity.ok(fixedDepositService.getAllFDsChronological(order));
     }
 
     // Fetch user fixed deposit portfolio

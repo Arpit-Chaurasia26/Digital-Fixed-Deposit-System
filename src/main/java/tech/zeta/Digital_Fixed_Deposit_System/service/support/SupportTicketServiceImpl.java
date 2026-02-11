@@ -174,6 +174,9 @@ public class SupportTicketServiceImpl implements SupportTicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
         ticket.setResponse(response);
+        if (ticket.getStatus() == TicketStatus.OPEN) {
+            ticket.setStatus(TicketStatus.RESOLVED);
+        }
         ticket.setUpdatedTime(LocalDateTime.now());
 
         SupportTicket updated = repository.save(ticket);
