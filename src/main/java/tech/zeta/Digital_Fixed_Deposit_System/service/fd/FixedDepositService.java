@@ -9,6 +9,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundExceptio
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.util.DateUtils;
 
@@ -168,7 +169,10 @@ public class FixedDepositService {
         LocalDate endDate = today.plusDays(days);
 
         List<FixedDeposit> fds =
-                fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate);
+            fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate)
+                .stream()
+                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
+                .toList();
 
         return mapToMaturityResponse(fds, today);
     }
@@ -182,7 +186,10 @@ public class FixedDepositService {
         LocalDate endDate = today.plusDays(days);
 
         List<FixedDeposit> fds =
-                fixedDepositRepository.findByMaturityDateBetween(today, endDate);
+            fixedDepositRepository.findByMaturityDateBetween(today, endDate)
+                .stream()
+                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
+                .toList();
 
         return mapToMaturityResponse(fds, today);
     }
@@ -195,8 +202,11 @@ public class FixedDepositService {
         LocalDate start = DateUtils.getFinancialYearStart(fy);
         LocalDate end = DateUtils.getFinancialYearEnd(fy);
 
+        java.time.LocalDateTime startDateTime = start.atStartOfDay();
+        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);
+
         List<FixedDeposit> fds =
-                fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+            fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, startDateTime, endDateTime);
 
         return buildFinancialYearSummary(fds, fy);
     }
@@ -209,10 +219,41 @@ public class FixedDepositService {
         LocalDate start = DateUtils.getFinancialYearStart(fy);
         LocalDate end = DateUtils.getFinancialYearEnd(fy);
 
-        List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(start, end);
+        java.time.LocalDateTime startDateTime = start.atStartOfDay();
+        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);
+
+        List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);
 
         return buildFinancialYearSummary(fds, fy);
     }
+
+    // Fetch all fixed deposits created in a financial year (admin)
+    @Transactional(readOnly = true)
+    public List<FixedDeposit> getAdminFDsByFinancialYear(Integer year) {
+        int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
+
+        LocalDate start = DateUtils.getFinancialYearStart(fy);
+        LocalDate end = DateUtils.getFinancialYearEnd(fy);
+
+        java.time.LocalDateTime startDateTime = start.atStartOfDay();
+        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);
+
+        List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        fds.forEach(this::enrichWithAccruedInterest);
+        return fds;
+    }
+
+        // Fetch all fixed deposits in chronological order (admin)
+        @Transactional(readOnly = true)
+        public List<FixedDeposit> getAllFDsChronological(String order) {
+            Sort sort = "asc".equalsIgnoreCase(order)
+                    ? Sort.by("createdAt").ascending()
+                    : Sort.by("createdAt").descending();
+
+            List<FixedDeposit> fds = fixedDepositRepository.findAll(sort);
+            fds.forEach(this::enrichWithAccruedInterest);
+            return fds;
+        }
 
     // Fetch user fixed deposit portfolio
     @Transactional(readOnly = true)

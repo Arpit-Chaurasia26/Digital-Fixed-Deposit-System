@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketRequestDTO;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketResponseDTO;
@@ -66,7 +67,7 @@ public class SupportTicketController {
 
 
     // 🔹 Update ticket response (Admin only)
-    @PatchMapping("/{ticketId}/response")
+    @PatchMapping(value = "/{ticketId}/response", consumes = { MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public SupportTicketResponseDTO updateTicketResponse(
             @PathVariable Long ticketId,
             @RequestBody String response

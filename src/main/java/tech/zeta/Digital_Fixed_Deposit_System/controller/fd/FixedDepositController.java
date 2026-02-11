@@ -4,6 +4,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvide
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
+import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.service.fd.FixedDepositService;
 import jakarta.validation.Valid;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/fd")
@@ -24,6 +27,22 @@ public class FixedDepositController {
     public FixedDepositController(FixedDepositService fixedDepositService, CurrentUserProvider currentUserProvider) {
         this.fixedDepositService = fixedDepositService;
         this.currentUserProvider = currentUserProvider;
+    }
+
+    // Get all available FD schemes (public endpoint)
+    @GetMapping("/schemes")
+    public ResponseEntity<List<SchemeResponse>> getAllSchemes() {
+        List<SchemeResponse> schemes = Arrays.stream(InterestScheme.values())
+                .map(scheme -> new SchemeResponse(
+                        scheme.name(),
+                        scheme.getAnnualInterestRate(),
+                        scheme.getTenureInMonths(),
+                        scheme.getInterestFrequency().name(),
+                        scheme.isPrematureBreakAllowed()
+                ))
+                .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(schemes);
     }
 
     // Book a new Fixed Deposit.
