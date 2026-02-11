@@ -1,4 +1,4 @@
-import { authService } from '@/services/authService';
+import { authService } from '@/services/authServices';
 import { getErrorMessage } from '@/utils/helpers';
 import { LoginRequest, RegisterRequest, UserProfile, UpdateProfileRequest, ChangePasswordRequest } from '@/types';
 
