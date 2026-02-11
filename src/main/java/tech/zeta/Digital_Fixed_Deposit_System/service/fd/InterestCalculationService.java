@@ -1,5 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestFrequency;
@@ -14,6 +16,8 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class InterestCalculationService {
 
+    private static final Logger logger = LogManager.getLogger(InterestCalculationService.class);
+
     private static final BigDecimal DAYS_IN_YEAR = new BigDecimal("365");
     private static final BigDecimal MONTHS_IN_YEAR = new BigDecimal("12");
 
@@ -22,6 +26,7 @@ public class InterestCalculationService {
 
         if (fd.getStatus() != FDStatus.ACTIVE &&
                 fd.getStatus() != FDStatus.MATURED) {
+            logger.debug("Skipping interest calculation due to status: fdId={}, status={}", fd.getId(), fd.getStatus());
             return BigDecimal.ZERO;
         }
 
@@ -29,12 +34,14 @@ public class InterestCalculationService {
         LocalDate endDate = determineEndDate(fd);
 
         if (endDate.isBefore(startDate)) {
+            logger.debug("Skipping interest calculation due to date range: fdId={}, start={}, end={}", fd.getId(), startDate, endDate);
             return BigDecimal.ZERO;
         }
 
         long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
 
         if (totalDays <= 0) {
+            logger.debug("Skipping interest calculation due to non-positive duration: fdId={}, totalDays={}", fd.getId(), totalDays);
             return BigDecimal.ZERO;
         }
 

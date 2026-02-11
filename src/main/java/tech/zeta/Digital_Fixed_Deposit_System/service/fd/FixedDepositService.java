@@ -1,5 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
@@ -21,7 +23,9 @@ import java.util.List;
 @Service
 public class FixedDepositService {
 
-    private static final BigDecimal MIN_FD_AMOUNT = new BigDecimal("1000");
+    private static final Logger logger = LogManager.getLogger(FixedDepositService.class);
+
+    private static final BigDecimal MIN_FD_AMOUNT = new BigDecimal("5000");
 
     private final FixedDepositRepository fixedDepositRepository;
     private final InterestCalculationService interestCalculationService;
@@ -37,11 +41,13 @@ public class FixedDepositService {
     // Book a new Fixed Deposit.
     @Transactional
     public FixedDeposit bookFixedDeposit(Long userId, BookFDRequest request) {
+        logger.info("Booking fixed deposit: userId={}, amount={}, scheme={}", userId, request.getAmount(), request.getInterestScheme());
 
         validateAmount(request.getAmount());
 
         InterestScheme scheme = request.getInterestScheme();
         if (scheme == null) {
+            logger.warn("Booking failed: missing interest scheme for userId={}", userId);
             throw new BusinessException("Interest scheme must be selected");
         }
 
@@ -60,7 +66,9 @@ public class FixedDepositService {
         fd.setStatus(FDStatus.ACTIVE);
         fd.setAccruedInterest(BigDecimal.ZERO);
 
-        return fixedDepositRepository.save(fd);
+        FixedDeposit saved = fixedDepositRepository.save(fd);
+        logger.info("Fixed deposit booked: fdId={}, userId={}", saved.getId(), userId);
+        return saved;
     }
 
     // Fetch all Fixed Deposits of a user with dynamically calculated accrued interest.
@@ -80,7 +88,10 @@ public class FixedDepositService {
 
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fixed Deposit not found for user"));
+                .orElseThrow(() -> {
+                    logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
+                    return new ResourceNotFoundException("Fixed Deposit not found for user");
+                });
 
         enrichWithAccruedInterest(fd);
         return fd;
@@ -92,15 +103,20 @@ public class FixedDepositService {
             Long fdId,
             FDStatus newStatus
     ) {
+        logger.info("Updating FD status: fdId={}, newStatus={}", fdId, newStatus);
         FixedDeposit fd = fixedDepositRepository
                 .findById(fdId)
-                .orElseThrow(() -> new ResourceNotFoundException("Fixed Deposit not found for user"));
+                .orElseThrow(() -> {
+                    logger.warn("Fixed deposit not found for status update: fdId={}", fdId);
+                    return new ResourceNotFoundException("Fixed Deposit not found for user");
+                });
 
         FDStatus currentStatus = fd.getStatus();
 
         // ACTIVE -> MATURED
         if (currentStatus == FDStatus.ACTIVE && newStatus == FDStatus.MATURED) {
             if (LocalDate.now().isBefore(fd.getMaturityDate())) {
+                logger.warn("FD not yet matured: fdId={}, maturityDate={}", fdId, fd.getMaturityDate());
                 throw new BusinessException("FD has not yet reached maturity date");
             }
             fd.setStatus(FDStatus.MATURED);
@@ -110,9 +126,11 @@ public class FixedDepositService {
         // ACTIVE -> BROKEN
         if (currentStatus == FDStatus.ACTIVE && newStatus == FDStatus.BROKEN) {
             if (!fd.getInterestScheme().isPrematureBreakAllowed()) {
+                logger.warn("Premature break not allowed: fdId={}, scheme={}", fdId, fd.getInterestScheme());
                 throw new BusinessException("Premature withdrawal is not allowed for this FD scheme");
             }
             if (!LocalDate.now().isBefore(fd.getMaturityDate())) {
+                logger.warn("FD already matured, cannot break: fdId={}", fdId);
                 throw new BusinessException("FD has already matured; use withdrawal instead");
             }
             fd.setStatus(FDStatus.BROKEN);
@@ -122,6 +140,7 @@ public class FixedDepositService {
         // MATURED -> CLOSED
         if (currentStatus == FDStatus.MATURED && newStatus == FDStatus.CLOSED) {
             if (LocalDate.now().isBefore(fd.getMaturityDate())) {
+                logger.warn("FD cannot be closed before maturity: fdId={}, maturityDate={}", fdId, fd.getMaturityDate());
                 throw new BusinessException("FD cannot be closed before maturity date");
             }
             fd.setStatus(FDStatus.CLOSED);
@@ -129,6 +148,7 @@ public class FixedDepositService {
         }
 
         // INVALID Transition
+        logger.warn("Invalid FD status transition: fdId={}, from={}, to={}", fdId, currentStatus, newStatus);
         throw new BusinessException(String.format("Invalid FD status transition from %s to %s", currentStatus, newStatus));
     }
 
@@ -163,7 +183,10 @@ public class FixedDepositService {
     // Fetch fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getUserFDsMaturingWithinDays(Long userId, int days) {
-        if (days <= 0) throw new BusinessException("Days must be positive");
+        if (days <= 0) {
+            logger.warn("Invalid days parameter for user maturing FDs: userId={}, days={}", userId, days);
+            throw new BusinessException("Days must be positive");
+        }
 
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(days);
@@ -180,7 +203,10 @@ public class FixedDepositService {
     // Fetch all fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getAllFDsMaturingWithinDays(int days) {
-        if (days <= 0) throw new BusinessException("Days must be positive");
+        if (days <= 0) {
+            logger.warn("Invalid days parameter for all maturing FDs: days={}", days);
+            throw new BusinessException("Days must be positive");
+        }
 
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(days);
@@ -305,9 +331,10 @@ public class FixedDepositService {
 
         return fixedDepositRepository
                 .findById(fdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Fixed Deposit not found with id: " + fdId)
-                );
+                .orElseThrow(() -> {
+                    logger.warn("Fixed deposit not found for admin: fdId={}", fdId);
+                    return new ResourceNotFoundException("Fixed Deposit not found with id: " + fdId);
+                });
     }
 
 
@@ -366,9 +393,10 @@ public class FixedDepositService {
     public FDInterestResponse getCurrentInterestForUser(Long userId, Long fdId) {
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Fixed Deposit not found for user")
-                );
+                .orElseThrow(() -> {
+                    logger.warn("Fixed deposit not found for user interest: userId={}, fdId={}", userId, fdId);
+                    return new ResourceNotFoundException("Fixed Deposit not found for user");
+                });
 
         BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(fd);
 
@@ -400,6 +428,7 @@ public class FixedDepositService {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(MIN_FD_AMOUNT) < 0) {
+            logger.warn("Invalid FD amount: amount={}, min={}", amount, MIN_FD_AMOUNT);
             throw new BusinessException("Minimum Fixed Deposit amount is " + MIN_FD_AMOUNT);
         }
     }
@@ -444,6 +473,9 @@ public class FixedDepositService {
 
 
     private List<FDMaturityResponse> mapToMaturityResponse(List<FixedDeposit> fds, LocalDate today) {
+        if (fds.isEmpty()) {
+            logger.debug("No FDs found for maturity response on date={}", today);
+        }
         return fds.stream()
                 .map(fd -> new FDMaturityResponse(
                         fd.getId(),
