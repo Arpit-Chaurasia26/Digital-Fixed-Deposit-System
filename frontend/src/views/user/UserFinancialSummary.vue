@@ -87,7 +87,7 @@ loadSummary();
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-lg);
-  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.18);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -103,9 +103,9 @@ loadSummary();
 .panel {
   padding: var(--spacing-xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -124,9 +124,9 @@ loadSummary();
 .summary-card {
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-background-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .summary-card label {

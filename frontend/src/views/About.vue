@@ -147,7 +147,7 @@ import Footer from '@/components/common/Footer.vue';
 .feature {
   text-align: center;
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--zeta-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-base);

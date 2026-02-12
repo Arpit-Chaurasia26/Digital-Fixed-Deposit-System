@@ -144,9 +144,9 @@ onMounted(async () => {
 .page-header p { margin: 0; color: rgba(255, 255, 255, 0.9); }
 .filters-section { padding: var(--spacing-md); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl); }
 .filters-section {
- background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
- border: 1px solid rgba(148, 163, 184, 0.2);
- box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+ background: var(--zeta-surface);
+ border: 1px solid var(--zeta-border);
+ box-shadow: var(--shadow-md);
 }
 .filters-row { display: flex; gap: var(--spacing-md); flex-wrap: wrap; align-items: center; }
 .filters-row .form-control { max-width: 220px; }
@@ -154,9 +154,9 @@ onMounted(async () => {
 .fd-card {
  padding: var(--spacing-xl);
  border-radius: var(--radius-xl);
- border: 1px solid rgba(148, 163, 184, 0.2);
- background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
- box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+ border: 1px solid var(--zeta-border);
+ background: var(--zeta-surface);
+ box-shadow: var(--shadow-md);
  position: relative;
  overflow: hidden;
 }
