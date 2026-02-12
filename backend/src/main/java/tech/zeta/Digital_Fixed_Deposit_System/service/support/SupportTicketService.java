@@ -30,7 +30,14 @@ public interface SupportTicketService {
     /**
      * Get all tickets in the system (admin only).
      */
-    public Page<SupportTicketResponseDTO> getAllTickets(TicketStatus status, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable);
+    public Page<SupportTicketResponseDTO> getAllTickets(
+            TicketStatus status,
+            LocalDateTime createdFrom,
+            LocalDateTime createdTo,
+            Long userId,
+            Long fdId,
+            Pageable pageable
+    );
 
     /**
      * Update the status of a ticket (RESOLVED by admin, CLOSED by user).

@@ -202,11 +202,27 @@ router.beforeEach(async (
   const requiredRole = to.meta.role as string | undefined;
 
   // Try to fetch user profile if not already loaded
-  if (!store.state.auth.user && !store.state.auth.loading) {
-    try {
-      await store.dispatch('auth/fetchProfile');
-    } catch (error) {
-      // User not authenticated
+  if (!store.state.auth.user) {
+    if (store.state.auth.loading) {
+      // Another call already started fetchProfile — wait for it to finish
+      await new Promise<void>((resolve) => {
+        const unwatch = store.watch(
+          (state: any) => state.auth.loading,
+          (loading: boolean) => {
+            if (!loading) {
+              unwatch();
+              resolve();
+            }
+          },
+          { immediate: true }
+        );
+      });
+    } else {
+      try {
+        await store.dispatch('auth/fetchProfile');
+      } catch (error) {
+        // User not authenticated
+      }
     }
   }
 
@@ -225,7 +241,7 @@ router.beforeEach(async (
 
   // If route requires authentication
   if (requiresAuth && !isAuthenticated) {
-    next({ name: 'Login', query: { redirect: to.fullPath } });
+    next({ name: 'Home' });
     return;
   }
 

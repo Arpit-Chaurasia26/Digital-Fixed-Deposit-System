@@ -511,7 +511,7 @@ onMounted(() => {
 
 .calculator-section {
   padding: var(--spacing-3xl) 0;
-  background: white;
+  background: var(--zeta-surface);
 }
 
 .calculator-grid {
@@ -525,9 +525,9 @@ onMounted(() => {
 .preview-card {
   padding: var(--spacing-2xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -556,7 +556,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom: 1px solid var(--zeta-border);
   color: var(--zeta-text-secondary);
 }
 
@@ -671,7 +671,7 @@ onMounted(() => {
 
 .features-section {
   padding: var(--spacing-3xl) 0;
-  background: white;
+  background: var(--zeta-surface);
 
   h2 {
     font-size: var(--font-size-3xl);
@@ -723,7 +723,7 @@ onMounted(() => {
 }
 
 .faq-item {
-  background: white;
+  background: var(--zeta-surface);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-md);
   box-shadow: var(--shadow-sm);
