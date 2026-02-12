@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw, NavigationGuardNext, Ro
 import store from '@/store';
 import Home from '@/views/Home.vue';
 
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -79,6 +80,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user/fd/:id/break',
     name: 'BreakFD',
     component: () => import('@/views/user/BreakFD.vue'),
+    meta: { requiresAuth: true, role: 'USER' },
+  },
+  {
+    path: '/user/withdrawals',
+    name: 'TransactionHistory',
+    component: () => import('@/views/user/TransactionHistory.vue'),
     meta: { requiresAuth: true, role: 'USER' },
   },
   {

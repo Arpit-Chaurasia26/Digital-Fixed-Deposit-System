@@ -33,6 +33,7 @@
           <router-link to="/user/dashboard" class="navbar-link" @click="closeMobileMenu">Dashboard</router-link>
           <router-link to="/user/book-fd" class="navbar-link" @click="closeMobileMenu">Book FD</router-link>
           <router-link to="/user/fd-list" class="navbar-link" @click="closeMobileMenu">My FDs</router-link>
+          <router-link to="/user/withdrawals" class="navbar-link" @click="closeMobileMenu">Transactions</router-link>
           <router-link to="/user/support" class="navbar-link" @click="closeMobileMenu">Support</router-link>
           <div class="navbar-user">
             <router-link to="/user/profile" class="navbar-link navbar-username" @click="closeMobileMenu">

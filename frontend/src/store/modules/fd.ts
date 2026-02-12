@@ -1,4 +1,5 @@
 import { fdService } from '@/services/fdService';
+import { withdrawalService } from '@/services/withdrawalService';
 import {
   FixedDeposit,
   BookFDRequest,
@@ -8,6 +9,7 @@ import {
   FDInterestTimeline,
   FDInterestResponse,
   FDStatus,
+  EligibilityMessage
 } from '@/types';
 
 export interface FDState {
@@ -20,6 +22,7 @@ export interface FDState {
   accruedInterest: FDInterestResponse | null;
   loading: boolean;
   error: string | null;
+  eligibilityMessage:EligibilityMessage | null;
 }
 
 type Commit = (type: string, payload?: unknown) => void;
@@ -38,6 +41,7 @@ const fdModule = {
     accruedInterest: null,
     loading: false,
     error: null,
+    eligibilityMessage:null,
   }),
 
   getters: {
@@ -53,6 +57,7 @@ const fdModule = {
     brokenFDs: (state: FDState) => state.fds.filter((fd: FixedDeposit) => fd.status === FDStatus.BROKEN),
     loading: (state: FDState) => state.loading,
     error: (state: FDState) => state.error,
+    eligibilityMessage:(state: FDState)=>state.eligibilityMessage,
   },
 
   mutations: {
@@ -98,6 +103,9 @@ const fdModule = {
     CLEAR_ERROR(state: FDState) {
       state.error = null;
     },
+    SET_ELIGIBILITY_MESSAGE(state: FDState, eligibilityMessage: EligibilityMessage){
+      state.eligibilityMessage=eligibilityMessage;
+    }
   },
 
   actions: {
@@ -229,6 +237,24 @@ const fdModule = {
     clearError({ commit }: ActionCtx) {
       commit('CLEAR_ERROR');
     },
+
+    async fetchEligibilityCheck({commit}:ActionCtx, fdId: number){
+      commit('SET_LOADING', true);
+      commit('CLEAR_ERROR');
+      console.log("hello");
+      try{
+        const message = await withdrawalService.checkEligibility(fdId);
+        commit('SET_ELIGIBILITY_MESSAGE', message);
+        console.log(message)
+      }catch (error: any) {
+        const message = error.response?.data?.message || 'Failed to fetch interest';
+        commit('SET_ERROR', message);
+        throw error;
+      } finally {
+        commit('SET_LOADING', false);
+      }
+    }
+
   },
 };
 

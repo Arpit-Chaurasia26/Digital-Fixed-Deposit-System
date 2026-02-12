@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -13,4 +14,5 @@ public class WithdrawalHistory {
     private Long fdId;
     private BigDecimal withdrawalAmount;
     private BigDecimal interestPaid;
+    private LocalDate withdrawnDate;
 }

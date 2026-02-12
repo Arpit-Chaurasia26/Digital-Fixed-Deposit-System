@@ -236,3 +236,17 @@ export interface SchemeResponse {
   interestFrequency: 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
   prematureBreakAllowed: boolean;
 }
+
+//Eligibility Message
+export interface EligibilityMessage{
+  isEligible:boolean,
+  rootCause:string
+}
+
+//WithdrawalHistory
+export interface WIthdrawalHistory{
+  fdId:number,
+  withdrawalAmount:number,
+  intrestGained:number,
+  withdrawnDate:string
+}

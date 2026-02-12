@@ -58,5 +58,4 @@ public class WithdrawalController {
         return ResponseEntity.ok(withdrawalHistory);
     }
 
-
 }
