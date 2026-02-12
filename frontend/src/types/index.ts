@@ -39,6 +39,7 @@ export const FDStatus = {
   ACTIVE: 'ACTIVE',
   MATURED: 'MATURED',
   BROKEN: 'BROKEN',
+  CLOSED: 'CLOSED',
   PENDING: 'PENDING'
 } as const;
 

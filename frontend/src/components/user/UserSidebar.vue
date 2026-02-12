@@ -15,6 +15,7 @@
       <router-link to="/user/maturing" class="sidebar-link">Maturing FDs</router-link>
       <router-link to="/user/financial-summary" class="sidebar-link">Financial Summary</router-link>
       <router-link to="/user/portfolio" class="sidebar-link">Portfolio</router-link>
+      <router-link to="/user/withdrawals" class="sidebar-link">Transactions</router-link>
       <router-link to="/user/support" class="sidebar-link">Support Tickets</router-link>
       <router-link to="/user/profile" class="sidebar-link">My Profile</router-link>
     </nav>

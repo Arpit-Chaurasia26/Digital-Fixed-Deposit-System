@@ -848,7 +848,37 @@ html[data-theme="dark"] body {
 
 // --- Maturity preview ---
 [data-theme="dark"] .maturity-preview {
+  background: linear-gradient(135deg, #065f46, #14532d) !important;
+  color: #e2e8f0 !important;
   box-shadow: 0 18px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .maturity-preview h3 {
+  color: #f0fdf4 !important;
+}
+
+[data-theme="dark"] .maturity-preview .detail-row {
+  border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .maturity-preview .detail-row span,
+[data-theme="dark"] .maturity-preview .detail-row strong {
+  color: #f0fdf4 !important;
+}
+
+[data-theme="dark"] .maturity-preview .detail-row.highlight {
+  border-top-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme="dark"] .maturity-preview .status-badge.status-allowed {
+  background: linear-gradient(135deg, #16a34a, #22c55e) !important;
+  color: white !important;
+}
+
+[data-theme="dark"] .maturity-preview .status-badge.status-blocked {
+  background: linear-gradient(135deg, #ef4444, #f87171) !important;
+  color: white !important;
 }
 
 // --- Hero sections (use dark muted gradient) ---
@@ -1163,10 +1193,7 @@ html[data-theme] * {
   background: rgba(30, 27, 75, 0.2) !important;
 }
 
-// --- Status badges dark ---
-[data-theme="dark"] .status-badge {
-  background: rgba(17, 24, 39, 0.8) !important;
-}
+// --- Status badges dark --- keep original gradient colors, no override needed
 
 // --- FD card hover dark ---
 [data-theme="dark"] .fd-card:hover {

@@ -124,15 +124,27 @@ const calculateTotal = (amount: number, interest: number) => {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  table-layout: fixed;
   
-  th {
+  th, td {
+    text-align: left;
+    vertical-align: middle;
+  }
 
+  th:nth-child(1), td:nth-child(1) { width: 12%; }
+  th:nth-child(2), td:nth-child(2) { width: 22%; }
+  th:nth-child(3), td:nth-child(3) { width: 20%; }
+  th:nth-child(4), td:nth-child(4) { width: 22%; }
+  th:nth-child(5), td:nth-child(5) { width: 24%; text-align: right; }
+
+  th {
     background-color: var(--zeta-background-paper);
     color: var(--zeta-text-secondary);
     font-size: var(--font-size-xs);
     text-transform: uppercase;
     padding: var(--spacing-md);
     border-bottom: 2px solid var(--zeta-divider);
+    white-space: nowrap;
   }
 
   td {
