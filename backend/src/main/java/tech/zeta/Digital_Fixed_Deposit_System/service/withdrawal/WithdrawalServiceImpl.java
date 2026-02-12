@@ -195,8 +195,9 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         }
         List<Transaction> listOfTransactions = transactionRepository.findByUserId(userId);
         List<WithdrawalHistory> listOfWithdrawalHistory = listOfTransactions.stream()
-                .map(transaction->new WithdrawalHistory(transaction.getFdId(), transaction.getAmountPaid(), transaction.getInterestPaid()))
+                .map(transaction->new WithdrawalHistory(transaction.getFdId(), transaction.getAmountPaid(), transaction.getInterestPaid(), transaction.getCreatedAt().toLocalDate()))
                 .toList();
+        System.out.println(listOfWithdrawalHistory);
         return listOfWithdrawalHistory;
 
     }

@@ -52,7 +52,6 @@
          </div>
          <div class="fd-actions">
            <router-link :to="`/user/fd/${fd.id}`" class="btn btn-outline">View Details</router-link>
-           <router-link v-if="fd.status === 'ACTIVE'" :to="`/user/fd/${fd.id}/break`" class="btn btn-danger">Break FD</router-link>
          </div>
        </div>
      </div>

@@ -39,6 +39,7 @@ export const FDStatus = {
   ACTIVE: 'ACTIVE',
   MATURED: 'MATURED',
   BROKEN: 'BROKEN',
+  CLOSED: 'CLOSED',
   PENDING: 'PENDING'
 } as const;
 
@@ -235,4 +236,18 @@ export interface SchemeResponse {
   tenureInMonths: number;
   interestFrequency: 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
   prematureBreakAllowed: boolean;
+}
+
+//Eligibility Message
+export interface EligibilityMessage{
+  isEligible:boolean,
+  rootCause:string
+}
+
+//WithdrawalHistory
+export interface WIthdrawalHistory{
+  fdId:number,
+  withdrawalAmount:number,
+  intrestGained:number,
+  withdrawnDate:string
 }

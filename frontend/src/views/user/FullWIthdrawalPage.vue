@@ -16,17 +16,14 @@
 
    
 
-     <div v-if="(!breakPreview)&&(!withdrawalReciept) && !autoLoading" class="form-group">
-       <form @submit.prevent="getPreview">
-         <span style="display: flex; justify-content: space-between;">
-          <label class="form-label" for="withdrawalAmount" style="display:inline; font-size: large">Amount</label>
-          <button type="submit" class="btn btn-primary">Preview</button>
-        </span>
-        <br>
-        <input class="form-control" id="withdrawalAmount" type="number" v-model="withdrawalAmount" style="width:fit-content">
-       </form>
-     </div>
-     <div v-if="autoLoading" class="spinner"></div>
+     <form v-if="(!breakPreview)&&(!withdrawalReciept)" class="form-group" @submit.prevent="getPreview" >
+       <span style="display: flex; justify-content: space-between;">
+        <label  class="form-label" for="withdrawalAmount" style="display:inline; font-size: large">Amount</label>
+        <button type="submit" class="btn btn-primary ">Preview</button>
+      </span>
+      <br>
+      <input class="form-control" id="withdrawalAmount" type="number" v-model="withdrawalAmount" style="width:fit-content">
+     </form>
 
      <div v-if="breakPreview" class="break-card card">
        <div class="break-header">
@@ -133,7 +130,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { withdrawalService } from '@/services/withdrawalService';
 import Navbar from '@/components/common/Navbar.vue';
@@ -145,34 +142,9 @@ import { formatCurrency } from '@/utils/helpers';
 const route = useRoute();
 const router = useRouter();
 const breakPreview = ref<any>(null);
-const withdrawalAmount = ref<number>(0);
-const message = ref<string>('Hello');
+const withdrawalAmount = ref<number>(0)
+const message = ref<string>("Hello")
 const withdrawalReciept = ref<any>(null);
-const autoLoading = ref(false);
-
-// Auto-preview if amount is passed via query param (from Break FD button)
-onMounted(async () => {
-  const queryAmount = route.query.amount;
-  if (queryAmount) {
-    const amount = parseFloat(queryAmount as string);
-    if (amount > 0) {
-      withdrawalAmount.value = amount;
-      autoLoading.value = true;
-      const fdId = parseInt(route.params.id as string);
-      if (fdId) {
-        try {
-          breakPreview.value = await withdrawalService.getBreakPreview(fdId, amount);
-        } catch (e: any) {
-          alert(e.response?.data?.message || 'Failed to load preview');
-        } finally {
-          autoLoading.value = false;
-        }
-      } else {
-        autoLoading.value = false;
-      }
-    }
-  }
-});
 
 
 const principalAmount = computed(() =>

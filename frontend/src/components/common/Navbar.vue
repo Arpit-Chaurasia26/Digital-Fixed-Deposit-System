@@ -30,10 +30,10 @@
         </template>
 
         <template v-else>
+          <router-link to="/" class="navbar-link" @click="closeMobileMenu">Home</router-link>
           <router-link to="/user/dashboard" class="navbar-link" @click="closeMobileMenu">Dashboard</router-link>
-          <router-link to="/user/book-fd" class="navbar-link" @click="closeMobileMenu">Book FD</router-link>
-          <router-link to="/user/fd-list" class="navbar-link" @click="closeMobileMenu">My FDs</router-link>
-          <router-link to="/user/support" class="navbar-link" @click="closeMobileMenu">Support</router-link>
+          <router-link to="/about" class="navbar-link" @click="closeMobileMenu">About Us</router-link>
+          <router-link to="/contact" class="navbar-link" @click="closeMobileMenu">Contact</router-link>
           <div class="navbar-user">
             <router-link to="/user/profile" class="navbar-link navbar-username" @click="closeMobileMenu">
               {{ user?.name }}
@@ -109,6 +109,7 @@ const handleLogout = async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--spacing-md);
 }
 
 .navbar-brand {
@@ -137,6 +138,8 @@ const handleLogout = async () => {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
+  flex: 1;
+  justify-content: center;
 
   @media (max-width: 768px) {
     position: fixed;

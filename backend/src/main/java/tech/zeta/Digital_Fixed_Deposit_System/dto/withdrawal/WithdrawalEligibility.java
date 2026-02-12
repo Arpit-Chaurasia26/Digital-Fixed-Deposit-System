@@ -11,6 +11,5 @@ import lombok.Setter;
 public class WithdrawalEligibility {
     private boolean isEligible;
     private String rootCause;
-
 }
  
