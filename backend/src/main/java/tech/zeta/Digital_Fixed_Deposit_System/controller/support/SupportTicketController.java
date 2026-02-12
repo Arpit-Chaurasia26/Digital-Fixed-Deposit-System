@@ -47,22 +47,34 @@ public class SupportTicketController {
     @PatchMapping("/{ticketId}/status")
     public SupportTicketResponseDTO updateTicketStatus(
             @PathVariable Long ticketId,
-            @RequestBody TicketStatus status
+            @RequestBody String statusString
     ) {
+        TicketStatus status = TicketStatus.valueOf(statusString);
         return supportTicketService.updateTicketStatus(ticketId, status);
     }
 
-    // 🔹 Get all tickets (Admin only)
+    // 🔹 Get all tickets (Admin only) - WITH userId and fdId FILTERS
     @GetMapping
     public Page<SupportTicketResponseDTO> getAllTickets(
-            @RequestParam(required = false) TicketStatus status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdTo,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long fdId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        TicketStatus ticketStatus = null;
+        if (status != null && !status.isEmpty()) {
+            try {
+                ticketStatus = TicketStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                // Invalid status, proceed without status filter
+            }
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdTime").descending());
-        return supportTicketService.getAllTickets(status, createdFrom, createdTo, pageable);
+        return supportTicketService.getAllTickets(ticketStatus, createdFrom, createdTo, userId, fdId, pageable);
     }
 
 
