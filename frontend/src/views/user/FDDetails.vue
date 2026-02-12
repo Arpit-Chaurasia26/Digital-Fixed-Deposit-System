@@ -136,8 +136,8 @@
                   <p>💡 <strong>Note:</strong> Premature withdrawal is allowed under your FD scheme. Breaking the FD before maturity may attract a <strong>1% penalty</strong> on the interest rate. Withdrawals within the first 3 months will receive <strong>no interest</strong>.</p>
                 </div>
                 <div class="eligibility-actions">
-                  <router-link :to="{ path: `/user/fd/${fd.id}/break`, query: { amount: fd.amount } }" class="btn btn-danger">
-                    <span class="btn-icon">💔</span> Break FD (Full Withdrawal)
+                  <router-link :to="`/user/fd/${fd.id}/break`" class="btn btn-danger">
+                    <span class="btn-icon"></span> Break FD (Full Withdrawal)
                   </router-link>
                   <button class="btn btn-warning" @click="showPartialWithdrawal = !showPartialWithdrawal">
                     <span class="btn-icon">💸</span> Partial Withdrawal
