@@ -578,3 +578,680 @@ body.user-shell .footer {
     transform: rotate(360deg);
   }
 }
+
+// ================================================
+// DARK THEME
+// ================================================
+
+[data-theme="dark"] {
+  // Neutral / Background colors
+  --zeta-text-primary: #cbd5e1;
+  --zeta-text-secondary: #94a3b8;
+  --zeta-text-disabled: #64748b;
+  --zeta-divider: #1e293b;
+  --zeta-background: #0c1220;
+  --zeta-background-paper: #111827;
+  --zeta-background-hover: #162032;
+  --zeta-surface: #111827;
+  --zeta-surface-2: #0c1220;
+  --zeta-border: rgba(71, 85, 105, 0.35);
+  --zeta-ring: rgba(99, 102, 241, 0.2);
+
+  // Primary colors — muted for dark mode
+  --zeta-primary: #818cf8;
+  --zeta-primary-light: #a5b4fc;
+  --zeta-primary-dark: #1e1b4b;
+  --zeta-secondary: #67e8f9;
+  --zeta-secondary-light: #a5f3fc;
+  --zeta-secondary-dark: #164e63;
+
+  // Gradients — dark, muted versions
+  --zeta-gradient-primary: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #164e63 100%);
+  --zeta-gradient-secondary: linear-gradient(135deg, #164e63 0%, #1e3a5f 100%);
+  --zeta-gradient-accent: linear-gradient(135deg, #881337 0%, #831843 100%);
+  --zeta-gradient-hero: linear-gradient(135deg, #0c1220 0%, #1e1b4b 45%, #0f2b3d 100%);
+
+  // Shadows (subtle in dark mode)
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.55);
+
+  // Semantic light colors (very dark tinted backgrounds)
+  --zeta-success-light: #052e16;
+  --zeta-warning-light: #451a03;
+  --zeta-error-light: #450a0a;
+  --zeta-info-light: #172554;
+}
+
+// Body dark mode background
+[data-theme="dark"] body,
+html[data-theme="dark"] body {
+  color: var(--zeta-text-primary);
+  background-color: var(--zeta-background);
+  background-image:
+    radial-gradient(circle at top left, rgba(30, 27, 75, 0.15), transparent 50%),
+    radial-gradient(circle at top right, rgba(22, 78, 99, 0.1), transparent 45%),
+    radial-gradient(circle at bottom left, rgba(136, 19, 55, 0.05), transparent 50%);
+}
+
+// Page backgrounds in dark mode
+[data-theme="dark"] .page {
+  background: linear-gradient(180deg, rgba(12, 18, 32, 0.98) 0%, rgba(12, 18, 32, 1) 100%);
+}
+
+// Card dark mode
+[data-theme="dark"] .card {
+  background: var(--zeta-surface);
+  border-color: var(--zeta-border);
+  color: var(--zeta-text-primary);
+}
+
+// Form controls dark mode
+[data-theme="dark"] .form-control {
+  background-color: #0c1220;
+  border-color: var(--zeta-border);
+  color: var(--zeta-text-primary);
+
+  &::placeholder {
+    color: var(--zeta-text-disabled);
+  }
+}
+
+[data-theme="dark"] .form-label {
+  color: var(--zeta-text-primary);
+}
+
+// Buttons dark mode - outline variant
+[data-theme="dark"] .btn-outline {
+  color: var(--zeta-primary-light);
+  border-color: var(--zeta-primary-light);
+}
+
+// Table dark mode
+[data-theme="dark"] table {
+  color: var(--zeta-text-primary);
+}
+
+[data-theme="dark"] th {
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--zeta-text-primary);
+  border-color: var(--zeta-border);
+}
+
+[data-theme="dark"] td {
+  border-color: var(--zeta-border);
+}
+
+[data-theme="dark"] tr:hover td {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+// Select/dropdown dark mode
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] input {
+  background-color: #0c1220;
+  color: var(--zeta-text-primary);
+  border-color: var(--zeta-border);
+}
+
+// Alert dark mode text
+[data-theme="dark"] .alert-error {
+  background: var(--zeta-error-light);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .alert-warning {
+  background: var(--zeta-warning-light);
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .alert-success {
+  background: var(--zeta-success-light);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .alert-info {
+  background: var(--zeta-info-light);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+// Badge dark mode
+[data-theme="dark"] .badge-success {
+  background-color: rgba(22, 163, 74, 0.2);
+  color: #86efac;
+}
+
+[data-theme="dark"] .badge-warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+[data-theme="dark"] .badge-error {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .badge-info {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+// ================================================
+// THEME TOGGLE BUTTON
+// ================================================
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0;
+  box-shadow: none;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: rotate(15deg) scale(1.1);
+  }
+
+  .theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+// ================================================
+// DARK THEME — Component-Level Overrides
+// These use !important to override Vue scoped styles
+// ================================================
+
+// --- Common card/panel pattern: white gradient backgrounds ---
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .fd-card,
+[data-theme="dark"] .fd-form,
+[data-theme="dark"] .fd-detail-card,
+[data-theme="dark"] .fd-info,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .break-card,
+[data-theme="dark"] .ticket-card,
+[data-theme="dark"] .info-panel,
+[data-theme="dark"] .financial-summary,
+[data-theme="dark"] .calculator-card,
+[data-theme="dark"] .preview-card,
+[data-theme="dark"] .portfolio-right,
+[data-theme="dark"] .filters-section,
+[data-theme="dark"] .timeline-item,
+[data-theme="dark"] .action-card,
+[data-theme="dark"] .table-section,
+[data-theme="dark"] .modal-content {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  color: var(--zeta-text-primary) !important;
+}
+
+// --- Sub-card / inner card backgrounds ---
+[data-theme="dark"] .summary-card,
+[data-theme="dark"] .detail-item,
+[data-theme="dark"] .break-item {
+  background: rgba(17, 24, 39, 0.8) !important;
+  border-color: rgba(71, 85, 105, 0.25) !important;
+  box-shadow: inset 0 0 0 1px rgba(30, 41, 59, 0.4) !important;
+}
+
+// --- Hardcoded "white" backgrounds ---
+[data-theme="dark"] .calculator-section,
+[data-theme="dark"] .features-section,
+[data-theme="dark"] .faq-item,
+[data-theme="dark"] .feature {
+  background: var(--zeta-surface) !important;
+  color: var(--zeta-text-primary) !important;
+}
+
+// --- Live interest / special accent cards ---
+[data-theme="dark"] .live-interest {
+  background: rgba(17, 24, 39, 0.7) !important;
+  border-color: rgba(71, 85, 105, 0.25) !important;
+}
+
+[data-theme="dark"] .interest-card {
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.08), rgba(34, 197, 94, 0.08)) !important;
+  border-color: rgba(71, 85, 105, 0.25) !important;
+}
+
+// --- Timeline marker white border ---
+[data-theme="dark"] .timeline-marker {
+  border-color: #1e293b !important;
+}
+
+// --- Text color overrides for hardcoded dark text ---
+[data-theme="dark"] .preview-row {
+  border-color: rgba(71, 85, 105, 0.2) !important;
+}
+
+// --- Maturity preview ---
+[data-theme="dark"] .maturity-preview {
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+// --- Hero sections (use dark muted gradient) ---
+[data-theme="dark"] .dashboard-hero,
+[data-theme="dark"] .hero-card,
+[data-theme="dark"] .page-header {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+// --- Rates table ---
+[data-theme="dark"] .rates-table {
+  box-shadow: inset 0 0 0 1px rgba(100, 116, 139, 0.3) !important;
+}
+
+// --- Ticket borders ---
+[data-theme="dark"] .ticket-times,
+[data-theme="dark"] .ticket-actions {
+  border-color: rgba(71, 85, 105, 0.2) !important;
+}
+
+// --- Admin Support page specific overrides ---
+[data-theme="dark"] .ticket-info {
+  background: #0c1220 !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .modal-header {
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .modal-header h2 {
+  color: var(--zeta-text-primary) !important;
+}
+
+[data-theme="dark"] .modal-footer {
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .modal-close {
+  color: var(--zeta-text-disabled) !important;
+}
+
+[data-theme="dark"] .modal-close:hover {
+  background-color: #162032 !important;
+  color: var(--zeta-text-primary) !important;
+}
+
+[data-theme="dark"] .info-item label {
+  color: var(--zeta-text-disabled) !important;
+}
+
+[data-theme="dark"] .info-item p {
+  color: var(--zeta-text-primary) !important;
+}
+
+[data-theme="dark"] .page-info {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Filter inputs ---
+[data-theme="dark"] .filter-input {
+  background: #0c1220 !important;
+  color: #cbd5e1 !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .filter-input::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .filter-input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+// --- Tables in dark mode (scoped overrides) ---
+[data-theme="dark"] thead {
+  background-color: #111827 !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] th {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] td {
+  color: #cbd5e1 !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] tbody tr {
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] tbody tr:hover {
+  background-color: rgba(22, 32, 50, 0.5) !important;
+}
+
+// --- Profile page ---
+[data-theme="dark"] .profile-header {
+  background: rgba(30, 27, 75, 0.2) !important;
+}
+
+// --- General text overrides for hardcoded colors ---
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] label,
+[data-theme="dark"] li {
+  color: inherit;
+}
+
+// --- Fix headings in dark mode ---
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: #e2e8f0;
+}
+
+// --- Mute accent color text in dark mode ---
+[data-theme="dark"] .section-header h2 {
+  color: #a5b4fc !important;
+}
+
+[data-theme="dark"] .section-header p {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Links in dark mode (non-navbar) ---
+[data-theme="dark"] a:not(.navbar-link):not(.navbar-brand):not(.sidebar-link) {
+  color: var(--zeta-primary-light);
+}
+
+// --- Scrollbar dark mode ---
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #0c1220;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+// --- Smooth theme transition ---
+html[data-theme],
+html[data-theme] body,
+html[data-theme] * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+// --- Quick actions / scheme cards ---
+[data-theme="dark"] .quick-actions {
+  background: var(--zeta-surface) !important;
+}
+
+[data-theme="dark"] .scheme-card {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .scheme-details {
+  background: #0c1220 !important;
+}
+
+// --- Preview empty ---
+[data-theme="dark"] .preview-empty {
+  background: rgba(30, 41, 59, 0.5) !important;
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Form help ---
+[data-theme="dark"] .form-help,
+[data-theme="dark"] small {
+  color: var(--zeta-text-disabled) !important;
+}
+
+// --- Loading messages ---
+[data-theme="dark"] .loading-message {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Contact page ---
+[data-theme="dark"] .contact-card {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+// --- Profile page ---
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .profile-section {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+// --- Year select in dark mode ---
+[data-theme="dark"] .year-select label {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Section badge glows ---
+[data-theme="dark"] .section-badge {
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.25) !important;
+}
+
+// --- CTA buttons on dark hero (keep white outline visible) ---
+[data-theme="dark"] .cta-buttons .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+// --- Fix hover background for faq-question ---
+[data-theme="dark"] .faq-question:hover {
+  background: rgba(22, 32, 50, 0.5) !important;
+}
+
+// --- FAQ answer text ---
+[data-theme="dark"] .faq-answer {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Auth pages link button ---
+[data-theme="dark"] .link-button {
+  color: var(--zeta-primary-light) !important;
+}
+
+// --- Admin support inline style overrides (these have inline styles) ---
+[data-theme="dark"] .admin-support-page p,
+[data-theme="dark"] .admin-support-page div {
+  border-color: var(--zeta-border);
+}
+
+// --- Sidebar dark mode overrides ---
+[data-theme="dark"] .admin-sidebar {
+  background: linear-gradient(180deg, #0c1220 0%, #111827 60%, #0f2b3d 100%) !important;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .user-sidebar {
+  background: linear-gradient(180deg, #0c1220 0%, #111827 60%, #0f2b3d 100%) !important;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+// --- Navbar dark mode override ---
+[data-theme="dark"] .navbar {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+// --- Mobile menu dark mode ---
+[data-theme="dark"] .navbar-menu.active {
+  background: #0c1220 !important;
+}
+
+// --- Footer dark mode ---
+[data-theme="dark"] .footer {
+  background: #080e1a !important;
+  border-top-color: rgba(71, 85, 105, 0.2) !important;
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Calculator & feature section dark backgrounds ---
+[data-theme="dark"] .calculator-section,
+[data-theme="dark"] .features-section {
+  background: var(--zeta-surface) !important;
+}
+
+// --- Feature cards ---
+[data-theme="dark"] .feature {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+// --- Auth card dark mode ---
+[data-theme="dark"] .auth-card {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .auth-header h2 {
+  color: var(--zeta-primary-light) !important;
+}
+
+// --- Stat card icon area dark ---
+[data-theme="dark"] .stat-icon {
+  background: rgba(30, 27, 75, 0.3) !important;
+}
+
+// --- Action cards dark ---
+[data-theme="dark"] .action-card {
+  background: var(--zeta-surface) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .action-card:hover {
+  border-color: rgba(129, 140, 248, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+// --- Profile header gradient dark ---
+[data-theme="dark"] .profile-header {
+  background: rgba(30, 27, 75, 0.2) !important;
+}
+
+// --- Status badges dark ---
+[data-theme="dark"] .status-badge {
+  background: rgba(17, 24, 39, 0.8) !important;
+}
+
+// --- FD card hover dark ---
+[data-theme="dark"] .fd-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+// --- Page description text ---
+[data-theme="dark"] .page-description {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Mute cyan accent borders/glows in dark mode ---
+[data-theme="dark"] .section-badge {
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.1), rgba(34, 197, 94, 0.08)) !important;
+  border-color: rgba(71, 85, 105, 0.3) !important;
+  box-shadow: 0 0 12px rgba(14, 116, 144, 0.15) !important;
+}
+
+// --- FD card cyan accents muted ---
+[data-theme="dark"] .fd-card {
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .fd-card::after {
+  background: radial-gradient(circle at top right, rgba(14, 116, 144, 0.08), transparent 55%) !important;
+}
+
+// --- AdminFDAll indigo accents muted ---
+[data-theme="dark"] .stat-card {
+  border-color: var(--zeta-border) !important;
+}
+
+// --- Profile info card indigo bg muted ---
+[data-theme="dark"] .profile-info {
+  background: rgba(17, 24, 39, 0.5) !important;
+}
+
+// --- Mute all bright box-shadows on accent elements ---
+[data-theme="dark"] .total-count {
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+// --- Button primary dark mode ---
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+// --- Tab / nav pill dark mode ---
+[data-theme="dark"] .tab-btn,
+[data-theme="dark"] .filter-btn {
+  background: var(--zeta-surface) !important;
+  color: var(--zeta-text-secondary) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .tab-btn.active,
+[data-theme="dark"] .filter-btn.active {
+  background: rgba(67, 56, 202, 0.2) !important;
+  color: var(--zeta-primary-light) !important;
+  border-color: rgba(129, 140, 248, 0.3) !important;
+}
+
+// --- Pagination dark mode ---
+[data-theme="dark"] .pagination-btn {
+  background: var(--zeta-surface) !important;
+  color: var(--zeta-text-secondary) !important;
+  border-color: var(--zeta-border) !important;
+}
+
+[data-theme="dark"] .pagination-btn.active {
+  background: rgba(67, 56, 202, 0.3) !important;
+  color: var(--zeta-primary-light) !important;
+}
+
+// --- Empty state dark ---
+[data-theme="dark"] .empty-state {
+  color: var(--zeta-text-secondary) !important;
+}
+
+// --- Timeline / progress dark ---
+[data-theme="dark"] .timeline-line {
+  background: var(--zeta-border) !important;
+}

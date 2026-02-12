@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
+import { useTheme } from '@/composables/useTheme';
 
 const store = useStore();
 const route = useRoute();
+const { initTheme } = useTheme();
 
-onMounted(async () => {
-  // Try to fetch user profile on app mount (silent authentication)
-  try {
-    await store.dispatch('auth/fetchProfile');
-  } catch (error) {
-    // User not authenticated, continue
-  }
-});
+// Auth is handled by the router guard — no duplicate call needed here.
 
 const syncShell = () => {
   const isAdminRoute = route.path.startsWith('/admin');

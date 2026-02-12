@@ -102,21 +102,35 @@ public class SupportTicketServiceImpl implements SupportTicketService {
     // Admin only
 
     @Override
-    public Page<SupportTicketResponseDTO> getAllTickets(TicketStatus status, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
+    public Page<SupportTicketResponseDTO> getAllTickets(
+            TicketStatus status,
+            LocalDateTime fromDate,
+            LocalDateTime toDate,
+            Long userId,
+            Long fdId,
+            Pageable pageable
+    ) {
         User currentUser = getCurrentUser();
         if (!isAdmin(currentUser)) {
             throw new RuntimeException("Only admins can access all tickets");
         }
 
-        Specification<SupportTicket> spec = Specification
-                .where(SupportTicketSpecifications.hasStatus(status))
-                .and(SupportTicketSpecifications.createdAfter(fromDate))
-                .and(SupportTicketSpecifications.createdBefore(toDate))
-                .and(SupportTicketSpecifications.updatedAfter(fromDate))
-                .and(SupportTicketSpecifications.updatedBefore(toDate));
 
-        return repository.findAll(spec, pageable)
+        // Build specification with all filters
+        Specification<SupportTicket> spec = Specification
+                .where(SupportTicketSpecifications.hasStatus(status))                      // Filter by status if provided
+                .and(SupportTicketSpecifications.createdAfter(fromDate))                   // Filter by created date (from)
+                .and(SupportTicketSpecifications.createdBefore(toDate))                    // Filter by created date (to)
+                .and(SupportTicketSpecifications.updatedAfter(fromDate))                   // Filter by updated date (from)
+                .and(SupportTicketSpecifications.updatedBefore(toDate))                    // Filter by updated date (to)
+                .and(SupportTicketSpecifications.hasUserId(userId))                        // 🔹 NEW: Filter by userId
+                .and(SupportTicketSpecifications.hasFdId(fdId));                           // 🔹 NEW: Filter by fdId
+
+        Page<SupportTicketResponseDTO> result = repository.findAll(spec, pageable)
                 .map(mapper::toResponseDTO);
+
+        //log.info("Found {} tickets", result.getTotalElements());
+        return result;
     }
 
     // 🔹 Update ticket status

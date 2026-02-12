@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Setter
 @Getter
 public class SupportTicketResponseDTO {
@@ -16,6 +20,11 @@ public class SupportTicketResponseDTO {
     private TicketStatus status;
     private String response;
 
-    public SupportTicketResponseDTO() {}
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime updatedTime;
+
+    public SupportTicketResponseDTO() {}
 }

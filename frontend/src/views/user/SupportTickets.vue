@@ -150,7 +150,7 @@ onMounted(() => store.dispatch('support/fetchMyTickets'));
   background: var(--zeta-gradient-hero);
   color: white;
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.18);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -166,9 +166,9 @@ onMounted(() => store.dispatch('support/fetchMyTickets'));
 .ticket-card {
   padding: var(--spacing-xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -203,7 +203,7 @@ onMounted(() => store.dispatch('support/fetchMyTickets'));
   gap: var(--spacing-lg);
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  border-top: 1px solid var(--zeta-border);
   font-size: var(--font-size-sm);
 }
 
@@ -231,7 +231,7 @@ onMounted(() => store.dispatch('support/fetchMyTickets'));
   gap: var(--spacing-md);
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  border-top: 1px solid var(--zeta-border);
 }
 
 .ticket-actions .btn {

@@ -76,7 +76,7 @@ loadMaturing();
 .days-select { display: grid; gap: var(--spacing-sm); }
 .days-row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); }
 .fd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-lg); }
-.fd-card { padding: var(--spacing-xl); border-radius: var(--radius-xl); position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96)); border: 1px solid rgba(6, 182, 212, 0.18); box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08); }
+.fd-card { padding: var(--spacing-xl); border-radius: var(--radius-xl); position: relative; overflow: hidden; background: var(--zeta-surface); border: 1px solid rgba(6, 182, 212, 0.18); box-shadow: var(--shadow-md); }
 .fd-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.22), transparent 55%); pointer-events: none; }
 .fd-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); position: relative; z-index: 1; }
 .fd-card p { margin: var(--spacing-xs) 0; color: var(--zeta-text-secondary); position: relative; z-index: 1; }
