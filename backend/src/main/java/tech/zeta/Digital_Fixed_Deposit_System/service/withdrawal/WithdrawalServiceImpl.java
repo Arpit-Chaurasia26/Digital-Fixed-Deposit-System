@@ -14,6 +14,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.transaction.Transaction;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.AccountNotFoundException;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.InSufficientFundsException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.InvalidOperationException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;

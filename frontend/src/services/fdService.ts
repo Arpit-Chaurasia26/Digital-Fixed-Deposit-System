@@ -134,4 +134,6 @@ export const fdService = {
     const response = await apiClient.get(`/fd/${fdId}/interest`);
     return response.data;
   },
+  
+
 };

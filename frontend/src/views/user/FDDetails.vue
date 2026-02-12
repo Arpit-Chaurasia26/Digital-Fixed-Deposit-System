@@ -59,19 +59,21 @@
           </div>
           <div v-if="accruedInterest" class="interest-card">
             <div>
-              <strong>Status:</strong>
-              <span :class="['status-badge', `status-${getStatusClass(accruedInterest.status)}`]">
-                {{ accruedInterest.status }}
-              </span>
+              <button class="btn btn-accent" @click.prevent="handleEligibilityCheck">
+                Check Withdrawal Eligiblity
+              </button>
             </div>
-            <div><strong>Accrued:</strong> {{ formatCurrency(accruedInterest.accruedInterest) }}</div>
-            <div><strong>Interest Rate:</strong> {{ accruedInterest.interestRate }}%</div>
+            <div v-if="eligibilityMessage">
+              <div v-if="eligibilityMessage?.eligible" class="badge-success badge" style="font-size: medium;">Eligible</div>
+              <div v-else class="status-success">Not Eligible</div>
+            <div>{{ eligibilityMessage?.rootCause }}</div>
+            </div>
           </div>
           <div v-if="interestError" class="alert alert-error">{{ interestError }}</div>
-
           <div class="actions-section">
             <router-link :to="`/user/fd/${fd.id}/interest`" class="btn btn-primary">View Interest Timeline</router-link>
             <router-link v-if="fd.status === 'ACTIVE'" :to="`/user/fd/${fd.id}/break`" class="btn btn-danger">Break FD</router-link>
+             <router-link v-if="fd.status === 'MATURED'" :to="`/user/fd/${fd.id}/break`" class="btn btn-primary">Withdraw FD</router-link>
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import Navbar from '@/components/common/Navbar.vue';
@@ -98,7 +100,7 @@ const fd = computed(() => store.getters['fd/currentFD']);
 const loading = computed(() => store.getters['fd/loading']);
 const accruedInterest = computed(() => store.getters['fd/accruedInterest']);
 const interestError = computed(() => store.getters['fd/error']);
-
+let eligibilityMessage = computed(()=>store.getters['fd/eligibilityMessage'])
 const getStatusClass = (status: string) => {
   const classes: { [key: string]: string } = {
     ACTIVE: 'success',
@@ -129,6 +131,22 @@ const refreshInterest = async () => {
     store.commit('fd/SET_ERROR', getErrorMessage(err, 'Unable to refresh interest'));
   }
 };
+
+const handleEligibilityCheck = async ()=>{
+  const fdId = parseInt(route.params.id as string);
+  if (!fdId) return;
+  console.log(fdId);
+  try {
+    await store.dispatch('fd/fetchEligibilityCheck', fdId);
+  } catch (err) {
+    store.commit('fd/SET_ERROR', getErrorMessage(err, 'Unable to refresh interest'));
+  }
+}
+
+onUnmounted(()=>{
+  store.commit('fd/SET_ELIGIBILITY_MESSAGE', null);
+})
+
 </script>
 
 <style scoped lang="scss">
