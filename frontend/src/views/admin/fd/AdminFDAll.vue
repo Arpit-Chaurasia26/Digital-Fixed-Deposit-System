@@ -93,9 +93,9 @@ loadAllFDs();
   border-radius: var(--radius-xl);
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+  background: var(--zeta-surface);
   border: 1px solid rgba(79, 70, 229, 0.15);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-md);
 }
 .fd-card::after {
   content: '';

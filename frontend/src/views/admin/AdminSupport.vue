@@ -98,7 +98,7 @@
             </tbody>
           </table>
 
-          <div v-else style="padding: 2rem; text-align: center; color: #666;">
+          <div v-else class="empty-state">
             No tickets found
           </div>
         </div>
@@ -167,20 +167,20 @@
               </div>
             </div>
 
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
-              <h4 style="margin: 0 0 0.5rem 0;">Description:</h4>
-              <p style="white-space: pre-wrap; margin: 0; color: #475569;">{{ selectedTicket.description }}</p>
+            <div class="ticket-description-section">
+              <h4>Description:</h4>
+              <p class="ticket-description-text">{{ selectedTicket.description }}</p>
             </div>
           </div>
 
           <!-- RESPONSE FORM -->
-          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
-            <h4 style="margin: 0 0 1rem 0;">Admin Response</h4>
+          <div class="response-form-section">
+            <h4>Admin Response</h4>
 
             <!-- EXISTING RESPONSE -->
-            <div v-if="selectedTicket.response" style="background: #f0fdf4; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-left: 4px solid #16a34a;">
-              <p style="font-size: 0.875rem; color: #475569; margin: 0 0 0.5rem 0; font-weight: 600;">Current Response:</p>
-              <p style="white-space: pre-wrap; margin: 0; color: #334155;">{{ selectedTicket.response }}</p>
+            <div v-if="selectedTicket.response" class="existing-response">
+              <p class="existing-response-label">Current Response:</p>
+              <p class="existing-response-text">{{ selectedTicket.response }}</p>
             </div>
 
             <!-- RESPONSE TEXTAREA -->
@@ -188,17 +188,17 @@
               v-model="responseText"
               :disabled="selectedTicket.status === 'CLOSED' || submitting"
               placeholder="Enter your response to the user..."
-              style="width: 100%; min-height: 100px; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-family: inherit; margin-bottom: 1rem; font-size: 0.875rem;"
+              class="response-textarea"
             ></textarea>
 
             <!-- STATUS SELECT -->
-            <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem;">Update Status:</label>
-              <p style="font-size: 0.75rem; color: #94a3b8; margin: 0 0 0.5rem 0;">Current: <strong>{{ selectedTicket.status }}</strong></p>
+            <div class="status-update-section">
+              <label class="status-label">Update Status:</label>
+              <p class="status-current">Current: <strong>{{ selectedTicket.status }}</strong></p>
               <select
                 v-model="newStatus"
                 :disabled="availableStatuses.length === 0 || submitting"
-                style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-family: inherit;"
+                class="status-select"
               >
                 <option v-for="status in availableStatuses" :key="status" :value="status">
                   {{ status === 'IN_PROGRESS' ? 'IN PROGRESS' : status }}
@@ -206,12 +206,12 @@
               </select>
               
               <!-- RESOLVED WARNING -->
-              <div v-if="selectedTicket.status === 'RESOLVED'" style="margin-top: 1rem; padding: 0.75rem; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 0.5rem; color: #92400e; font-size: 0.875rem;">
+              <div v-if="selectedTicket.status === 'RESOLVED'" class="status-warning resolved-warning">
                 <strong>⚠ Note:</strong> This ticket has been resolved and cannot be modified.
               </div>
 
               <!-- CLOSED WARNING -->
-              <div v-else-if="selectedTicket.status === 'CLOSED'" style="margin-top: 1rem; padding: 0.75rem; background: #fee2e2; border: 1px solid #fecaca; border-radius: 0.5rem; color: #991b1b; font-size: 0.875rem;">
+              <div v-else-if="selectedTicket.status === 'CLOSED'" class="status-warning closed-warning">
                 <strong>✓ Closed:</strong> This ticket is closed and cannot be modified.
               </div>
             </div>
@@ -489,24 +489,23 @@ onMounted(() => {
 
   h1 {
     margin: 0 0 0.5rem 0;
-    color: #e8e9ea;
+    color: var(--zeta-text-primary);
     font-size: 1.75rem;
   }
 
   p {
     margin: 0;
-    color: #d7d9dc;
+    color: var(--zeta-text-secondary);
   }
-
-padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white; border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); }
+}
 
 .filters-section {
-  background: white;
+  background: var(--zeta-surface);
   border-radius: 1rem;
-  border: 1px solid #1d4e8f;
+  border: 1px solid var(--zeta-border);
 
   h3 {
-    color: #1e293b;
+    color: var(--zeta-text-primary);
     font-size: 1rem;
   }
 
@@ -516,9 +515,9 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
     font-size: 0.875rem;
 
     &.alert-error {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background-color: var(--zeta-error-light);
+      color: var(--zeta-error-dark);
+      border: 1px solid var(--zeta-error);
     }
   }
 }
@@ -533,28 +532,28 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
     flex: 1;
     min-width: 150px;
     padding: 0.5rem 0.75rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--zeta-divider);
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    background: white;
-    color: #1e293b;
+    background: var(--zeta-background-paper);
+    color: var(--zeta-text-primary);
 
     &:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: var(--zeta-primary);
+      box-shadow: 0 0 0 3px var(--zeta-ring);
     }
 
     &::placeholder {
-      color: #94a3b8;
+      color: var(--zeta-text-disabled);
     }
   }
 }
 
 .table-section {
-  background: white;
+  background: var(--zeta-surface);
   border-radius: 1rem;
-  border: 1px solid #385881;
+  border: 1px solid var(--zeta-border);
   overflow: hidden;
   margin-bottom: 1.5rem;
 }
@@ -564,14 +563,14 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   border-collapse: collapse;
 
   thead {
-    background-color: #f8fafc;
-    border-bottom: 1px solid #365175;
+    background-color: var(--zeta-background-hover);
+    border-bottom: 1px solid var(--zeta-border);
 
     th {
       padding: 1rem;
       text-align: left;
       font-weight: 600;
-      color: #475569;
+      color: var(--zeta-text-secondary);
       font-size: 0.875rem;
       text-transform: uppercase;
     }
@@ -579,16 +578,16 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
 
   tbody {
     tr {
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--zeta-divider);
       transition: background-color 0.2s;
 
       &:hover {
-        background-color: #f8fafc;
+        background-color: var(--zeta-background-hover);
       }
 
       td {
         padding: 0.75rem 1rem;
-        color: #334155;
+        color: var(--zeta-text-primary);
         font-size: 0.875rem;
       }
     }
@@ -674,7 +673,7 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   padding: 1.5rem;
 
   .page-info {
-    color: #475569;
+    color: var(--zeta-text-secondary);
     font-weight: 500;
   }
 }
@@ -695,9 +694,9 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
 }
 
 .modal-content {
-  background: white;
+  background: var(--zeta-surface);
   border-radius: 1rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   width: 100%;
   max-height: 75vh;
@@ -710,12 +709,12 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--zeta-divider);
 
   h2 {
     margin: 0;
     font-size: 1.25rem;
-    color: #1e293b;
+    color: var(--zeta-text-primary);
   }
 }
 
@@ -724,7 +723,7 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #94a3b8;
+  color: var(--zeta-text-disabled);
   padding: 0;
   width: 32px;
   height: 32px;
@@ -735,8 +734,8 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   transition: all 0.2s;
 
   &:hover {
-    background-color: #f1f5f9;
-    color: #475569;
+    background-color: var(--zeta-background-hover);
+    color: var(--zeta-text-secondary);
   }
 }
 
@@ -748,17 +747,17 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
 
 .modal-footer {
   padding: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--zeta-divider);
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
 }
 
 .ticket-info {
-  background: #f8fafc;
+  background: var(--zeta-background-hover);
   padding: 1rem;
   border-radius: 0.5rem;
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid var(--zeta-primary);
 }
 
 .info-grid {
@@ -773,15 +772,142 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: #94a3b8;
+    color: var(--zeta-text-disabled);
     margin-bottom: 0.25rem;
   }
 
   p {
     margin: 0;
-    color: #334155;
+    color: var(--zeta-text-primary);
     font-size: 0.875rem;
   }
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--zeta-text-disabled);
+}
+
+.ticket-description-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--zeta-divider);
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--zeta-text-primary);
+  }
+}
+
+.ticket-description-text {
+  white-space: pre-wrap;
+  margin: 0;
+  color: var(--zeta-text-secondary);
+}
+
+.response-form-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--zeta-divider);
+
+  h4 {
+    margin: 0 0 1rem 0;
+    color: var(--zeta-text-primary);
+  }
+}
+
+.existing-response {
+  background: var(--zeta-success-light);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--zeta-success);
+}
+
+.existing-response-label {
+  font-size: 0.875rem;
+  color: var(--zeta-text-secondary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.existing-response-text {
+  white-space: pre-wrap;
+  margin: 0;
+  color: var(--zeta-text-primary);
+}
+
+.response-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 1px solid var(--zeta-divider);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  background-color: var(--zeta-background-paper);
+  color: var(--zeta-text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: var(--zeta-primary);
+    box-shadow: 0 0 0 3px var(--zeta-ring);
+  }
+}
+
+.status-update-section {
+  margin-bottom: 1rem;
+}
+
+.status-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--zeta-text-primary);
+}
+
+.status-current {
+  font-size: 0.75rem;
+  color: var(--zeta-text-disabled);
+  margin: 0 0 0.5rem 0;
+}
+
+.status-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--zeta-divider);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  background-color: var(--zeta-background-paper);
+  color: var(--zeta-text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: var(--zeta-primary);
+    box-shadow: 0 0 0 3px var(--zeta-ring);
+  }
+}
+
+.status-warning {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.resolved-warning {
+  background: var(--zeta-warning-light);
+  border: 1px solid var(--zeta-warning);
+  color: var(--zeta-warning-dark);
+}
+
+.closed-warning {
+  background: var(--zeta-error-light);
+  border: 1px solid var(--zeta-error);
+  color: var(--zeta-error-dark);
 }
 
 .alert {
@@ -790,9 +916,9 @@ padding: var(--spacing-2xl); background: var(--zeta-gradient-hero); color: white
   font-size: 0.875rem;
 
   &.alert-error {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
+    background-color: var(--zeta-error-light);
+    color: var(--zeta-error-dark);
+    border: 1px solid var(--zeta-error);
   }
 }
 </style>

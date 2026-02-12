@@ -141,9 +141,9 @@ const refreshInterest = async () => {
   max-width: 900px;
   margin: 0 auto;
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -165,9 +165,9 @@ const refreshInterest = async () => {
 .detail-item {
   padding: var(--spacing-md);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  background: var(--zeta-background-hover);
+  border: 1px solid var(--zeta-border);
+  box-shadow: var(--shadow-sm);
 }
 .detail-item { label { display: block; color: var(--zeta-text-secondary); margin-bottom: var(--spacing-xs); } }
 .actions-section { display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); }
@@ -178,8 +178,8 @@ const refreshInterest = async () => {
   margin-top: var(--spacing-xl);
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
-  background: rgba(15, 23, 42, 0.04);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: var(--zeta-background-hover);
+  border: 1px solid var(--zeta-border);
 }
 
 .interest-card {
@@ -190,8 +190,8 @@ const refreshInterest = async () => {
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, rgba(14, 116, 144, 0.08), rgba(34, 197, 94, 0.08));
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  box-shadow: var(--shadow-md);
 }
 
 .status-badge {

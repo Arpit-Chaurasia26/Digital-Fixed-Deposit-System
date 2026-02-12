@@ -306,7 +306,7 @@ onMounted(() => {
 
 
 .hero-card {
-     box-shadow: 0 24px 55px rgba(15, 23, 42, 0.18);
+     box-shadow: var(--shadow-lg);
  position: relative;
  overflow: hidden;
 }
@@ -367,9 +367,9 @@ onMounted(() => {
 .fd-form {
  padding: var(--spacing-2xl);
  border-radius: var(--radius-xl);
-     border: 1px solid rgba(148, 163, 184, 0.2);
-     background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+     border: 1px solid var(--zeta-border);
+     background: var(--zeta-surface);
+     box-shadow: var(--shadow-md);
      position: relative;
      overflow: hidden;
 }
@@ -390,7 +390,7 @@ onMounted(() => {
  border-radius: var(--radius-lg);
  margin-bottom: var(--spacing-lg);
  color: white;
-     box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18);
+     box-shadow: var(--shadow-lg);
      position: relative;
      overflow: hidden;
 
@@ -432,9 +432,9 @@ onMounted(() => {
 .info-panel {
  padding: var(--spacing-xl);
  border-radius: var(--radius-xl);
-     border: 1px solid rgba(148, 163, 184, 0.2);
-     background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+     border: 1px solid var(--zeta-border);
+     background: var(--zeta-surface);
+     box-shadow: var(--shadow-md);
      position: relative;
      overflow: hidden;
 
@@ -470,7 +470,7 @@ onMounted(() => {
    background: var(--zeta-background);
    padding: var(--spacing-md);
    border-radius: var(--radius-md);
-       box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.2);
+       box-shadow: var(--shadow-sm);
 
 
    .status-badge {

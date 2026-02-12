@@ -252,9 +252,9 @@ onMounted(async () => {
   padding: var(--spacing-xl);
   text-align: center;
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
   h3 { font-size: 0.875rem; color: var(--zeta-text-secondary); margin-bottom: var(--spacing-sm); }
@@ -279,9 +279,9 @@ onMounted(async () => {
 .financial-summary {
   padding: var(--spacing-xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   .summary-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -296,9 +296,9 @@ onMounted(async () => {
 .summary-card {
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-background-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .summary-card label {
@@ -323,9 +323,9 @@ onMounted(async () => {
 .fd-card {
   padding: var(--spacing-xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -369,7 +369,7 @@ onMounted(async () => {
     align-items: center;
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
-    background: white;
+    background: var(--zeta-surface);
     box-shadow: var(--shadow-sm);
     text-decoration: none;
     color: inherit;

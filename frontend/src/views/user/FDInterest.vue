@@ -94,7 +94,7 @@ onMounted(async () => {
   color: white;
   border-radius: var(--radius-xl);
   margin-bottom: var(--spacing-2xl);
-  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.18);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -122,9 +122,9 @@ onMounted(async () => {
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-xl);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -158,9 +158,9 @@ onMounted(async () => {
   padding: var(--spacing-xl);
   margin-left: 30px;
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--zeta-border);
+  background: var(--zeta-surface);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -179,7 +179,7 @@ onMounted(async () => {
   height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, #06b6d4, #22c55e);
-  border: 3px solid #fff;
+  border: 3px solid var(--zeta-surface);
   box-shadow: 0 0 18px rgba(34, 197, 94, 0.45);
   display: flex;
   align-items: center;
