@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -37,6 +38,8 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
+
+
     protected User() {
     }
 
@@ -59,6 +62,19 @@ public class User {
         }
         logger.debug("User entity pre-persist initialized");
     }
+
+    @Column(nullable = false)
+    private int failedPasswordResetAttempts = 0;
+
+    private LocalDateTime loginBlockedUntil;
+
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Column(nullable = false)
+    private int failedLoginAttempts = 0;
+
+
 
     // Getters & Setters
 
@@ -100,5 +116,28 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public int getFailedPasswordResetAttempts() {
+        return failedPasswordResetAttempts;
+    }
+
+    public void setFailedPasswordResetAttempts(int failedPasswordResetAttempts) {
+        this.failedPasswordResetAttempts = failedPasswordResetAttempts;
+    }
+
+    public LocalDateTime getLoginBlockedUntil() {
+        return loginBlockedUntil;
+    }
+    public void setLoginBlockedUntil(LocalDateTime loginBlockedUntil) {
+        this.loginBlockedUntil = loginBlockedUntil;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int attempts) {
+        this.failedLoginAttempts = attempts;
     }
 }

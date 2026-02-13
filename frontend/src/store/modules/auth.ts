@@ -21,12 +21,15 @@ const buildAuthErrorMessage = (error: any, action: 'login' | 'register'): string
 
 
  if (action === 'login') {
+   if (status === 429) return serverMessage || 'Too many failed attempts. Please try again later.';
    if (status === 401) return 'Invalid email or password. Please try again.';
    if (status === 403) return 'Your account does not have access. Contact support if this is unexpected.';
  }
 
 
  if (action === 'register') {
+   if (status === 400 && serverMessage?.includes('Email not verified')) return 'Please verify your email before registering.';
+   if (status === 400 && serverMessage?.includes('already registered')) return 'An account with this email already exists. Please sign in instead.';
    if (status === 409) return 'An account with this email already exists. Please sign in instead.';
  }
 

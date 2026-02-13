@@ -35,6 +35,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false, requiresGuest: true },
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/views/auth/ForgotPassword.vue'),
+    meta: { requiresAuth: false, requiresGuest: true },
+  },
+  {
     path: '/user/dashboard',
     name: 'UserDashboard',
     component: () => import('@/views/user/UserDashboard.vue'),
