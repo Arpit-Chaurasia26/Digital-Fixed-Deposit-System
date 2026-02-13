@@ -55,7 +55,7 @@
           <!-- MATURED: Show Timeline + Break FD -->
           <div v-if="fd.status === 'MATURED'" class="status-actions-panel">
             <div class="status-message info-message">
-              <span class="status-icon">🎉</span>
+            
               <div>
                 <strong>Your FD has matured!</strong>
                 <p>You can now withdraw the full amount with all accrued interest. No penalty will be applied.</p>
@@ -65,16 +65,19 @@
               <router-link :to="`/user/fd/${fd.id}/interest`" class="btn btn-primary">
                 <span class="btn-icon">📊</span> View Interest Timeline
               </router-link>
-              <router-link :to="{ path: `/user/fd/${fd.id}/break`, query: { amount: fd.amount } }" class="btn btn-danger">
-                <span class="btn-icon">💰</span> Break FD
-              </router-link>
+               <router-link :to="{
+                      path: `/user/fd/${fd.id}/break`,
+                      state: { amount: fd.amount }
+                    }" class="btn btn-success">
+                      <span class="btn-icon"></span> Withdraw Full Amount 
+                    </router-link>
             </div>
           </div>
 
           <!-- CLOSED: Show Timeline only -->
           <div v-else-if="fd.status === 'CLOSED'" class="status-actions-panel">
             <div class="status-message neutral-message">
-              <span class="status-icon">✅</span>
+              
               <div>
                 <strong>This FD has been closed.</strong>
                 <p>The deposit has been fully settled. You can view the interest timeline for your records.</p>
@@ -82,7 +85,7 @@
             </div>
             <div class="actions-section">
               <router-link :to="`/user/fd/${fd.id}/interest`" class="btn btn-primary">
-                <span class="btn-icon">📊</span> View Interest Timeline
+                View Interest Timeline
               </router-link>
             </div>
           </div>
@@ -90,7 +93,7 @@
           <!-- BROKEN: Show Timeline only -->
           <div v-else-if="fd.status === 'BROKEN'" class="status-actions-panel">
             <div class="status-message warning-message">
-              <span class="status-icon">⚠️</span>
+      
               <div>
                 <strong>This FD was broken prematurely.</strong>
                 <p>The deposit was withdrawn before maturity. You can view the interest timeline for your records.</p>
@@ -98,7 +101,7 @@
             </div>
             <div class="actions-section">
               <router-link :to="`/user/fd/${fd.id}/interest`" class="btn btn-primary">
-                <span class="btn-icon">📊</span> View Interest Timeline
+                 View Interest Timeline
               </router-link>
             </div>
           </div>
@@ -106,7 +109,7 @@
           <!-- ACTIVE: Show Timeline + Check Eligibility → conditional Break/Partial Withdrawal -->
           <div v-else-if="fd.status === 'ACTIVE'" class="status-actions-panel">
             <div class="status-message active-message">
-              <span class="status-icon">🔒</span>
+              
               <div>
                 <strong>Your FD is active and earning interest.</strong>
                 <p>You can view the interest timeline or check if premature withdrawal is allowed under your scheme.</p>
@@ -115,7 +118,7 @@
 
             <div class="actions-section">
               <router-link :to="`/user/fd/${fd.id}/interest`" class="btn btn-primary">
-                <span class="btn-icon">📊</span> View Interest Timeline
+                View Interest Timeline
               </router-link>
               <button class="btn btn-accent" @click.prevent="handleEligibilityCheck" :disabled="checkingEligibility">
                 <span class="btn-icon">🔍</span>
@@ -133,14 +136,18 @@
                 </div>
                 <p class="eligibility-cause">{{ eligibilityMessage?.rootCause }}</p>
                 <div class="eligibility-info">
-                  <p>💡 <strong>Note:</strong> Premature withdrawal is allowed under your FD scheme. Breaking the FD before maturity may attract a <strong>1% penalty</strong> on the interest rate. Withdrawals within the first 3 months will receive <strong>no interest</strong>.</p>
+                  <p> <strong>Note:</strong> Premature withdrawal is allowed under your FD scheme. Breaking the FD before maturity may attract a <strong>1% penalty</strong> on the interest rate. Withdrawals within the first 3 months will receive <strong>no interest</strong>.</p>
                 </div>
                 <div class="eligibility-actions">
-                  <router-link :to="{ path: `/user/fd/${fd.id}/break`, query: { amount: fd.amount } }" class="btn btn-danger">
-                    <span class="btn-icon">💔</span> Break FD (Full Withdrawal)
-                  </router-link>
+                    <router-link :to="{
+                      path: `/user/fd/${fd.id}/break`,
+                      state: { amount: fd.amount }
+                    }" class="btn btn-danger">
+                      <span class="btn-icon"></span> Break FD (Full Withdrawal)
+                    </router-link>
+ 
                   <button class="btn btn-warning" @click="showPartialWithdrawal = !showPartialWithdrawal">
-                    <span class="btn-icon">💸</span> Partial Withdrawal
+                   Partial Withdrawal
                   </button>
                 </div>
 
@@ -218,7 +225,7 @@
                 </div>
                 <p class="eligibility-cause">{{ eligibilityMessage?.rootCause }}</p>
                 <div class="eligibility-info">
-                  <p>🔒 Premature withdrawal is <strong>not allowed</strong> under your current FD scheme. The deposit will continue to earn interest until the maturity date.</p>
+                  <p> Premature withdrawal is <strong>not allowed</strong> under your current FD scheme. The deposit will continue to earn interest until the maturity date.</p>
                 </div>
               </div>
             </div>

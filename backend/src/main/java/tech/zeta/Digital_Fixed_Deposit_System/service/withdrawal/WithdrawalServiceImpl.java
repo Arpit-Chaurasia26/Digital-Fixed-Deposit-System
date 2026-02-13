@@ -142,6 +142,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
 
         if(withdrawalAmount.compareTo(principleAmount)<0){
             fixedDeposit.setAmount(principleAmount.subtract(withdrawalAmount));
+            fixedDeposit.setAccruedInterest(InterestUtils.calculateInterest(fixedDeposit.getAmount(), fixedDeposit.getInterestRate(), ChronoUnit.MONTHS.between(fixedDeposit.getStartDate(), LocalDate.now())));
         }else{
 
             fixedDeposit.setAccruedInterest(withdrawalPreview.getNetInterestAmount());
