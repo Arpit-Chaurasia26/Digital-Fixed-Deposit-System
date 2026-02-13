@@ -147,4 +147,24 @@ public class GlobalExceptionHandler {
                         HttpStatus.INTERNAL_SERVER_ERROR.value()
                 ));
     }
+
+
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<ApiResponse> handleAccountLocked(
+            AccountLockedException ex
+    ) {
+        long minutes = ex.getRemainingSeconds() / 60;
+        long seconds = ex.getRemainingSeconds() % 60;
+
+        String message = String.format(
+                "Too many attempts. Try again in %d min %d sec",
+                minutes,
+                seconds
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new ApiResponse(message, 429));
+    }
+
 }

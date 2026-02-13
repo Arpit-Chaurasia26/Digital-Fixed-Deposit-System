@@ -8,21 +8,32 @@
          <p>Join Zeta FD for secure investments</p>
        </div>
 
-
-       <form @submit.prevent="handleRegister" class="auth-form">
-         <div class="form-group">
-           <label class="form-label">Full Name</label>
-           <input
-             v-model="formData.name"
-             type="text"
-             class="form-control"
-             placeholder="Enter your full name"
-             required
-           />
-           <span v-if="errors.name" class="form-error">{{ errors.name }}</span>
+       <!-- Step Indicator -->
+       <div class="step-indicator">
+         <div class="step" :class="{ active: currentStep >= 1, completed: currentStep > 1 }">
+           <div class="step-circle">
+             <span v-if="currentStep > 1">✓</span>
+             <span v-else>1</span>
+           </div>
+           <span class="step-label">Email</span>
          </div>
+         <div class="step-line" :class="{ active: currentStep > 1 }"></div>
+         <div class="step" :class="{ active: currentStep >= 2, completed: currentStep > 2 }">
+           <div class="step-circle">
+             <span v-if="currentStep > 2">✓</span>
+             <span v-else>2</span>
+           </div>
+           <span class="step-label">Verify</span>
+         </div>
+         <div class="step-line" :class="{ active: currentStep > 2 }"></div>
+         <div class="step" :class="{ active: currentStep >= 3 }">
+           <div class="step-circle">3</div>
+           <span class="step-label">Details</span>
+         </div>
+       </div>
 
-
+       <!-- Step 1: Email & Send OTP -->
+       <form v-if="currentStep === 1" @submit.prevent="handleSendOtp" class="auth-form">
          <div class="form-group">
            <label class="form-label">Email Address</label>
            <input
@@ -36,6 +47,90 @@
            <span v-if="errors.email" class="form-error">{{ errors.email }}</span>
          </div>
 
+         <div v-if="otpError" class="alert alert-error">{{ otpError }}</div>
+
+         <button
+           type="submit"
+           class="btn btn-primary btn-full"
+           :disabled="sendingOtp || !formData.email || !!errors.email"
+         >
+           <span v-if="sendingOtp" class="spinner"></span>
+           <span v-else>Send Verification Code</span>
+         </button>
+       </form>
+
+       <!-- Step 2: Verify OTP -->
+       <div v-if="currentStep === 2" class="auth-form">
+         <div class="otp-sent-info">
+           <div class="otp-icon">📧</div>
+           <p>We've sent a 6-digit verification code to</p>
+           <strong>{{ formData.email }}</strong>
+         </div>
+
+         <div class="otp-input-group">
+           <input
+             v-for="(_, index) in otpDigits"
+             :key="index"
+             :ref="(el) => setOtpRef(el as HTMLInputElement, index)"
+             v-model="otpDigits[index]"
+             type="text"
+             maxlength="1"
+             class="otp-input"
+             inputmode="numeric"
+             @input="onOtpInput(index)"
+             @keydown="onOtpKeydown($event, index)"
+             @paste="onOtpPaste($event)"
+           />
+         </div>
+         <span v-if="errors.otp" class="form-error otp-error">{{ errors.otp }}</span>
+
+         <div v-if="otpError" class="alert alert-error">{{ otpError }}</div>
+
+         <button
+           class="btn btn-primary btn-full"
+           :disabled="verifyingOtp || otpCode.length !== 6"
+           @click="handleVerifyOtp"
+         >
+           <span v-if="verifyingOtp" class="spinner"></span>
+           <span v-else>Verify Code</span>
+         </button>
+
+         <div class="otp-actions">
+           <button
+             type="button"
+             class="link-button"
+             :disabled="resendCooldown > 0 || sendingOtp"
+             @click="handleResendOtp"
+           >
+             <span v-if="resendCooldown > 0">Resend code in {{ resendCooldown }}s</span>
+             <span v-else-if="sendingOtp">Sending...</span>
+             <span v-else>Resend code</span>
+           </button>
+           <button type="button" class="link-button" @click="changeEmail">
+             Change email
+           </button>
+         </div>
+       </div>
+
+       <!-- Step 3: Complete Registration -->
+       <form v-if="currentStep === 3" @submit.prevent="handleRegister" class="auth-form">
+         <div class="verified-email">
+           <span class="verified-icon">✓</span>
+           <span>{{ formData.email }}</span>
+           <span class="verified-badge">Verified</span>
+         </div>
+
+         <div class="form-group">
+           <label class="form-label">Full Name</label>
+           <input
+             v-model="formData.name"
+             type="text"
+             class="form-control"
+             placeholder="Enter your full name"
+             required
+           />
+           <span v-if="errors.name" class="form-error">{{ errors.name }}</span>
+         </div>
 
          <div class="form-group">
            <label class="form-label">Password</label>
@@ -61,8 +156,13 @@
            <div class="password-strength">
              <div class="password-strength-bar" :style="{ width: passwordStrength + '%' }"></div>
            </div>
+           <div class="password-requirements">
+             <span :class="{ met: formData.password.length >= 8 }">✓ 8+ characters</span>
+             <span :class="{ met: /[a-z]/.test(formData.password) }">✓ Lowercase</span>
+             <span :class="{ met: /[A-Z]/.test(formData.password) }">✓ Uppercase</span>
+             <span :class="{ met: /[0-9]/.test(formData.password) }">✓ Number</span>
+           </div>
          </div>
-
 
          <div class="form-group">
            <label class="form-label">Confirm Password</label>
@@ -76,11 +176,9 @@
            <span v-if="errors.confirmPassword" class="form-error">{{ errors.confirmPassword }}</span>
          </div>
 
-
          <div v-if="error" class="alert alert-error">
            {{ error }}
          </div>
-
 
          <button
            type="submit"
@@ -88,10 +186,9 @@
            :disabled="loading || !isFormValid"
          >
            <span v-if="loading" class="spinner"></span>
-           <span v-else>Register</span>
+           <span v-else>Create Account</span>
          </button>
        </form>
-
 
        <div class="auth-footer">
          <p>Already have an account? <router-link to="/login">Login here</router-link></p>
@@ -104,12 +201,13 @@
 
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Navbar from '@/components/common/Navbar.vue';
 import Footer from '@/components/common/Footer.vue';
 import * as validators from '@/utils/validators';
+import { authService } from '@/services/authServices';
 
 
 const store = useStore();
@@ -118,6 +216,23 @@ const router = useRouter();
 
 const _components = { Navbar, Footer };
 void _components;
+
+
+const currentStep = ref(1);
+const sendingOtp = ref(false);
+const verifyingOtp = ref(false);
+const otpError = ref('');
+const resendCooldown = ref(0);
+let cooldownTimer: ReturnType<typeof setInterval> | null = null;
+
+const otpDigits = ref<string[]>(['', '', '', '', '', '']);
+const otpRefs = ref<(HTMLInputElement | null)[]>([]);
+
+const setOtpRef = (el: HTMLInputElement | null, index: number) => {
+ otpRefs.value[index] = el;
+};
+
+const otpCode = computed(() => otpDigits.value.join(''));
 
 
 const formData = ref({
@@ -133,6 +248,7 @@ const errors = ref({
  email: '',
  password: '',
  confirmPassword: '',
+ otp: '',
 });
 
 
@@ -175,7 +291,7 @@ const validateEmail = () => {
 const validatePassword = () => {
  const result = validators.password(formData.value.password);
  errors.value.password = typeof result === 'string' ? result : '';
-  // Also validate confirm password if it's already filled
+
  if (formData.value.confirmPassword) {
    const confirmResult = validators.confirmPassword(formData.value.password)(formData.value.confirmPassword);
    errors.value.confirmPassword = typeof confirmResult === 'string' ? confirmResult : '';
@@ -183,16 +299,133 @@ const validatePassword = () => {
 };
 
 
+// OTP input handlers
+const onOtpInput = (index: number) => {
+ const val = otpDigits.value[index];
+ if (val && !/^\d$/.test(val)) {
+   otpDigits.value[index] = '';
+   return;
+ }
+ if (val && index < 5) {
+   otpRefs.value[index + 1]?.focus();
+ }
+ errors.value.otp = '';
+};
+
+const onOtpKeydown = (event: KeyboardEvent, index: number) => {
+ if (event.key === 'Backspace' && !otpDigits.value[index] && index > 0) {
+   otpRefs.value[index - 1]?.focus();
+ }
+};
+
+const onOtpPaste = (event: ClipboardEvent) => {
+ event.preventDefault();
+ const paste = event.clipboardData?.getData('text')?.replace(/\D/g, '').slice(0, 6) || '';
+ for (let i = 0; i < 6; i++) {
+   otpDigits.value[i] = paste[i] || '';
+ }
+ const focusIdx = Math.min(paste.length, 5);
+ otpRefs.value[focusIdx]?.focus();
+};
+
+
+const startCooldown = () => {
+ resendCooldown.value = 60;
+ if (cooldownTimer) clearInterval(cooldownTimer);
+ cooldownTimer = setInterval(() => {
+   resendCooldown.value--;
+   if (resendCooldown.value <= 0 && cooldownTimer) {
+     clearInterval(cooldownTimer);
+     cooldownTimer = null;
+   }
+ }, 1000);
+};
+
+onUnmounted(() => {
+ if (cooldownTimer) clearInterval(cooldownTimer);
+});
+
+
+const handleSendOtp = async () => {
+ validateEmail();
+ if (errors.value.email) return;
+
+ sendingOtp.value = true;
+ otpError.value = '';
+ try {
+   await authService.sendEmailOtp(formData.value.email);
+   currentStep.value = 2;
+   startCooldown();
+ } catch (err: any) {
+   otpError.value = err?.response?.data?.message || 'Failed to send verification code. Please try again.';
+ } finally {
+   sendingOtp.value = false;
+ }
+};
+
+
+const handleVerifyOtp = async () => {
+ if (otpCode.value.length !== 6) {
+   errors.value.otp = 'Please enter the complete 6-digit code';
+   return;
+ }
+
+ verifyingOtp.value = true;
+ otpError.value = '';
+ try {
+   await authService.verifyEmailOtp(formData.value.email, otpCode.value);
+   currentStep.value = 3;
+ } catch (err: any) {
+   const msg = err?.response?.data?.message || '';
+   if (msg.includes('expired')) {
+     otpError.value = 'Verification code has expired. Please request a new one.';
+   } else if (msg.includes('Invalid')) {
+     otpError.value = 'Invalid verification code. Please check and try again.';
+   } else {
+     otpError.value = msg || 'Verification failed. Please try again.';
+   }
+ } finally {
+   verifyingOtp.value = false;
+ }
+};
+
+
+const handleResendOtp = async () => {
+ sendingOtp.value = true;
+ otpError.value = '';
+ otpDigits.value = ['', '', '', '', '', ''];
+ try {
+   await authService.sendEmailOtp(formData.value.email);
+   startCooldown();
+ } catch (err: any) {
+   otpError.value = err?.response?.data?.message || 'Failed to resend code. Please try again.';
+ } finally {
+   sendingOtp.value = false;
+ }
+};
+
+
+const changeEmail = () => {
+ currentStep.value = 1;
+ otpDigits.value = ['', '', '', '', '', ''];
+ otpError.value = '';
+ errors.value.otp = '';
+ if (cooldownTimer) {
+   clearInterval(cooldownTimer);
+   cooldownTimer = null;
+ }
+ resendCooldown.value = 0;
+};
+
+
 const handleRegister = async () => {
- // Validate all fields
  validateEmail();
  validatePassword();
-  const confirmResult = validators.confirmPassword(formData.value.password)(formData.value.confirmPassword);
+
+ const confirmResult = validators.confirmPassword(formData.value.password)(formData.value.confirmPassword);
  errors.value.confirmPassword = typeof confirmResult === 'string' ? confirmResult : '';
 
-
  if (!isFormValid.value) return;
-
 
  try {
    await store.dispatch('auth/register', {
@@ -201,8 +434,6 @@ const handleRegister = async () => {
      password: formData.value.password,
    });
 
-
-   // Get user role and redirect accordingly
    const user = store.getters['auth/user'];
    if (user?.role === 'ADMIN') {
      router.push('/admin/dashboard');
@@ -243,17 +474,221 @@ const handleRegister = async () => {
 
 .auth-header {
  text-align: center;
- margin-bottom: var(--spacing-xl);
-
+ margin-bottom: var(--spacing-lg);
 
  h2 {
    color: var(--zeta-primary);
    margin-bottom: var(--spacing-sm);
  }
 
+ p {
+   color: var(--zeta-text-secondary);
+ }
+}
+
+
+/* Step Indicator */
+.step-indicator {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: var(--spacing-2xl);
+ gap: 0;
+}
+
+.step {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: var(--spacing-xs);
+
+ .step-circle {
+   width: 36px;
+   height: 36px;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: var(--font-size-sm);
+   font-weight: 700;
+   border: 2px solid var(--zeta-divider);
+   color: var(--zeta-text-secondary);
+   background: var(--zeta-surface);
+   transition: all 0.3s ease;
+ }
+
+ .step-label {
+   font-size: var(--font-size-xs);
+   color: var(--zeta-text-secondary);
+   font-weight: 500;
+   transition: color 0.3s ease;
+ }
+
+ &.active .step-circle {
+   border-color: var(--zeta-primary);
+   color: white;
+   background: var(--zeta-primary);
+   box-shadow: 0 0 0 4px rgba(14, 116, 144, 0.15);
+ }
+
+ &.active .step-label {
+   color: var(--zeta-primary);
+   font-weight: 600;
+ }
+
+ &.completed .step-circle {
+   border-color: #16a34a;
+   color: white;
+   background: #16a34a;
+   box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
+ }
+
+ &.completed .step-label {
+   color: #16a34a;
+ }
+}
+
+.step-line {
+ width: 48px;
+ height: 2px;
+ background: var(--zeta-divider);
+ margin: 0 var(--spacing-sm);
+ margin-bottom: 20px;
+ transition: background 0.3s ease;
+
+ &.active {
+   background: #16a34a;
+ }
+}
+
+
+/* OTP Section */
+.otp-sent-info {
+ text-align: center;
+ margin-bottom: var(--spacing-xl);
+
+ .otp-icon {
+   font-size: 48px;
+   margin-bottom: var(--spacing-md);
+ }
 
  p {
    color: var(--zeta-text-secondary);
+   margin-bottom: var(--spacing-xs);
+ }
+
+ strong {
+   color: var(--zeta-primary);
+   font-size: var(--font-size-md);
+ }
+}
+
+.otp-input-group {
+ display: flex;
+ justify-content: center;
+ gap: var(--spacing-sm);
+ margin-bottom: var(--spacing-lg);
+}
+
+.otp-input {
+ width: 48px;
+ height: 56px;
+ text-align: center;
+ font-size: 24px;
+ font-weight: 700;
+ border: 2px solid var(--zeta-divider);
+ border-radius: var(--radius-md);
+ background: var(--zeta-surface);
+ color: var(--zeta-text);
+ outline: none;
+ transition: all 0.2s ease;
+ caret-color: var(--zeta-primary);
+
+ &:focus {
+   border-color: var(--zeta-primary);
+   box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.15);
+ }
+}
+
+.otp-error {
+ text-align: center;
+ display: block;
+ margin-bottom: var(--spacing-md);
+}
+
+.otp-actions {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: var(--spacing-lg);
+}
+
+
+/* Verified Email Badge */
+.verified-email {
+ display: flex;
+ align-items: center;
+ gap: var(--spacing-sm);
+ padding: var(--spacing-md);
+ background: rgba(22, 163, 74, 0.08);
+ border: 1px solid rgba(22, 163, 74, 0.25);
+ border-radius: var(--radius-md);
+ margin-bottom: var(--spacing-xl);
+ font-size: var(--font-size-sm);
+
+ .verified-icon {
+   width: 24px;
+   height: 24px;
+   border-radius: 50%;
+   background: #16a34a;
+   color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 14px;
+   font-weight: 700;
+   flex-shrink: 0;
+ }
+
+ span:nth-child(2) {
+   color: var(--zeta-text);
+   font-weight: 500;
+   overflow: hidden;
+   text-overflow: ellipsis;
+ }
+
+ .verified-badge {
+   margin-left: auto;
+   background: #16a34a;
+   color: white;
+   padding: 2px 10px;
+   border-radius: 999px;
+   font-size: var(--font-size-xs);
+   font-weight: 700;
+   text-transform: uppercase;
+   letter-spacing: 0.3px;
+   flex-shrink: 0;
+ }
+}
+
+
+/* Password Requirements */
+.password-requirements {
+ display: flex;
+ flex-wrap: wrap;
+ gap: var(--spacing-sm) var(--spacing-md);
+ margin-top: var(--spacing-sm);
+
+ span {
+   font-size: var(--font-size-xs);
+   color: var(--zeta-text-secondary);
+   opacity: 0.6;
+   transition: all 0.2s ease;
+
+   &.met {
+     color: #16a34a;
+     opacity: 1;
+   }
  }
 }
 
@@ -263,10 +698,8 @@ const handleRegister = async () => {
    margin-bottom: var(--spacing-lg);
  }
 
-
  .password-input {
    position: relative;
-
 
    .password-toggle {
      position: absolute;
@@ -281,7 +714,6 @@ const handleRegister = async () => {
    }
  }
 
-
  .password-strength {
    height: 4px;
    background: var(--zeta-divider);
@@ -289,12 +721,31 @@ const handleRegister = async () => {
    margin-top: var(--spacing-sm);
    overflow: hidden;
 
-
    .password-strength-bar {
      height: 100%;
      background: var(--zeta-gradient-secondary);
      transition: width var(--transition-base);
    }
+ }
+}
+
+
+.link-button {
+ background: none;
+ border: none;
+ color: var(--zeta-primary);
+ font-weight: 600;
+ cursor: pointer;
+ padding: 0;
+ font-size: var(--font-size-sm);
+
+ &:hover:not(:disabled) {
+   text-decoration: underline;
+ }
+
+ &:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
  }
 }
 
@@ -328,11 +779,9 @@ const handleRegister = async () => {
  padding-top: var(--spacing-lg);
  border-top: 1px solid var(--zeta-divider);
 
-
  a {
    color: var(--zeta-primary);
    font-weight: 600;
-
 
    &:hover {
      text-decoration: underline;

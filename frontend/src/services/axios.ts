@@ -35,7 +35,9 @@ apiClient.interceptors.response.use(
 
 
    // Handle 401 Unauthorized - try to refresh token
-   if (error.response?.status === 401 && !originalRequest._retry) {
+   // Skip refresh for public auth endpoints (login, register, OTP, password reset)
+   const isAuthEndpoint = requestUrl.includes('/auth/');
+   if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
      originalRequest._retry = true;
 
 

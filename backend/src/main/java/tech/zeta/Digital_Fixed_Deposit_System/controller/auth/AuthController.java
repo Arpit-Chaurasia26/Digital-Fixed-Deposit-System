@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
+import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthService;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
+import tech.zeta.Digital_Fixed_Deposit_System.service.email.EmailOtpService;
 import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
 @RestController
@@ -24,11 +27,38 @@ public class AuthController {
 
     private final AuthService authService;
     private final CookieUtil cookieUtil;
+    private final EmailOtpService emailOtpService;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthService authService, CookieUtil cookieUtil) {
+
+    public AuthController(AuthService authService, CookieUtil cookieUtil, EmailOtpService emailOtpService, UserRepository userRepository) {
         this.authService = authService;
         this.cookieUtil = cookieUtil;
+        this.emailOtpService = emailOtpService;
+        this.userRepository = userRepository;
     }
+
+    // SEND OTP FOR EMAIL VERIFICATION
+
+    @PostMapping("/email/send-otp")
+    public ResponseEntity<Void> sendOtp(@RequestParam String email) {
+        emailOtpService.sendOtp(email);
+        return ResponseEntity.ok().build();
+    }
+
+
+   // VERIFY OTP FOR EMAIL VERIFICATION
+
+    @PostMapping("/email/verify-otp")
+    public ResponseEntity<Void> verifyOtp(
+            @RequestParam String email,
+            @RequestParam String otp
+    ) {
+        logger.info("Verify OTP requested for email={}", email);
+        emailOtpService.verifyOtp(email, otp);
+        return ResponseEntity.ok().build();
+    }
+
 
     //  REGISTER
 
@@ -117,4 +147,30 @@ public class AuthController {
         logger.info("Logout endpoint completed");
         return ResponseEntity.noContent().build();
     }
+
+   // PASSWORD RESET - SEND OTP
+
+    @PostMapping("/password/send-otp")
+    public ResponseEntity<Void> sendPasswordResetOtp(
+            @RequestParam String email
+    ) {
+        if (!userRepository.existsByEmail(email)) {
+            throw new ResourceNotFoundException("No account found with this email address");
+        }
+        emailOtpService.sendOtp(email);
+        return ResponseEntity.ok().build();
+    }
+
+    // PASSWORD RESET - VERIFY OTP
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<Void> resetPassword(
+            @RequestParam String email,
+            @RequestParam String otp,
+            @RequestParam String newPassword
+    ) {
+        authService.resetPassword(email, otp, newPassword);
+        return ResponseEntity.ok().build();
+    }
+
 }
