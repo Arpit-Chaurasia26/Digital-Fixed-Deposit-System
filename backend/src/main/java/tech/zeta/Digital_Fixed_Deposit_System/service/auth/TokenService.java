@@ -20,7 +20,7 @@ public class TokenService implements  ITokenService{
 
     private static final Logger logger = LogManager.getLogger(TokenService.class);
 
-    private static final long ACCESS_TOKEN_EXPIRY_HOURS = 1;
+    private static final long ACCESS_TOKEN_EXPIRY_MINUTES = 10;
 
     private final Key signingKey;
 
@@ -37,7 +37,7 @@ public class TokenService implements  ITokenService{
 
         Instant now = Instant.now();
         Instant expiry =
-                now.plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS);
+                now.plus(ACCESS_TOKEN_EXPIRY_MINUTES, ChronoUnit.MINUTES);
 
         String token = Jwts.builder()
                 .setSubject(userId.toString())

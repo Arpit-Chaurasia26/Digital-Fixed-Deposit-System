@@ -86,16 +86,19 @@ public class FixedDepositService {
     @Transactional(readOnly = true)
     public FixedDeposit getFixedDepositById(Long userId, Long fdId) {
 
-        FixedDeposit fd = fixedDepositRepository
-                .findByIdAndUserId(fdId, userId)
-                .orElseThrow(() -> {
-                    logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
-                    return new ResourceNotFoundException("Fixed Deposit not found for user");
-                });
 
-        enrichWithAccruedInterest(fd);
-        return fd;
+    FixedDeposit fd = fixedDepositRepository
+            .findByIdAndUserId(fdId, userId)
+            .orElseThrow(() -> {
+                logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
+                return new ResourceNotFoundException("Fixed Deposit not found for user");
+            });
+
+
+    enrichWithAccruedInterest(fd);
+    return fd;
     }
+
 
     // Update Fixed Deposit Status of a particular FD of a user
     @Transactional

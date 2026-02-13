@@ -54,10 +54,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers(
-                                "/auth/register",
                                 "/auth/login",
-                                "/auth/logout",
+                                "/auth/register",
                                 "/auth/refresh",
+                                "/auth/email/send-otp",
+                                "/auth/email/verify-otp",
+                                "/auth/password/send-otp",
+                                "/auth/password/verify-otp",
+                                "/auth/password/reset",
                                 "/fd/schemes"
                         ).permitAll()
 

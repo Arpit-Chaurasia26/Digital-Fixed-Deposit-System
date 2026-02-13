@@ -66,38 +66,46 @@ public class FixedDepositController {
     // Fetch Fixed Deposits of logged-in user (optionally filtered by status and amount range)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FixedDeposit>> getUserFixedDeposits(
-            @PathVariable Long userId,
-            @RequestParam(required = false) FDStatus status,
-            @RequestParam(required = false) BigDecimal minAmount,
-            @RequestParam(required = false) BigDecimal maxAmount
+        @PathVariable Long userId,
+        @RequestParam(required = false) FDStatus status,
+        @RequestParam(required = false) BigDecimal minAmount,
+        @RequestParam(required = false) BigDecimal maxAmount
     ) {
-        Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching user FDs: userId={}, status={}, minAmount={}, maxAmount={}", userId, status, minAmount, maxAmount);
+    Long authenticatedUserId = currentUserProvider.getCurrentUserId();
+    logger.info("Fetching user FDs: userId={}, status={}, minAmount={}, maxAmount={}", userId, status, minAmount, maxAmount);
 
-        if (!authenticatedUserId.equals(userId)) {
-            throw new UnauthorizedException("You are not allowed to access other user's FDs");
-        }
 
-        List<FixedDeposit> fds =
-                fixedDepositService.getFixedDepositsByFilters(userId, status, minAmount, maxAmount);
-
-        return ResponseEntity.ok(fds);
+    if (!authenticatedUserId.equals(userId)) {
+        throw new UnauthorizedException("You are not allowed to access other user's FDs");
     }
+
+
+    List<FixedDeposit> fds =
+            fixedDepositService.getFixedDepositsByFilters(userId, status, minAmount, maxAmount);
+
+
+    return ResponseEntity.ok(fds);
+    }
+
 
     // Fetch a specific Fixed Deposit of logged-in user.
     @GetMapping("/user/{userId}/{fdId}")
     public ResponseEntity<FixedDeposit> getFixedDepositById(@PathVariable Long userId, @PathVariable Long fdId) {
-        Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching user FD by id: userId={}, fdId={}", userId, fdId);
+    Long authenticatedUserId = currentUserProvider.getCurrentUserId();
+    logger.info("Fetching user FD by id: userId={}, fdId={}", userId, fdId);
 
-        if (!authenticatedUserId.equals(userId)) {
-            throw new UnauthorizedException("You are not allowed to access other user's FD");
-        }
 
-        FixedDeposit fd = fixedDepositService.getFixedDepositById(userId, fdId);
-
-        return ResponseEntity.ok(fd);
+    if (!authenticatedUserId.equals(userId)) {
+        throw new UnauthorizedException("You are not allowed to access other user's FD");
     }
+
+
+    FixedDeposit fd = fixedDepositService.getFixedDepositById(userId, fdId);
+
+
+    return ResponseEntity.ok(fd);
+    }
+
 
     // Fetch fixed deposits maturing within N days
     @GetMapping("/user/{userId}/maturing")

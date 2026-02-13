@@ -50,6 +50,32 @@ export const authService = {
    const response = await apiClient.post('/auth/refresh');
    return response.data;
  },
+
+
+ // Send OTP for email verification (registration flow)
+ async sendEmailOtp(email: string): Promise<void> {
+   await apiClient.post(`/auth/email/send-otp?email=${encodeURIComponent(email)}`);
+ },
+
+
+ // Verify email OTP (registration flow)
+ async verifyEmailOtp(email: string, otp: string): Promise<void> {
+   await apiClient.post(`/auth/email/verify-otp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+ },
+
+
+ // Send OTP for password reset
+ async sendPasswordOtp(email: string): Promise<void> {
+   await apiClient.post(`/auth/password/send-otp?email=${encodeURIComponent(email)}`);
+ },
+
+
+ // Reset password with OTP
+ async resetPassword(email: string, otp: string, newPassword: string): Promise<void> {
+   await apiClient.post(
+     `/auth/password/reset?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}&newPassword=${encodeURIComponent(newPassword)}`
+   );
+ },
 };
 
 

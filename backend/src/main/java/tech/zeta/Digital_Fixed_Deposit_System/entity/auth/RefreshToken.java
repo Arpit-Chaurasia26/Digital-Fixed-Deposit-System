@@ -22,8 +22,6 @@ import java.time.Instant;
 @AllArgsConstructor
 public class RefreshToken {
 
-    private static final Logger logger = LogManager.getLogger(RefreshToken.class);
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,7 +57,6 @@ public class RefreshToken {
 
     public boolean isExpired() {
         boolean expired = Instant.now().isAfter(expiresAt);
-        logger.trace("Refresh token expiry check result={}", expired);
         return expired;
     }
 }

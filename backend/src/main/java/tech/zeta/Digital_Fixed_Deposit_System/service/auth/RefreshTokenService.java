@@ -28,7 +28,9 @@ public class RefreshTokenService implements IRefreshTokenService{
     public RefreshToken createRefreshToken(Long userId) {
        String tokenValue= UUID.randomUUID().toString();
         Instant creationOfToken=Instant.now();
-        Instant expiryOfToken=Instant.now().plus(REFRESH_TOKEN_DAYS, ChronoUnit.DAYS);
+
+        Instant expiryOfToken= Instant.now().plus(REFRESH_TOKEN_DAYS, ChronoUnit.DAYS);
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .userId(userId)
                 .token(tokenValue)
