@@ -8,15 +8,15 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.user.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
- 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
  
-    private static final Logger logger = LogManager.getLogger(UserController.class);
- 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private final IUserService userService;
  
     public UserController(IUserService userService) {
@@ -54,9 +54,3 @@ public class UserController {
         return ResponseEntity.ok("Password updated successfully");
     }
 }
- 
- 
-
- 
-
- 

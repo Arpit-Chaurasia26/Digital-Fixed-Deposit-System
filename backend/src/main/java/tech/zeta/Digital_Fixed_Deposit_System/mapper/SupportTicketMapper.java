@@ -31,7 +31,7 @@ public class SupportTicketMapper {
         dto.setStatus(ticket.getStatus());
         dto.setResponse(ticket.getResponse());
 
-        // 🔹 FIXED: Add mapping for createdTime and updatedTime
+        // Add mapping for createdTime and updatedTime
         dto.setCreatedTime(ticket.getCreatedTime());
         dto.setUpdatedTime(ticket.getUpdatedTime());
         return dto;

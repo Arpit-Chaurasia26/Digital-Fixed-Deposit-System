@@ -1,8 +1,8 @@
 package tech.zeta.Digital_Fixed_Deposit_System.exception;
 
 import jakarta.validation.ValidationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
 
+// Author - Arpit Chaurasia
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // Author - Arpit Chaurasia
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse> handleBusinessException(
             BusinessException ex
@@ -29,6 +31,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    // Author - Arpit Chaurasia
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(
             UnauthorizedException ex
@@ -42,8 +45,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-
-
+    // Author - Arpit Chaurasia
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(
             ResourceNotFoundException ex
@@ -57,6 +59,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    // Author - Arpit Chaurasia
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
             MethodArgumentNotValidException ex
@@ -134,7 +137,7 @@ public class GlobalExceptionHandler {
     }
 
 
-
+    // Author - Arpit Chaurasia
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(
             Exception ex

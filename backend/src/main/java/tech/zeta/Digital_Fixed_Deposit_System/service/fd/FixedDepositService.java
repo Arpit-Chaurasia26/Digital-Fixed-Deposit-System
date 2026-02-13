@@ -1,13 +1,14 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestScheme;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.BusinessException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
+import tech.zeta.Digital_Fixed_Deposit_System.service.fd.status.FDStatusTransitionHandler;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +24,25 @@ import java.util.List;
 @Service
 public class FixedDepositService {
 
-    private static final Logger logger = LogManager.getLogger(FixedDepositService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FixedDepositService.class);
 
     private static final BigDecimal MIN_FD_AMOUNT = new BigDecimal("5000");
 
     private final FixedDepositRepository fixedDepositRepository;
     private final InterestCalculationService interestCalculationService;
+    private final List<FDStatusTransitionHandler> statusTransitionHandlers;
 
     public FixedDepositService(
             FixedDepositRepository fixedDepositRepository,
-            InterestCalculationService interestCalculationService
+            InterestCalculationService interestCalculationService,
+            List<FDStatusTransitionHandler> statusTransitionHandlers
     ) {
         this.fixedDepositRepository = fixedDepositRepository;
         this.interestCalculationService = interestCalculationService;
+        this.statusTransitionHandlers = statusTransitionHandlers;
     }
 
+    // Author - Yogendra Kavuru
     // Book a new Fixed Deposit.
     @Transactional
     public FixedDeposit bookFixedDeposit(Long userId, BookFDRequest request) {
@@ -71,35 +76,39 @@ public class FixedDepositService {
         return saved;
     }
 
+    // Author - Yogendra Kavuru
     // Fetch all Fixed Deposits of a user with dynamically calculated accrued interest.
     @Transactional(readOnly = true)
     public List<FixedDeposit> getFixedDepositsByUser(Long userId) {
+        logger.info("Fetching FDs for user: userId={}", userId);
 
         List<FixedDeposit> fds = fixedDepositRepository.findByUserId(userId);
 
         fds.forEach(this::enrichWithAccruedInterest);
 
+        logger.debug("Fetched FDs for user: userId={}, count={}", userId, fds.size());
         return fds;
     }
 
+    // Author - Yogendra Kavuru
     // Fetch a specific Fixed Deposit of a user.
     @Transactional(readOnly = true)
     public FixedDeposit getFixedDepositById(Long userId, Long fdId) {
+        logger.info("Fetching FD by id for user: userId={}, fdId={}", userId, fdId);
+
+        FixedDeposit fd = fixedDepositRepository
+                .findByIdAndUserId(fdId, userId)
+                .orElseThrow(() -> {
+                    logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
+                    return new ResourceNotFoundException("Fixed Deposit not found for user");
+                });
 
 
-    FixedDeposit fd = fixedDepositRepository
-            .findByIdAndUserId(fdId, userId)
-            .orElseThrow(() -> {
-                logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
-                return new ResourceNotFoundException("Fixed Deposit not found for user");
-            });
-
-
-    enrichWithAccruedInterest(fd);
-    return fd;
+        enrichWithAccruedInterest(fd);
+        return fd;
     }
 
-
+    // Author - Arpit Chaurasia
     // Update Fixed Deposit Status of a particular FD of a user
     @Transactional
     public FixedDeposit updateFixedDepositStatus(
@@ -116,49 +125,28 @@ public class FixedDepositService {
 
         FDStatus currentStatus = fd.getStatus();
 
-        // ACTIVE -> MATURED
-        if (currentStatus == FDStatus.ACTIVE && newStatus == FDStatus.MATURED) {
-            if (LocalDate.now().isBefore(fd.getMaturityDate())) {
-                logger.warn("FD not yet matured: fdId={}, maturityDate={}", fdId, fd.getMaturityDate());
-                throw new BusinessException("FD has not yet reached maturity date");
-            }
-            fd.setStatus(FDStatus.MATURED);
-            return fixedDepositRepository.save(fd);
-        }
+        FDStatusTransitionHandler handler = statusTransitionHandlers.stream()
+                .filter(h -> h.supports(currentStatus, newStatus))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.warn("Invalid FD status transition: fdId={}, from={}, to={}", fdId, currentStatus, newStatus);
+                    return new BusinessException(String.format(
+                            "Invalid FD status transition from %s to %s", currentStatus, newStatus
+                    ));
+                });
 
-        // ACTIVE -> BROKEN
-        if (currentStatus == FDStatus.ACTIVE && newStatus == FDStatus.BROKEN) {
-            if (!fd.getInterestScheme().isPrematureBreakAllowed()) {
-                logger.warn("Premature break not allowed: fdId={}, scheme={}", fdId, fd.getInterestScheme());
-                throw new BusinessException("Premature withdrawal is not allowed for this FD scheme");
-            }
-            if (!LocalDate.now().isBefore(fd.getMaturityDate())) {
-                logger.warn("FD already matured, cannot break: fdId={}", fdId);
-                throw new BusinessException("FD has already matured; use withdrawal instead");
-            }
-            fd.setStatus(FDStatus.BROKEN);
-            return fixedDepositRepository.save(fd);
-        }
-
-        // MATURED -> CLOSED
-        if (currentStatus == FDStatus.MATURED && newStatus == FDStatus.CLOSED) {
-            if (LocalDate.now().isBefore(fd.getMaturityDate())) {
-                logger.warn("FD cannot be closed before maturity: fdId={}, maturityDate={}", fdId, fd.getMaturityDate());
-                throw new BusinessException("FD cannot be closed before maturity date");
-            }
-            fd.setStatus(FDStatus.CLOSED);
-            return fixedDepositRepository.save(fd);
-        }
-
-        // INVALID Transition
-        logger.warn("Invalid FD status transition: fdId={}, from={}, to={}", fdId, currentStatus, newStatus);
-        throw new BusinessException(String.format("Invalid FD status transition from %s to %s", currentStatus, newStatus));
+        handler.apply(fd);
+        return fixedDepositRepository.save(fd);
     }
 
 
+    // Author - Arpit Chaurasia
     @Transactional(readOnly = true)
     public List<FixedDeposit> getFixedDepositsByFilters(
             Long userId, FDStatus status, BigDecimal minAmount, BigDecimal maxAmount) {
+        logger.info("Fetching FDs with filters: userId={}, status={}, minAmount={}, maxAmount={}",
+                userId, status, minAmount, maxAmount);
+
         BigDecimal effectiveMin = (minAmount != null) ? minAmount : BigDecimal.ZERO;
 
         BigDecimal effectiveMax = (maxAmount != null) ? maxAmount : BigDecimal.valueOf(Long.MAX_VALUE);
@@ -180,12 +168,16 @@ public class FixedDepositService {
         }
 
         fds.forEach(this::enrichWithAccruedInterest);
+        logger.debug("Fetched FDs with filters: userId={}, count={}", userId, fds.size());
         return fds;
     }
 
+    // Author - Arpit Chaurasia
     // Fetch fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getUserFDsMaturingWithinDays(Long userId, int days) {
+        logger.info("Fetching user maturing FDs: userId={}, days={}", userId, days);
+
         if (days <= 0) {
             logger.warn("Invalid days parameter for user maturing FDs: userId={}, days={}", userId, days);
             throw new BusinessException("Days must be positive");
@@ -203,9 +195,12 @@ public class FixedDepositService {
         return mapToMaturityResponse(fds, today);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch all fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getAllFDsMaturingWithinDays(int days) {
+        logger.info("Fetching all maturing FDs: days={}", days);
+
         if (days <= 0) {
             logger.warn("Invalid days parameter for all maturing FDs: days={}", days);
             throw new BusinessException("Days must be positive");
@@ -223,9 +218,12 @@ public class FixedDepositService {
         return mapToMaturityResponse(fds, today);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch financial year fixed deposit summary analytics for user
     @Transactional(readOnly = true)
     public FDFinancialYearSummaryResponse getUserFinancialYearSummary(Long userId, Integer year) {
+        logger.info("Fetching user financial year summary: userId={}, year={}", userId, year);
+
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
         LocalDate start = DateUtils.getFinancialYearStart(fy);
@@ -240,9 +238,12 @@ public class FixedDepositService {
         return buildFinancialYearSummary(fds, fy);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch financial year fixed deposit summary analytics for admin
     @Transactional(readOnly = true)
     public FDFinancialYearSummaryResponse getAdminFinancialYearSummary(Integer year) {
+        logger.info("Fetching admin financial year summary: year={}", year);
+
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
         LocalDate start = DateUtils.getFinancialYearStart(fy);
@@ -256,9 +257,12 @@ public class FixedDepositService {
         return buildFinancialYearSummary(fds, fy);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch all fixed deposits created in a financial year (admin)
     @Transactional(readOnly = true)
     public List<FixedDeposit> getAdminFDsByFinancialYear(Integer year) {
+        logger.info("Fetching admin FDs by financial year: year={}", year);
+
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
         LocalDate start = DateUtils.getFinancialYearStart(fy);
@@ -269,24 +273,32 @@ public class FixedDepositService {
 
         List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);
         fds.forEach(this::enrichWithAccruedInterest);
+        logger.debug("Fetched admin FDs by financial year: year={}, count={}", year, fds.size());
         return fds;
     }
 
-        // Fetch all fixed deposits in chronological order (admin)
-        @Transactional(readOnly = true)
-        public List<FixedDeposit> getAllFDsChronological(String order) {
-            Sort sort = "asc".equalsIgnoreCase(order)
-                    ? Sort.by("createdAt").ascending()
-                    : Sort.by("createdAt").descending();
+    // Author - Arpit Chaurasia
+    // Fetch all fixed deposits in chronological order (admin)
+    @Transactional(readOnly = true)
+    public List<FixedDeposit> getAllFDsChronological(String order) {
+        logger.info("Fetching all FDs chronological: order={}", order);
 
-            List<FixedDeposit> fds = fixedDepositRepository.findAll(sort);
-            fds.forEach(this::enrichWithAccruedInterest);
-            return fds;
-        }
+        Sort sort = "asc".equalsIgnoreCase(order)
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
 
+        List<FixedDeposit> fds = fixedDepositRepository.findAll(sort);
+        fds.forEach(this::enrichWithAccruedInterest);
+        logger.debug("Fetched all FDs chronological: count={}", fds.size());
+        return fds;
+    }
+
+    // Author - Arpit Chaurasia
     // Fetch user fixed deposit portfolio
     @Transactional(readOnly = true)
     public FDPortfolioResponse getUserFDPortfolio(Long userId) {
+        logger.info("Fetching user FD portfolio: userId={}", userId);
+
         List<FixedDeposit> fds = fixedDepositRepository.findByUserId(userId);
 
         long totalFDs = fds.size();
@@ -329,8 +341,10 @@ public class FixedDepositService {
     }
 
 
+    // Author - Arpit Chaurasia
     @Transactional(readOnly = true)
     public FixedDeposit getFixedDepositByIdForAdmin(Long fdId) {
+        logger.info("Fetching FD by id for admin: fdId={}", fdId);
 
         return fixedDepositRepository
                 .findById(fdId)
@@ -341,10 +355,12 @@ public class FixedDepositService {
     }
 
 
-
+    // Author - Arpit Chaurasia
     // Fetch FD interest accrual timeline
     @Transactional(readOnly = true)
     public FDInterestTimelineResponse getInterestTimeline(FixedDeposit fd, String interval) {
+        logger.info("Fetching interest timeline: fdId={}, interval={}", fd.getId(), interval);
+
         List<InterestTimelinePoint> timeline = new ArrayList<>();
 
         LocalDate startDate = fd.getStartDate();
@@ -390,10 +406,12 @@ public class FixedDepositService {
         );
     }
 
-
+    // Author - Arpit Chaurasia
     // Get current accrued interest for a Fixed Deposit of a particular user
     @Transactional(readOnly = true)
     public FDInterestResponse getCurrentInterestForUser(Long userId, Long fdId) {
+        logger.info("Fetching current interest: userId={}, fdId={}", userId, fdId);
+
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
                 .orElseThrow(() -> {
@@ -421,7 +439,9 @@ public class FixedDepositService {
 
     // Helper methods
 
+    // Author - Arpit Chaurasia
     private void enrichWithAccruedInterest(FixedDeposit fd) {
+        logger.debug("Enriching accrued interest: fdId={}, status={}", fd.getId(), fd.getStatus());
 
         if (fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED) {
 
@@ -429,14 +449,20 @@ public class FixedDepositService {
         }
     }
 
+    // Author - Arpit Chaurasia
     private void validateAmount(BigDecimal amount) {
+        logger.debug("Validating FD amount: amount={}", amount);
+
         if (amount == null || amount.compareTo(MIN_FD_AMOUNT) < 0) {
             logger.warn("Invalid FD amount: amount={}, min={}", amount, MIN_FD_AMOUNT);
             throw new BusinessException("Minimum Fixed Deposit amount is " + MIN_FD_AMOUNT);
         }
     }
 
+    // Author - Arpit Chaurasia
     private FDFinancialYearSummaryResponse buildFinancialYearSummary(List<FixedDeposit> fds, int financialYear) {
+        logger.debug("Building financial year summary: year={}, count={}", financialYear, fds.size());
+
         long totalFDs = fds.size();
 
         BigDecimal totalPrincipal =
@@ -457,7 +483,10 @@ public class FixedDepositService {
         );
     }
 
+    // Author - Arpit Chaurasia
     private FixedDeposit buildInterestSnapshot(FixedDeposit original, LocalDate asOfDate) {
+        logger.debug("Building interest snapshot: fdId={}, asOfDate={}", original.getId(), asOfDate);
+
         FixedDeposit snapshot = new FixedDeposit();
 
         snapshot.setAmount(original.getAmount());
@@ -475,7 +504,10 @@ public class FixedDepositService {
     }
 
 
+    // Author - Arpit Chaurasia
     private List<FDMaturityResponse> mapToMaturityResponse(List<FixedDeposit> fds, LocalDate today) {
+        logger.debug("Mapping maturity response: count={}, today={}", fds.size(), today);
+
         if (fds.isEmpty()) {
             logger.debug("No FDs found for maturity response on date={}", today);
         }

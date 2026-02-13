@@ -43,7 +43,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         this.fdRepository = fdRepository; // assign
     }
 
-    // 🔹 Create a new ticket (User only)
+    // Create a new ticket (User only)
     @Override
     public SupportTicketResponseDTO createTicket(SupportTicketRequestDTO requestDTO) {
         User currentUser = getCurrentUser();
@@ -54,7 +54,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
         requestDTO.setUserId(currentUser.getId());
 
-        // ✅ Validate FD ownership
+        // Validate FD ownership
         if (!checkUserOwnsFD(currentUser.getId(), requestDTO.getFdId())) {
             throw new RuntimeException("Invalid FD ID: You do not own this FD");
         }
@@ -68,7 +68,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         return mapper.toResponseDTO(saved);
     }
 
-    // 🔹 Get ticket by ID (Admin only)
+    // Get ticket by ID (Admin only)
     @Override
     public SupportTicketResponseDTO getTicketById(Long ticketId) {
         User currentUser = getCurrentUser();
@@ -83,7 +83,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         return mapper.toResponseDTO(ticket);
     }
 
-    // 🔹 Get tickets of logged-in user (User only)
+    // Get tickets of logged-in user (User only)
     @Override
     public List<SupportTicketResponseDTO> getTicketsByUserId() {
         User currentUser = getCurrentUser();
@@ -98,7 +98,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 Get all tickets (Admin only)
+    // Get all tickets (Admin only)
     // Admin only
 
     @Override
@@ -123,8 +123,8 @@ public class SupportTicketServiceImpl implements SupportTicketService {
                 .and(SupportTicketSpecifications.createdBefore(toDate))                    // Filter by created date (to)
                 .and(SupportTicketSpecifications.updatedAfter(fromDate))                   // Filter by updated date (from)
                 .and(SupportTicketSpecifications.updatedBefore(toDate))                    // Filter by updated date (to)
-                .and(SupportTicketSpecifications.hasUserId(userId))                        // 🔹 NEW: Filter by userId
-                .and(SupportTicketSpecifications.hasFdId(fdId));                           // 🔹 NEW: Filter by fdId
+                .and(SupportTicketSpecifications.hasUserId(userId))                        // Filter by userId
+                .and(SupportTicketSpecifications.hasFdId(fdId));                           // Filter by fdId
 
         Page<SupportTicketResponseDTO> result = repository.findAll(spec, pageable)
                 .map(mapper::toResponseDTO);
@@ -133,7 +133,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         return result;
     }
 
-    // 🔹 Update ticket status
+    // Update ticket status
     @Override
     public SupportTicketResponseDTO updateTicketStatus(Long ticketId, TicketStatus newStatus) {
         SupportTicket ticket = repository.findById(ticketId)
@@ -142,7 +142,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         User currentUser = getCurrentUser();
         TicketStatus currentStatus = ticket.getStatus();
 
-        // ❌ Prevent backward movement
+        // Prevent backward movement
         if (currentStatus == TicketStatus.CLOSED) {
             throw new RuntimeException("Closed tickets cannot be updated");
         }
@@ -175,7 +175,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         return mapper.toResponseDTO(updated);
     }
 
-    // 🔹 Update ticket response (Admin only)
+    // Update ticket response (Admin only)
     @Override
     public SupportTicketResponseDTO updateTicketResponse(Long ticketId, String response) {
         User currentUser = getCurrentUser();
@@ -197,14 +197,14 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         return mapper.toResponseDTO(updated);
     }
 
-    // 🔹 Helper to fetch logged-in User entity
+    // Helper to fetch logged-in User entity
     private User getCurrentUser() {
         Long userId = currentUserProvider.getCurrentUserId();
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // 🔹 Helper: check role
+    // Helper: check role
     private boolean isAdmin(User user) {
         return user.getRole() != null && user.getRole().name().equals("ADMIN");
     }

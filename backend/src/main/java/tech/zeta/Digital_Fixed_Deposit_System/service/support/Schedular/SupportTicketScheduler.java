@@ -9,8 +9,13 @@ import tech.zeta.Digital_Fixed_Deposit_System.repository.SupportTicketRepository
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class SupportTicketScheduler {
+
+    private static final Logger logger = LoggerFactory.getLogger(SupportTicketScheduler.class);
 
     private final SupportTicketRepository repository;
 
@@ -21,12 +26,18 @@ public class SupportTicketScheduler {
         this.repository = repository;
     }
 
-    // 🔹 Run daily at midnight
+    // Run daily at midnight
     @Scheduled(cron = "0 0 0 * * ?")
     public void autoCloseResolvedTickets() {
-        LocalDateTime cutoff = LocalDateTime.now().minusDays(AUTO_CLOSE_DAYS);
+        logger.info("Starting auto-close resolved tickets job");
 
-        List<SupportTicket> ticketsToClose = repository.findByStatusAndUpdatedTimeBefore(TicketStatus.RESOLVED, cutoff);
+        LocalDateTime cutoffTime = LocalDateTime.now().minusDays(AUTO_CLOSE_DAYS);
+        logger.debug("Auto-closing resolved tickets older than: {}", cutoffTime);
+
+        List<SupportTicket> ticketsToClose = repository
+                .findByStatusAndUpdatedTimeBefore(TicketStatus.RESOLVED, cutoffTime);
+
+        logger.info("Found {} resolved tickets to auto-close", ticketsToClose.size());
 
         for(SupportTicket ticket : ticketsToClose) {
             ticket.setStatus(TicketStatus.CLOSED);
@@ -36,4 +47,5 @@ public class SupportTicketScheduler {
         }
     }
 }
+
 

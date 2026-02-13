@@ -3,6 +3,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.dto.fd;
 import java.math.BigDecimal;
 import java.util.List;
 
+// Author - Arpit Chaurasia
 public class FDInterestTimelineResponse {
 
     private Long fdId;

@@ -11,25 +11,16 @@ import java.util.List;
 
 public interface SupportTicketService {
 
-    /**
-     * Create a new support ticket for logged-in user.
-     */
+    // Create a new support ticket for logged-in user.
     SupportTicketResponseDTO createTicket(SupportTicketRequestDTO requestDTO);
 
-    /**
-     * Get a ticket by ID.
-     * Users can access only their tickets, admin can access all.
-     */
+    // Get a ticket by ID. Users can access only their tickets, admin can access all.
     SupportTicketResponseDTO getTicketById(Long ticketId);
 
-    /**
-     * Get all tickets of the logged-in user.
-     */
+    // Get all tickets of the logged-in user.
     List<SupportTicketResponseDTO> getTicketsByUserId();
 
-    /**
-     * Get all tickets in the system (admin only).
-     */
+    // Get all tickets in the system (admin only).
     public Page<SupportTicketResponseDTO> getAllTickets(
             TicketStatus status,
             LocalDateTime createdFrom,
@@ -39,13 +30,9 @@ public interface SupportTicketService {
             Pageable pageable
     );
 
-    /**
-     * Update the status of a ticket (RESOLVED by admin, CLOSED by user).
-     */
+    // Update the status of a ticket (RESOLVED by admin, CLOSED by user).
     SupportTicketResponseDTO updateTicketStatus(Long ticketId, TicketStatus status);
 
-    /**
-     * Update the response of a ticket (admin only).
-     */
+    // Update the response of a ticket (admin only).
     SupportTicketResponseDTO updateTicketResponse(Long ticketId, String response);
 }

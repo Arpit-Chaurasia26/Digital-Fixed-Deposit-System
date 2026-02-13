@@ -27,12 +27,12 @@ public class SupportTicketSpecifications {
         return (root, query, cb) -> toDate == null ? null : cb.lessThanOrEqualTo(root.get("updatedTime"), toDate);
     }
 
-    // 🔹 NEW: Filter by userId
+    // Filter by userId
     public static Specification<SupportTicket> hasUserId(Long userId) {
         return (root, query, cb) -> userId == null ? null : cb.equal(root.get("userId"), userId);
     }
 
-    // 🔹 NEW: Filter by fdId
+    // Filter by fdId
     public static Specification<SupportTicket> hasFdId(Long fdId) {
         return (root, query, cb) -> fdId == null ? null : cb.equal(root.get("fdId"), fdId);
     }

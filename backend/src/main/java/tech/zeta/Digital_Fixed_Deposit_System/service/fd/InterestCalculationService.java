@@ -1,10 +1,11 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestFrequency;
+import tech.zeta.Digital_Fixed_Deposit_System.service.fd.interest.InterestCalculationStrategy;
 
 import org.springframework.stereotype.Service;
 
@@ -12,17 +13,24 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
+// Author - Arpit Chaurasia
 @Service
 public class InterestCalculationService {
 
-    private static final Logger logger = LogManager.getLogger(InterestCalculationService.class);
+    private static final Logger logger = LoggerFactory.getLogger(InterestCalculationService.class);
 
-    private static final BigDecimal DAYS_IN_YEAR = new BigDecimal("365");
-    private static final BigDecimal MONTHS_IN_YEAR = new BigDecimal("12");
+    private final List<InterestCalculationStrategy> strategies;
 
+    public InterestCalculationService(List<InterestCalculationStrategy> strategies) {
+        this.strategies = strategies;
+    }
+
+    // Author - Arpit Chaurasia
     // Calculates accrued interest till today or till maturity (whichever is earlier).
     public BigDecimal calculateAccruedInterest(FixedDeposit fd) {
+        logger.info("Calculating accrued interest: fdId={}, status={}", fd.getId(), fd.getStatus());
 
         if (fd.getStatus() != FDStatus.ACTIVE &&
                 fd.getStatus() != FDStatus.MATURED) {
@@ -49,68 +57,49 @@ public class InterestCalculationService {
         BigDecimal annualRate = fd.getInterestRate()
                 .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-        BigDecimal interest;
+        InterestFrequency frequency = fd.getInterestScheme().getInterestFrequency();
 
-        if (fd.getInterestScheme().getInterestFrequency()
-                == InterestFrequency.MONTHLY) {
+        logger.debug("Interest calculation params: fdId={}, principal={}, annualRate={}, frequency={}, totalDays={}",
+                    fd.getId(), principal, annualRate, frequency, totalDays);
 
-            interest = calculateMonthlySimpleInterest(
-                    principal, annualRate, totalDays
-            );
+        BigDecimal interest = resolveStrategy(frequency)
+                .calculate(principal, annualRate, startDate, endDate);
 
-        } else {
-            interest = calculateYearlySimpleInterest(
-                    principal, annualRate, totalDays
-            );
-        }
-
+        logger.info("Interest calculated: fdId={}, interest={}", fd.getId(), interest);
         return interest.setScale(2, RoundingMode.HALF_UP);
     }
 
     // Helper Methods
 
+    // Author - Arpit Chaurasia
     private LocalDate determineEndDate(FixedDeposit fd) {
+        logger.debug("Determining end date: fdId={}, status={}, maturityDate={}",
+                    fd.getId(), fd.getStatus(), fd.getMaturityDate());
 
         LocalDate today = LocalDate.now();
 
         if (fd.getStatus() == FDStatus.MATURED ||
                 today.isAfter(fd.getMaturityDate())) {
+            logger.debug("Using maturity date as end date: fdId={}, endDate={}", fd.getId(), fd.getMaturityDate());
             return fd.getMaturityDate();
         }
 
+        logger.debug("Using today as end date: fdId={}, endDate={}", fd.getId(), today);
         return today;
     }
 
-    // Monthly simple interest calculation.
-    private BigDecimal calculateMonthlySimpleInterest(
-            BigDecimal principal,
-            BigDecimal annualRate,
-            long totalDays
-    ) {
-        BigDecimal months =
-                BigDecimal.valueOf(totalDays)
-                        .divide(BigDecimal.valueOf(30), 10, RoundingMode.HALF_UP);
+    // Author - Arpit Chaurasia
+    private InterestCalculationStrategy resolveStrategy(InterestFrequency frequency) {
+        logger.debug("Resolving interest calculation strategy for frequency: {}", frequency);
 
-        BigDecimal monthlyRate =
-                annualRate.divide(MONTHS_IN_YEAR, 10, RoundingMode.HALF_UP);
-
-        return principal
-                .multiply(monthlyRate)
-                .multiply(months);
-    }
-
-    // Yearly simple interest calculation.
-    private BigDecimal calculateYearlySimpleInterest(
-            BigDecimal principal,
-            BigDecimal annualRate,
-            long totalDays
-    ) {
-        BigDecimal years =
-                BigDecimal.valueOf(totalDays)
-                        .divide(DAYS_IN_YEAR, 10, RoundingMode.HALF_UP);
-
-        return principal
-                .multiply(annualRate)
-                .multiply(years);
+        return strategies.stream()
+                .filter(strategy -> strategy.supports(frequency))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.error("No interest calculation strategy found for frequency: {}", frequency);
+                    return new IllegalStateException(
+                            "No interest calculation strategy for frequency: " + frequency
+                    );
+                });
     }
 }
