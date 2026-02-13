@@ -241,11 +241,11 @@ const fdModule = {
     async fetchEligibilityCheck({commit}:ActionCtx, fdId: number){
       commit('SET_LOADING', true);
       commit('CLEAR_ERROR');
-      console.log("hello");
+     
       try{
         const message = await withdrawalService.checkEligibility(fdId);
         commit('SET_ELIGIBILITY_MESSAGE', message);
-        console.log(message)
+        
       }catch (error: any) {
         const message = error.response?.data?.message || 'Failed to fetch interest';
         commit('SET_ERROR', message);

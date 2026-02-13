@@ -15,14 +15,14 @@
   --zeta-accent-dark: #be123c;
 
   // Gradient Colors
-  --zeta-gradient-primary: linear-gradient(135deg, #4f46e5 0%, #1570d1 45%, #0695ae 100%);
-  --zeta-gradient-secondary: linear-gradient(135deg, #139db6 0%, #1ba1b6 100%);
+  --zeta-gradient-primary: linear-gradient(135deg, #4f46e5 0%, #1570d1 45%, #047588 100%);
+  --zeta-gradient-secondary: linear-gradient(135deg, #139db6 0%, #047788 100%);
   --zeta-gradient-accent: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
   --zeta-gradient-hero: linear-gradient(135deg, #312e81 0%, #4f46e5 45%, #06b6d4 100%);
 
   //Gradient Light Colors
-  --zeta-gradient-primary-light: linear-gradient(135deg, #261bed 0%, #6366f1 45%, #27b8d2 100%);
-  --zeta-gradient-secondary-light: linear-gradient(135deg, #06b6d4 0%, #44cfe4 100%);
+  --zeta-gradient-primary-light: linear-gradient(135deg, #261bed 0%, #292cec 45%, #27b8d2 100%);
+  --zeta-gradient-secondary-light: linear-gradient(135deg, #034f5d 0%, #0c56d5 100%);
   --zeta-gradient-accent-light: linear-gradient(135deg, #f43f5e 0%, #e82988 100%);
   --zeta-gradient-hero-light: linear-gradient(135deg, #312e81 0%, #4f46e5 45%, #19b6d2 100%);
 
@@ -195,6 +195,8 @@ a {
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+    color: white;
+    background: var(--zeta-gradient-secondary-light);
   }
 }
 
@@ -226,6 +228,9 @@ a {
 
   &:hover:not(:disabled) {
     background: var(--zeta-success-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
   }
 }
 

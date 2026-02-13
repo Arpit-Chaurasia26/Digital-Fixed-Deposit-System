@@ -133,7 +133,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { withdrawalService } from '@/services/withdrawalService';
 import Navbar from '@/components/common/Navbar.vue';
@@ -152,9 +152,13 @@ const autoLoading = ref(false);
 
 // Auto-preview if amount is passed via query param (from Break FD button)
 onMounted(async () => {
-  const queryAmount = route.query.amount;
+  const queryAmount = window.history.state.amount;
+  if(!queryAmount){
+    router.push('/user/fd-list');
+  }
   if (queryAmount) {
     const amount = parseFloat(queryAmount as string);
+    
     if (amount > 0) {
       withdrawalAmount.value = amount;
       autoLoading.value = true;
@@ -172,6 +176,11 @@ onMounted(async () => {
       }
     }
   }
+});
+
+onUnmounted(() => {
+  const newState = { ...window.history.state, amount: null };
+  window.history.replaceState(newState, '');
 });
 
 
