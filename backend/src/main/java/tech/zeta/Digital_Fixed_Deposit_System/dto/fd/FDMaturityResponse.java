@@ -5,6 +5,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Author - Arpit Chaurasia
 public class FDMaturityResponse {
 
     private Long fdId;

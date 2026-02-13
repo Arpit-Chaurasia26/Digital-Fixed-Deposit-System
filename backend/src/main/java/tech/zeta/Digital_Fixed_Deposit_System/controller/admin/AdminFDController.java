@@ -1,8 +1,8 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.admin;
 
 import jakarta.validation.Valid;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,13 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.fd.FixedDepositService;
 
 import java.util.List;
 
+// Author - Arpit Chaurasia
 @RestController
 @RequestMapping("/admin/fd")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminFDController {
 
-    private static final Logger logger = LogManager.getLogger(AdminFDController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminFDController.class);
 
     private final FixedDepositService fixedDepositService;
 
@@ -25,6 +26,7 @@ public class AdminFDController {
         this.fixedDepositService = fixedDepositService;
     }
 
+    // Author - Arpit Chaurasia
     // Admin can update FD status of a user's FD.
     @PutMapping("/{fdId}/status")
     public ResponseEntity<FixedDeposit> updateFDStatus(
@@ -36,6 +38,7 @@ public class AdminFDController {
     }
 
 
+    // Author - Arpit Chaurasia
     // Fetch all fixed deposits maturing within N days
     @GetMapping("/maturing")
     public ResponseEntity<List<FDMaturityResponse>> getAllMaturingFDs(@RequestParam(defaultValue = "7") int days) {
@@ -45,6 +48,7 @@ public class AdminFDController {
         return ResponseEntity.ok(response);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch financial year fixed deposit summary analytics for admin
     @GetMapping("/summary/financial-year")
     public ResponseEntity<FDFinancialYearSummaryResponse> getAdminFinancialYearSummary(
@@ -54,6 +58,7 @@ public class AdminFDController {
         return ResponseEntity.ok(fixedDepositService.getAdminFinancialYearSummary(year));
     }
 
+    // Author - Arpit Chaurasia
     // Fetch all fixed deposits created in a financial year (admin)
     @GetMapping("/yearly")
     public ResponseEntity<List<FixedDeposit>> getFDsByFinancialYear(
@@ -63,6 +68,7 @@ public class AdminFDController {
         return ResponseEntity.ok(fixedDepositService.getAdminFDsByFinancialYear(year));
     }
 
+    // Author - Arpit Chaurasia
     // Fetch all fixed deposits in chronological order (admin)
     @GetMapping("/all")
     public ResponseEntity<List<FixedDeposit>> getAllFDsChronological(
@@ -72,6 +78,7 @@ public class AdminFDController {
         return ResponseEntity.ok(fixedDepositService.getAllFDsChronological(order));
     }
 
+    // Author - Arpit Chaurasia
     // Fetch user fixed deposit portfolio
     @GetMapping("/user/{userId}/portfolio")
     public ResponseEntity<FDPortfolioResponse> getUserPortfolioAsAdmin(@PathVariable Long userId) {
@@ -79,6 +86,7 @@ public class AdminFDController {
         return ResponseEntity.ok(fixedDepositService.getUserFDPortfolio(userId));
     }
 
+    // Author - Arpit Chaurasia
     // Fetch FD interest accrual timeline
     @GetMapping("/{fdId}/interest/timeline")
     public ResponseEntity<FDInterestTimelineResponse> getInterestTimelineAsAdmin(
@@ -93,6 +101,5 @@ public class AdminFDController {
 
         return ResponseEntity.ok(fixedDepositService.getInterestTimeline(fd, effectiveInterval));
     }
-
 
 }

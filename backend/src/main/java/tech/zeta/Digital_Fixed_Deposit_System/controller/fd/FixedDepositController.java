@@ -1,7 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.fd;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/fd")
 public class FixedDepositController {
 
-    private static final Logger logger = LogManager.getLogger(FixedDepositController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FixedDepositController.class);
 
     private final FixedDepositService fixedDepositService;
     private final CurrentUserProvider currentUserProvider;
@@ -33,6 +33,7 @@ public class FixedDepositController {
         this.currentUserProvider = currentUserProvider;
     }
 
+    // Author - Arpit Chaurasia
     // Get all available FD schemes (public endpoint)
     @GetMapping("/schemes")
     public ResponseEntity<List<SchemeResponse>> getAllSchemes() {
@@ -50,6 +51,7 @@ public class FixedDepositController {
         return ResponseEntity.ok(schemes);
     }
 
+    // Author - Yogendra Kavuru
     // Book a new Fixed Deposit.
     @PostMapping("/book")
     public ResponseEntity<FixedDeposit> bookFixedDeposit(@Valid @RequestBody BookFDRequest request) {
@@ -63,6 +65,7 @@ public class FixedDepositController {
                 .body(fd);
     }
 
+    // Author - Yogendra Kavuru
     // Fetch Fixed Deposits of logged-in user (optionally filtered by status and amount range)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FixedDeposit>> getUserFixedDeposits(
@@ -88,6 +91,7 @@ public class FixedDepositController {
     }
 
 
+    // Author - Yogendra Kavuru
     // Fetch a specific Fixed Deposit of logged-in user.
     @GetMapping("/user/{userId}/{fdId}")
     public ResponseEntity<FixedDeposit> getFixedDepositById(@PathVariable Long userId, @PathVariable Long fdId) {
@@ -107,6 +111,7 @@ public class FixedDepositController {
     }
 
 
+    // Author - Arpit Chaurasia
     // Fetch fixed deposits maturing within N days
     @GetMapping("/user/{userId}/maturing")
     public ResponseEntity<List<FDMaturityResponse>> getUserMaturingFDs(
@@ -124,6 +129,7 @@ public class FixedDepositController {
         return ResponseEntity.ok(response);
     }
 
+    // Author - Arpit Chaurasia
     // Fetch financial year fixed deposit summary analytics for user
     @GetMapping("/user/{userId}/summary/financial-year")
     public ResponseEntity<FDFinancialYearSummaryResponse> getUserFinancialYearSummary(
@@ -140,6 +146,7 @@ public class FixedDepositController {
         return ResponseEntity.ok(fixedDepositService.getUserFinancialYearSummary(userId, year));
     }
 
+    // Author - Arpit Chaurasia
     // Fetch user fixed deposit portfolio
     @GetMapping("/user/{userId}/portfolio")
     public ResponseEntity<FDPortfolioResponse> getUserFDPortfolio(@PathVariable Long userId) {
@@ -154,6 +161,7 @@ public class FixedDepositController {
     }
 
 
+    // Author - Arpit Chaurasia
     // Fetch FD interest accrual timeline
     @GetMapping("/{fdId}/interest/timeline")
     public ResponseEntity<FDInterestTimelineResponse> getInterestTimeline(
@@ -171,6 +179,7 @@ public class FixedDepositController {
         return ResponseEntity.ok(fixedDepositService.getInterestTimeline(fd, effectiveInterval));
     }
 
+    // Author - Arpit Chaurasia
     // Get current accrued interest for a Fixed Deposit.
     @GetMapping("/{fdId}/interest")
     public ResponseEntity<FDInterestResponse> getAccruedInterest(@PathVariable Long fdId) {
@@ -181,4 +190,3 @@ public class FixedDepositController {
     }
 
 }
-

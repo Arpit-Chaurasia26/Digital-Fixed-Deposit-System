@@ -6,6 +6,7 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.InterestFrequency;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+// Author - Arpit Chaurasia
 public class FDInterestResponse {
 
     private Long fdId;
