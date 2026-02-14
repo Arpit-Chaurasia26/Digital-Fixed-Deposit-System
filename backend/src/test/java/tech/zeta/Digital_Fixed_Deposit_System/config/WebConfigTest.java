@@ -8,6 +8,11 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 public class WebConfigTest {
 
     private static final String ORIGINS_PROPERTY = "app.cors.allowed-origins";

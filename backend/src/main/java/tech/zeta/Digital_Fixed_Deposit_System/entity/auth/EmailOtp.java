@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.entity.auth;
 
 import jakarta.persistence.*;
@@ -8,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Entity
 @Table(name = "email_otp")

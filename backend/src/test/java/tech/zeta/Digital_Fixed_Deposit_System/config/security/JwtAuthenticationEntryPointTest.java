@@ -8,6 +8,11 @@ import org.springframework.security.core.AuthenticationException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 public class JwtAuthenticationEntryPointTest {
 
     @Test

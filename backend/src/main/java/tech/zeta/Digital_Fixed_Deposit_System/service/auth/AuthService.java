@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
@@ -24,6 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Service
 public class AuthService {

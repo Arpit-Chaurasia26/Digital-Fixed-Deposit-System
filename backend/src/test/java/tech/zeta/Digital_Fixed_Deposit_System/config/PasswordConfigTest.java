@@ -5,6 +5,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 public class PasswordConfigTest {
 
     private static final String ENCODER_PROPERTY = "app.password.encoder";

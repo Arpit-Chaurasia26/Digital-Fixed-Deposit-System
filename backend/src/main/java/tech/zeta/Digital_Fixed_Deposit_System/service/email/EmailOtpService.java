@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.EmailOtp;
@@ -12,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Service
 public class EmailOtpService {

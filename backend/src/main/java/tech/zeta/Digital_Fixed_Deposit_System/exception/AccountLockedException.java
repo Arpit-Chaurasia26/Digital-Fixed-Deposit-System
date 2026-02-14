@@ -1,7 +1,9 @@
+package tech.zeta.Digital_Fixed_Deposit_System.exception;
+
 /*
 Author : Priyanshu Mishra
 */
-package tech.zeta.Digital_Fixed_Deposit_System.exception;
+
 
 public class AccountLockedException extends RuntimeException {
 

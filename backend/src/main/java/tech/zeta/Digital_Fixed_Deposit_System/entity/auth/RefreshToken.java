@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.entity.auth;
 
 import jakarta.persistence.*;
@@ -11,6 +8,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Entity
 @Getter

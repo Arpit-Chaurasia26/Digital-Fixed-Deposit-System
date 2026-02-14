@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.service.user;
  
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
@@ -18,6 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Service
 public class UserService implements IUserService {

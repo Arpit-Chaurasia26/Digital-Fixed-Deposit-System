@@ -17,7 +17,10 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Author - Arpit Chaurasia
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse> handleBusinessException(
             BusinessException ex
@@ -31,7 +34,10 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Author - Arpit Chaurasia
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(
             UnauthorizedException ex
