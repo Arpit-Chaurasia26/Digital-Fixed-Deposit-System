@@ -3,9 +3,13 @@ package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class EmailService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
 
@@ -14,6 +18,7 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String to, String otp) {
+        logger.info("Sending OTP email to {}", to);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -26,6 +31,7 @@ public class EmailService {
         );
 
         mailSender.send(message);
+        logger.info("OTP email sent to {}", to);
     }
 }
 

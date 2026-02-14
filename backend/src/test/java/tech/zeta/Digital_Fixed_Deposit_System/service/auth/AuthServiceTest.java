@@ -260,11 +260,13 @@ class AuthServiceTest {
         when(refreshTokenService.validateRefreshToken("refresh")).thenReturn(token);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
         when(tokenService.generateAccessToken(USER_ID, Role.USER.name())).thenReturn("access");
+        when(refreshTokenService.createRefreshToken(USER_ID)).thenReturn(refreshToken);
 
         AuthTokens tokens = authService.refresh("refresh");
 
         assertThat(tokens.accessToken()).isEqualTo("access");
-        assertThat(tokens.refreshToken()).isEqualTo("refresh");
+        assertThat(tokens.refreshToken()).isEqualTo("refresh-token");
+        verify(refreshTokenService).revokeRefreshToken("refresh");
     }
 
     @Test

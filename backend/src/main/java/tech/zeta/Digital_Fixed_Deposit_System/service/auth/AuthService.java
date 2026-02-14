@@ -160,7 +160,7 @@ public class AuthService {
 
     @Transactional
     public AuthTokens refresh(String refreshTokenValue) {
-
+        logger.info("Refresh request received");
 
         RefreshToken refreshToken =
                 iRefreshTokenService.validateRefreshToken(refreshTokenValue);
@@ -174,6 +174,9 @@ public class AuthService {
                 user.getId(),
                 user.getRole().name()
         );
+
+        iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
+        refreshToken = iRefreshTokenService.createRefreshToken(user.getId());
 
         logger.info("Refresh token rotated for user id={}", user.getId());
         return new AuthTokens(accessToken, refreshToken.getToken());
@@ -192,6 +195,7 @@ public class AuthService {
 
     @Transactional(noRollbackFor = { BusinessException.class, AccountLockedException.class })
     public void resetPassword(String email, String otp, String newPassword) {
+        logger.info("Password reset flow started for email={}", email);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
@@ -233,6 +237,7 @@ public class AuthService {
             record.setVerified(true);
             emailOtpRepository.save(record);
 
+            logger.info("Password reset completed for user id={}", user.getId());
         } catch (BusinessException ex) {
 
             // FAILED ATTEMPT
@@ -244,6 +249,7 @@ public class AuthService {
             }
 
             userRepository.save(user);
+            logger.warn("Password reset failed for user id={}, attempts={}", user.getId(), attempts);
             throw ex;
         }
     }
