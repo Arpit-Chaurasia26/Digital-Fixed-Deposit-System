@@ -11,11 +11,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class PasswordConfig {
 
     private static final Logger logger = LogManager.getLogger(PasswordConfig.class);
+    private static final String ENCODER_PROPERTY = "app.password.encoder";
 
     // Password encoder bean used across the application for hashing and verifying passwords.
     @Bean
     public PasswordEncoder passwordEncoder() {
-        logger.info("PasswordEncoder bean created");
+        String encoderType = System.getProperty(ENCODER_PROPERTY, "bcrypt");
+        if ("noop".equalsIgnoreCase(encoderType)) {
+            logger.info("PasswordEncoder bean created: noop");
+            return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
+        }
+
+        logger.info("PasswordEncoder bean created: bcrypt");
         return new BCryptPasswordEncoder();
     }
 }

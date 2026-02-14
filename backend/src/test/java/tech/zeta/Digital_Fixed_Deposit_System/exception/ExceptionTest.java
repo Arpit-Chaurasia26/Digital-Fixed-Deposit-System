@@ -35,4 +35,17 @@ public class ExceptionTest {
         InvalidOperationException ex = new InvalidOperationException("ignored");
         assertEquals("ignored", ex.getMessage());
     }
+
+    @Test
+    void accountLockedException_setsMessageAndRemainingSeconds() {
+        AccountLockedException ex = new AccountLockedException("locked", 120L);
+        assertEquals("locked", ex.getMessage());
+        assertEquals(120L, ex.getRemainingSeconds());
+    }
+
+    @Test
+    void inSufficientFundsException_setsMessage() {
+        InSufficientFundsException ex = new InSufficientFundsException("funds");
+        assertEquals("funds", ex.getMessage());
+    }
 }

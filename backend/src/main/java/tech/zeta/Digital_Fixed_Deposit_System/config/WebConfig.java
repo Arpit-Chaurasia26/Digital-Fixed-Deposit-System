@@ -15,12 +15,18 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final Logger logger = LogManager.getLogger(WebConfig.class);
+    private static final String ALLOWED_ORIGINS_PROPERTY = "app.cors.allowed-origins";
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        String allowedOrigins = System.getProperty(ALLOWED_ORIGINS_PROPERTY);
+        if (allowedOrigins == null || allowedOrigins.trim().isEmpty()) {
+            configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        } else {
+            configuration.setAllowedOrigins(List.of(allowedOrigins.split("\\s*,\\s*")));
+        }
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

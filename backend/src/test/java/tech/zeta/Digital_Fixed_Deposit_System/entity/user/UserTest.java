@@ -33,4 +33,25 @@ public class UserTest {
         assertEquals(created, user.getCreatedAt());
         assertEquals(Role.ADMIN, user.getRole());
     }
+
+    @Test
+    void settersAndGetters_coverMutableFields() {
+        User user = new User("Name", "name@example.com", "hash", Role.USER);
+
+        user.setName("Updated");
+        user.setEmail("updated@example.com");
+        user.setPassword("new-hash");
+        user.setRole(Role.ADMIN);
+        user.setFailedPasswordResetAttempts(3);
+        user.setFailedLoginAttempts(5);
+        user.setLoginBlockedUntil(java.time.LocalDateTime.now().plusMinutes(15));
+
+        assertEquals("Updated", user.getName());
+        assertEquals("updated@example.com", user.getEmail());
+        assertEquals("new-hash", user.getPassword());
+        assertEquals(Role.ADMIN, user.getRole());
+        assertEquals(3, user.getFailedPasswordResetAttempts());
+        assertEquals(5, user.getFailedLoginAttempts());
+        assertNotNull(user.getLoginBlockedUntil());
+    }
 }
