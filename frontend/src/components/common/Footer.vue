@@ -6,10 +6,41 @@
           <h3>Zeta Fixed Deposit</h3>
           <p>Your trusted partner for secure and high-return fixed deposit investments.</p>
           <div class="social-links">
-            <a href="#" aria-label="Facebook"><i class="icon">📘</i></a>
-            <a href="#" aria-label="Twitter"><i class="icon">🐦</i></a>
-            <a href="#" aria-label="LinkedIn"><i class="icon">💼</i></a>
-            <a href="#" aria-label="Instagram"><i class="icon">📷</i></a>
+            <a href="#" aria-label="Mail">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+                  <path d="m22 8-10 6L2 8" />
+                </svg>
+              </span>
+            </a>
+            <a href="#" aria-label="X">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 4l14 16" />
+                  <path d="M19 4L5 20" />
+                </svg>
+              </span>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M8 11v6" />
+                  <path d="M8 7v.01" />
+                  <path d="M12 11v6" />
+                  <path d="M12 13a3 3 0 0 1 6 0v4" />
+                </svg>
+              </span>
+            </a>
+            <a href="#" aria-label="YouTube">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="7" width="18" height="10" rx="3" />
+                  <path d="M10 10.5l5 2.5-5 2.5z" />
+                </svg>
+              </span>
+            </a>
           </div>
         </div>
 
@@ -147,7 +178,11 @@ const currentYear = computed(() => new Date().getFullYear());
     }
 
     .icon {
-      font-size: var(--font-size-lg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      svg { width: 18px; height: 18px; }
     }
   }
 }

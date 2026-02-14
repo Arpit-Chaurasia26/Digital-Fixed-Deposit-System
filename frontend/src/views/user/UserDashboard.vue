@@ -94,28 +94,49 @@
         </div>
         <div class="actions-grid">
           <router-link to="/user/book-fd" class="action-card">
-            <span class="icon">📊</span>
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+            </span>
             <div>
               <h3>Book New FD</h3>
               <p>Start a new investment</p>
             </div>
           </router-link>
           <router-link to="/user/fd-list" class="action-card">
-            <span class="icon">📋</span>
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                <path d="M8 9h8M8 13h8M8 17h5" />
+              </svg>
+            </span>
             <div>
               <h3>View All FDs</h3>
               <p>Track all deposits</p>
             </div>
           </router-link>
           <router-link to="/user/portfolio" class="action-card">
-            <span class="icon">💼</span>
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 7V6a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
+                <rect x="3" y="7" width="18" height="14" rx="2" />
+                <path d="M3 12h18" />
+              </svg>
+            </span>
             <div>
               <h3>My Portfolio</h3>
               <p>Performance overview</p>
             </div>
           </router-link>
           <router-link to="/user/support" class="action-card">
-            <span class="icon">🎫</span>
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 1 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 1 0 0-4z" />
+                <path d="M10 8v8M14 8v8" />
+              </svg>
+            </span>
             <div>
               <h3>Support Tickets</h3>
               <p>Get help and updates</p>
@@ -374,7 +395,17 @@ onMounted(async () => {
     text-decoration: none;
     color: inherit;
     transition: transform var(--transition-base), box-shadow var(--transition-base);
-    .icon { font-size: 2rem; }
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--zeta-primary);
+      svg { width: 22px; height: 22px; }
+    }
     h3 { margin: 0; font-size: var(--font-size-lg); }
     p { margin: 0; color: var(--zeta-text-secondary); }
     &:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }

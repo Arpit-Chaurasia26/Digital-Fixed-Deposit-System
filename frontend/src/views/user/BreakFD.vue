@@ -59,7 +59,9 @@
            <strong>{{ formatCurrency(balanceAmount) }}</strong>
          </div>
        </div>
-       <button @click="confirmBreak" class="btn btn-danger">Confirm Break</button>
+       <button @click="confirmBreak" class="btn btn-danger">
+         {{ isMatured ? 'Close FD' : 'Confirm Break' }}
+       </button>
      </div>
 
      <!-- Withdrawal Receipt -->
@@ -135,23 +137,38 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import { withdrawalService } from '@/services/withdrawalService';
+import { fdService } from '@/services/fdService';
 import Navbar from '@/components/common/Navbar.vue';
 import Footer from '@/components/common/Footer.vue';
 import UserSidebar from '@/components/user/UserSidebar.vue';
 import { formatCurrency } from '@/utils/helpers';
+import { FDStatus } from '@/types';
 
 
 const route = useRoute();
 const router = useRouter();
+const store = useStore();
 const breakPreview = ref<any>(null);
 const withdrawalAmount = ref<number>(0);
 const message = ref<string>('Hello');
 const withdrawalReciept = ref<any>(null);
 const autoLoading = ref(false);
+const fdStatus = ref<FDStatus | null>(null);
 
 // Auto-preview if amount is passed via query param (from Break FD button)
 onMounted(async () => {
+  const fdId = parseInt(route.params.id as string);
+  const userId = store.getters['auth/userId'];
+  if (fdId && userId) {
+    try {
+      const fd = await fdService.getFDById(userId, fdId);
+      fdStatus.value = fd.status;
+    } catch (e: any) {
+      console.warn('Failed to load FD status', e);
+    }
+  }
   const queryAmount = window.history.state.amount;
   if(!queryAmount){
     router.push('/user/fd-list');
@@ -162,7 +179,6 @@ onMounted(async () => {
     if (amount > 0) {
       withdrawalAmount.value = amount;
       autoLoading.value = true;
-      const fdId = parseInt(route.params.id as string);
       if (fdId) {
         try {
           breakPreview.value = await withdrawalService.getBreakPreview(fdId, amount);
@@ -200,6 +216,7 @@ const totalPayout = computed(() =>
 );
 const penaltyApplied = computed(() => penaltyRate.value > 0);
 const balanceAmount = computed(()=>breakPreview.value?.balanceAmount)
+const isMatured = computed(() => fdStatus.value === FDStatus.MATURED);
 
 const receiptId = computed(() => withdrawalReciept.value?.id || 'N/A');
 
@@ -243,7 +260,10 @@ const confirmBreak = async () => {
   if(withdrawalAmount.value<=0){
       setMessage("Amount should be positive");
   }
- if (confirm('Are you sure you want to break this FD?')) {
+ const confirmMessage = isMatured.value
+   ? 'Are you sure you want to close this FD?'
+   : 'Are you sure you want to break this FD?';
+ if (confirm(confirmMessage)) {
    const fdId = parseInt(route.params.id as string);
    try{
       withdrawalReciept.value = await withdrawalService.confirmBreak(fdId, withdrawalAmount.value);
