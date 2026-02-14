@@ -1034,7 +1034,13 @@ html[data-theme="dark"] body {
 html[data-theme],
 html[data-theme] body,
 html[data-theme] * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+// --- Admin theme switch: avoid slow text darkening ---
+html[data-theme] body.admin-shell .admin-content,
+html[data-theme] body.admin-shell .admin-content * {
+  transition: background-color 0.12s ease, color 0s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
 // --- Quick actions / scheme cards ---

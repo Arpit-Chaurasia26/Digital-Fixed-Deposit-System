@@ -14,21 +14,41 @@
 
       <div class="dashboard-grid">
         <router-link to="/admin/fd-management" class="card dashboard-card">
-          <div class="card-icon">🏦</div>
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 10h18" />
+              <path d="M4 10l8-5 8 5" />
+              <path d="M5 10v8M9 10v8M15 10v8M19 10v8" />
+              <path d="M3 18h18" />
+            </svg>
+          </div>
           <div>
             <h3>FD Management</h3>
             <p>View and manage all FDs</p>
           </div>
         </router-link>
         <router-link to="/admin/support" class="card dashboard-card">
-          <div class="card-icon">🎫</div>
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14a4 4 0 1 0 0-4" />
+              <path d="M20 10a4 4 0 1 0 0 4" />
+              <path d="M9 12h6" />
+            </svg>
+          </div>
           <div>
             <h3>Support Tickets</h3>
             <p>Respond and resolve user tickets</p>
           </div>
         </router-link>
         <a href="#financial-summary" class="card dashboard-card">
-          <div class="card-icon">📈</div>
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19h16" />
+              <path d="M6 16V8" />
+              <path d="M12 16V5" />
+              <path d="M18 16v-6" />
+            </svg>
+          </div>
           <div>
             <h3>Financial Summary</h3>
             <p>View current year analytics</p>
@@ -143,7 +163,17 @@ onMounted(loadSummary);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 .dashboard-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.dashboard-card .card-icon { font-size: 2rem; }
+.dashboard-card .card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--zeta-primary);
+}
+.dashboard-card .card-icon svg { width: 24px; height: 24px; }
 .financial-summary { padding: var(--spacing-xl); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-lg); }
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-md); }
