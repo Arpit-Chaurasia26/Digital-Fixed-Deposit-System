@@ -3,6 +3,7 @@ package tech.zeta.Digital_Fixed_Deposit_System.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.RefreshToken;
 
@@ -11,8 +12,9 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
-public class RefreshTokenRepositoryTest {
+class RefreshTokenRepositoryTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;

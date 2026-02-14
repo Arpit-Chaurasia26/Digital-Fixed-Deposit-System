@@ -10,8 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WebConfigTest {
 
+    private static final String ORIGINS_PROPERTY = "app.cors.allowed-origins";
+
     @Test
     void corsConfiguration_allowsLocalhost3000() {
+        System.clearProperty(ORIGINS_PROPERTY);
         CorsConfigurationSource source = new WebConfig().corsConfigurationSource();
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRequestURI("/auth/login");
@@ -22,5 +25,24 @@ public class WebConfigTest {
         assertNotNull(configuration);
         assertTrue(configuration.getAllowedOrigins().contains("http://localhost:3000"));
         assertTrue(configuration.getAllowCredentials());
+    }
+
+    @Test
+    void corsConfiguration_usesCustomOrigins() {
+        System.setProperty(ORIGINS_PROPERTY, "https://example.com, https://app.example.com");
+        try {
+            CorsConfigurationSource source = new WebConfig().corsConfigurationSource();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            request.setRequestURI("/auth/login");
+            request.addHeader("Origin", "https://example.com");
+
+            CorsConfiguration configuration = source.getCorsConfiguration(request);
+
+            assertNotNull(configuration);
+            assertTrue(configuration.getAllowedOrigins().contains("https://example.com"));
+            assertTrue(configuration.getAllowedOrigins().contains("https://app.example.com"));
+        } finally {
+            System.clearProperty(ORIGINS_PROPERTY);
+        }
     }
 }

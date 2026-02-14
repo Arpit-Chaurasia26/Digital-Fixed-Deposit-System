@@ -1,113 +1,182 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
+import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
+import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
+import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthService;
+import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
+import tech.zeta.Digital_Fixed_Deposit_System.service.email.EmailOtpService;
+import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+@ExtendWith(MockitoExtension.class)
+@DisplayName("AuthController Unit Tests")
+class AuthControllerTest {
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthControllerTest {
+    @Mock private AuthService authService;
+    @Mock private CookieUtil cookieUtil;
+    @Mock private EmailOtpService emailOtpService;
+    @Mock private UserRepository userRepository;
 
-    @LocalServerPort
-    private int port;
+    @InjectMocks
+    private AuthController controller;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Test
+    void register_setsCookies() {
+        RegisterRequest request = new RegisterRequest();
+        setField(request, "name", "User");
+        setField(request, "email", "u@example.com");
+        setField(request, "password", "Password@123");
 
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
+        when(authService.register(any())).thenReturn(new AuthTokens("access", "refresh"));
 
-    private String uniqueEmail(String prefix) {
-        return prefix + "+" + UUID.randomUUID() + "@example.com";
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        controller.register(request, response);
+
+        verify(cookieUtil).setAccessToken(eq(response), anyString());
+        verify(cookieUtil).setRefreshToken(eq(response), anyString());
     }
 
     @Test
-    void register_setsAuthCookies() {
-        String email = uniqueEmail("test.user");
-        String body = """
-            {
-              "name": "Test User",
-              "email": "%s",
-              "password": "Password@123"
-            }
-        """.formatted(email);
+    void login_setsCookies() {
+        LoginRequest request = new LoginRequest();
+        setField(request, "email", "u@example.com");
+        setField(request, "password", "Password@123");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        when(authService.login(any())).thenReturn(new AuthTokens("access", "refresh"));
 
-        ResponseEntity<Void> response = restTemplate.postForEntity(
-                url("/auth/register"),
-                new HttpEntity<>(body, headers),
-                Void.class
-        );
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        controller.login(request, response);
 
-        assertEquals(200, response.getStatusCode().value());
-        String setCookie = String.join(";", response.getHeaders().get("Set-Cookie"));
-        assertTrue(setCookie.contains("accessToken"));
-        assertTrue(setCookie.contains("refreshToken"));
+        verify(cookieUtil).setAccessToken(eq(response), anyString());
+        verify(cookieUtil).setRefreshToken(eq(response), anyString());
     }
 
     @Test
-    void login_setsAuthCookies() {
-        String email = uniqueEmail("login.user");
-        String register = """
-            {
-              "name": "Login User",
-              "email": "%s",
-              "password": "Password@123"
-            }
-        """.formatted(email);
+    void refresh_missingCookie_throwsUnauthorized() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        when(cookieUtil.extractRefreshToken(request)).thenReturn(null);
 
-        restTemplate.postForEntity(
-                url("/auth/register"),
-                new HttpEntity<>(register, headers),
-                Void.class
-        );
+        assertThatThrownBy(() -> controller.refresh(request, response))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessageContaining("Refresh token missing");
 
-        String login = """
-            {
-              "email": "%s",
-              "password": "Password@123"
-            }
-        """.formatted(email);
-
-        ResponseEntity<Void> response = restTemplate.postForEntity(
-                url("/auth/login"),
-                new HttpEntity<>(login, headers),
-                Void.class
-        );
-
-        assertEquals(200, response.getStatusCode().value());
-        String setCookie = String.join(";", response.getHeaders().get("Set-Cookie"));
-        assertTrue(setCookie.contains("accessToken"));
-        assertTrue(setCookie.contains("refreshToken"));
+        verify(cookieUtil).clearAuthCookies(response);
     }
 
     @Test
-    void refresh_withoutCookie_returnsUnauthorized() {
+    void logout_clearsCookies() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(cookieUtil.extractRefreshToken(request)).thenReturn("refresh");
+        doNothing().when(authService).logout("refresh");
+
+        controller.logout(request, response);
+
+        verify(authService).logout("refresh");
+        verify(cookieUtil).clearAuthCookies(response);
+    }
+
+    @Test
+    void sendOtp_delegates() {
+        controller.sendOtp("u@example.com");
+        verify(emailOtpService).sendOtp("u@example.com");
+    }
+
+    @Test
+    void verifyOtp_delegates() {
+        controller.verifyOtp("u@example.com", "123456");
+        verify(emailOtpService).verifyOtp("u@example.com", "123456");
+    }
+
+    @Test
+    void sendPasswordResetOtp_requiresExistingEmail() {
+        when(userRepository.existsByEmail("missing@example.com")).thenReturn(false);
+
+        assertThatThrownBy(() -> controller.sendPasswordResetOtp("missing@example.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void resetPassword_delegates() {
+        controller.resetPassword("u@example.com", "123456", "New@123");
+        verify(authService).resetPassword("u@example.com", "123456", "New@123");
+    }
+
+    @Test
+    void refresh_success_setsCookies() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(cookieUtil.extractRefreshToken(request)).thenReturn("refresh");
+        when(authService.refresh("refresh")).thenReturn(new AuthTokens("access", "refresh"));
+
+        controller.refresh(request, response);
+
+        verify(cookieUtil).setAccessToken(eq(response), anyString());
+        verify(cookieUtil).setRefreshToken(eq(response), anyString());
+    }
+
+    @Test
+    void refresh_invalidToken_clearsCookiesAndRethrows() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(cookieUtil.extractRefreshToken(request)).thenReturn("refresh");
+        when(authService.refresh("refresh")).thenThrow(new UnauthorizedException("invalid"));
+
+        assertThatThrownBy(() -> controller.refresh(request, response))
+                .isInstanceOf(UnauthorizedException.class);
+
+        verify(cookieUtil).clearAuthCookies(response);
+    }
+
+    @Test
+    void logout_ignoresInvalidToken() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(cookieUtil.extractRefreshToken(request)).thenReturn("refresh");
+        doThrow(new UnauthorizedException("invalid")).when(authService).logout("refresh");
+
+        controller.logout(request, response);
+
+        verify(cookieUtil).clearAuthCookies(response);
+    }
+
+    @Test
+    void sendPasswordResetOtp_succeedsWhenEmailExists() {
+        when(userRepository.existsByEmail("u@example.com")).thenReturn(true);
+
+        controller.sendPasswordResetOtp("u@example.com");
+
+        verify(emailOtpService).sendOtp("u@example.com");
+    }
+
+    private void setField(Object target, String field, Object value) {
         try {
-            restTemplate.postForEntity(
-                    url("/auth/refresh"),
-                    HttpEntity.EMPTY,
-                    String.class
-            );
-            fail("Expected 401 Unauthorized");
-        } catch (HttpClientErrorException ex) {
-            assertEquals(401, ex.getStatusCode().value());
+            var f = target.getClass().getDeclaredField(field);
+            f.setAccessible(true);
+            f.set(target, value);
+        } catch (Exception e) {
+            // no-op for test setup
         }
     }
 }

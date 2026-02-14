@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "fd_transaction",
         indexes = {
-                @Index(name = "idx_fd_user", columnList = "user_id"),
+                @Index(name = "idx_tx_user", columnList = "user_id"),
         }
 )
 public class Transaction {
