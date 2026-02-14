@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.util;
 
 import jakarta.servlet.http.Cookie;
@@ -9,6 +6,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Component
 public class CookieUtil {

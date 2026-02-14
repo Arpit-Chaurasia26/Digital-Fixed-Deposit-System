@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.dto.auth;
 
 import jakarta.validation.constraints.Email;
@@ -9,6 +6,9 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+/*
+Author : Priyanshu Mishra
+*/
 
 //Jackson does not need setters, it automatically sets the fields through reflection
 

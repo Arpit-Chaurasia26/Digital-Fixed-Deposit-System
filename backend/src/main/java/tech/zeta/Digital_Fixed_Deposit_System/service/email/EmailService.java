@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -9,6 +5,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Service
 public class EmailService {

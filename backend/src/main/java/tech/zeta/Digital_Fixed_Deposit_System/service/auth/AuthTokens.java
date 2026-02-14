@@ -1,10 +1,12 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 public record AuthTokens(
         String accessToken,

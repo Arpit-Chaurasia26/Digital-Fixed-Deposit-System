@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 
 import jakarta.persistence.*;
@@ -9,6 +6,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Entity
 @Table(

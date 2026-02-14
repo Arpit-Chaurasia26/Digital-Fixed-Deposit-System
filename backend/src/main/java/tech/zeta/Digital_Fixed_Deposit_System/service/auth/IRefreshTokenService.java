@@ -1,12 +1,14 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.RefreshToken;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 public interface IRefreshTokenService {
 

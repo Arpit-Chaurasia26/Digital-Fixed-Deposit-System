@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.config.security;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +13,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Configuration
 public class SecurityConfig {

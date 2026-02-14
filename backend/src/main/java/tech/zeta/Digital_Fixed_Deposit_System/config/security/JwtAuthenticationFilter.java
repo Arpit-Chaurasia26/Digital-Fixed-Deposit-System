@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.config.security;
 
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.TokenService;
@@ -23,6 +20,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+/*
+Author : Priyanshu Mishra
+*/
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

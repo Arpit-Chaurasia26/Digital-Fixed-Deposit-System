@@ -1,6 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.config;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +10,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

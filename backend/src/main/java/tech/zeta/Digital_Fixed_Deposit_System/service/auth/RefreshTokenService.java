@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +11,11 @@ import tech.zeta.Digital_Fixed_Deposit_System.repository.RefreshTokenRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+
+/*
+Author : Priyanshu Mishra
+*/
+
 
 @Service
 public class RefreshTokenService implements IRefreshTokenService{

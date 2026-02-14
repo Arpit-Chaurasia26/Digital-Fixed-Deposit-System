@@ -1,12 +1,13 @@
-/*
-Author : Priyanshu Mishra
-*/
 package tech.zeta.Digital_Fixed_Deposit_System.dto.auth;
 
 import tech.zeta.Digital_Fixed_Deposit_System.entity.user.Role;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.time.Instant;
+
+/*
+Author : Priyanshu Mishra
+*/
 
 // Response DTO for authenticated user's profile.
 public class UserProfileResponse {

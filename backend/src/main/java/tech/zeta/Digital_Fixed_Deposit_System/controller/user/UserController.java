@@ -1,7 +1,3 @@
-/*
-Author : Priyanshu Mishra
-*/
-
 package tech.zeta.Digital_Fixed_Deposit_System.controller.user;
  
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UserProfileResponse;
@@ -14,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+/*
+Author : Priyanshu Mishra
+*/
 
 @RestController
 @RequestMapping("/user")
