@@ -5,6 +5,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.support.SupportTicket;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 import java.time.LocalDateTime;
 
+
+/*
+    Author - Akshaya Siripuram
+ */
 public class SupportTicketSpecifications {
 
     public static Specification<SupportTicket> hasStatus(TicketStatus status) {

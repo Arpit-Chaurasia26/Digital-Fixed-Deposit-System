@@ -155,6 +155,72 @@ public class GlobalExceptionHandler {
     }
 
 
+
+
+
+/*
+    Author - Akshaya Siripuram
+ */
+    // ===== Support Ticket Module Exceptions =====
+
+
+    // Ticket not found (404)
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleTicketNotFoundException(
+            TicketNotFoundException ex
+    ) {
+        logger.warn("Ticket not found: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value()
+                ));
+    }
+
+    // Unauthorized ticket actions (403)
+    @ExceptionHandler(UnauthorizedTicketActionException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorizedTicketActionException(
+            UnauthorizedTicketActionException ex
+    ) {
+        logger.warn("Unauthorized ticket action: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse(
+                        ex.getMessage(),
+                        HttpStatus.FORBIDDEN.value()
+                ));
+    }
+
+    // Invalid ticket status transitions (400)
+    @ExceptionHandler(InvalidTicketStatusException.class)
+    public ResponseEntity<ApiResponse> handleInvalidTicketStatusException(
+            InvalidTicketStatusException ex
+    ) {
+        logger.warn("Invalid ticket status: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                ));
+    }
+
+    // User not found (404)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleUserNotFoundException(
+            UserNotFoundException ex
+    ) {
+        logger.warn("User not found: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse(
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value()
+                ));
+    }
+
+
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity<ApiResponse> handleAccountLocked(
             AccountLockedException ex

@@ -11,10 +11,18 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.zeta.Digital_Fixed_Deposit_System.service.support.SupportTicketServiceImpl;
+
+
+/*
+    Author - Akshaya Siripuram
+ */
 
 @Service
 public class SupportTicketScheduler {
 
+
+    // Logger for this service
     private static final Logger logger = LoggerFactory.getLogger(SupportTicketScheduler.class);
 
     private final SupportTicketRepository repository;

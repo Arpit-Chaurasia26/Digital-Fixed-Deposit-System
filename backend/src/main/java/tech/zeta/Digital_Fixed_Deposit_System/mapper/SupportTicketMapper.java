@@ -5,6 +5,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketRequestDT
 import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketResponseDTO;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.support.SupportTicket;
 
+
+/*
+    Author - Akshaya Siripuram
+ */
 @Component
 public class SupportTicketMapper {
 
