@@ -1,3 +1,6 @@
+/*
+Author : Priyanshu Mishra
+*/
 package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 
 import jakarta.persistence.*;
