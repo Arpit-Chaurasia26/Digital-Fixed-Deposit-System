@@ -42,7 +42,9 @@ public class AuthController {
 
     @PostMapping("/email/send-otp")
     public ResponseEntity<Void> sendOtp(@RequestParam String email) {
+        logger.info("Send OTP requested for email={}", email);
         emailOtpService.sendOtp(email);
+        logger.info("Send OTP completed for email={}", email);
         return ResponseEntity.ok().build();
     }
 
@@ -154,10 +156,13 @@ public class AuthController {
     public ResponseEntity<Void> sendPasswordResetOtp(
             @RequestParam String email
     ) {
+        logger.info("Password reset OTP requested for email={}", email);
         if (!userRepository.existsByEmail(email)) {
+            logger.warn("Password reset requested for unknown email={}", email);
             throw new ResourceNotFoundException("No account found with this email address");
         }
         emailOtpService.sendOtp(email);
+        logger.info("Password reset OTP sent for email={}", email);
         return ResponseEntity.ok().build();
     }
 
@@ -169,7 +174,9 @@ public class AuthController {
             @RequestParam String otp,
             @RequestParam String newPassword
     ) {
+        logger.info("Password reset requested for email={}", email);
         authService.resetPassword(email, otp, newPassword);
+        logger.info("Password reset completed for email={}", email);
         return ResponseEntity.ok().build();
     }
 

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -110,12 +111,15 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void handleMissingServletRequestParameterException_returnsBadRequest() {
+        MissingServletRequestParameterException exception =
+                new MissingServletRequestParameterException("missing", "String");
+
         ResponseEntity<ApiResponse> response =
-                handler.handleMissingServletRequestParameterException(new ValidationException("missing"));
+                handler.handleMissingServletRequestParameterException(exception);
 
         assertEquals(400, response.getStatusCode().value());
         assertNotNull(response.getBody());
-        assertEquals("missing", response.getBody().getMessage());
+        assertEquals(exception.getMessage(), response.getBody().getMessage());
     }
 
     @Test

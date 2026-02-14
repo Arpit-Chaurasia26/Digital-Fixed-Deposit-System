@@ -105,6 +105,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleInSufficientFundsException(
             InSufficientFundsException ex
     ) {
+        logger.warn("Insufficient funds: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -117,6 +118,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleValidationException(
             ValidationException ex
     ) {
+        logger.warn("Validation exception: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -126,8 +128,9 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingServletRequestParameterException(
-            ValidationException ex
+            MissingServletRequestParameterException ex
     ) {
+        logger.warn("Missing request parameter: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -165,6 +168,7 @@ public class GlobalExceptionHandler {
                 seconds
         );
 
+        logger.warn("Account locked: {}", message);
         return ResponseEntity
                 .status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(new ApiResponse(message, 429));
