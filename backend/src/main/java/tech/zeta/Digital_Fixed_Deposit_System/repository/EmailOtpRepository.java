@@ -1,3 +1,6 @@
+/*
+Author : Priyanshu Mishra
+*/
 package tech.zeta.Digital_Fixed_Deposit_System.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;

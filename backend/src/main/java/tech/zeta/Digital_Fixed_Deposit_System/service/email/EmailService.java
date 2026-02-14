@@ -1,3 +1,7 @@
+/*
+Author : Priyanshu Mishra
+*/
+
 package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -37,4 +41,3 @@ public class EmailService {
 
 
 //   xufvbxsmunkuhhrb
-

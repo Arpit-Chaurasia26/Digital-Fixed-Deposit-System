@@ -113,6 +113,9 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
+/*
+Author : Priyanshu Mishra
+*/
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
@@ -126,6 +129,11 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
+
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException ex
@@ -154,6 +162,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+/*
+Author : Priyanshu Mishra
+*/
 
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity<ApiResponse> handleAccountLocked(
