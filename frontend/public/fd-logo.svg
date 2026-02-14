@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Zeta FD Logo">
+  <defs>
+    <linearGradient id="fdg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#4f46e5" />
+      <stop offset="1" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="url(#fdg)" />
+  <path d="M20 22h16a6 6 0 0 1 0 12H20z" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M20 22v20" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+  <path d="M36 42H26" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+</svg>
