@@ -113,7 +113,7 @@ class AuthServiceTest {
                 setField(u, "id", USER_ID);
                 return u;
             });
-            when(tokenService.generateAccessToken(USER_ID, Role.ADMIN.name())).thenReturn("access");
+            when(tokenService.generateAccessToken(USER_ID, Role.USER.name())).thenReturn("access");
             when(refreshTokenService.createRefreshToken(USER_ID)).thenReturn(refreshToken);
 
             AuthTokens tokens = authService.register(request);

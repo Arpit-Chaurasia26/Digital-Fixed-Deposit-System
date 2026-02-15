@@ -1,8 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 
 import jakarta.persistence.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -10,7 +8,6 @@ import java.time.LocalDateTime;
 /**
  * @author Priyanshu Mishra
  */
-
 
 
 @Entity
@@ -32,7 +29,8 @@ public class User {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    // Nullable → OAuth users don’t need passwords
+    @Column(name = "password_hash")
     private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -42,19 +40,40 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
+    // SECURITY & AUTH
 
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 
-    protected User() {
-    }
+    @Column(nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column(nullable = false)
+    private int failedPasswordResetAttempts = 0;
+
+    private LocalDateTime loginBlockedUntil;
+
+    // OAUTH SUPPORT
+
+    @Column(length = 20)
+    private String authProvider; // LOCAL / GOOGLE
+
+    @Column(length = 100)
+    private String providerId; // Google sub ID
+
+    //  CONSTRUCTORS
+
+    protected User() {}
 
     public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.authProvider = "LOCAL";
     }
 
-    // JPA Lifecycle Hooks
+    //JPA HOOK
 
     @PrePersist
     void onCreate() {
@@ -66,18 +85,7 @@ public class User {
         }
     }
 
-    @Column(nullable = false)
-    private int failedPasswordResetAttempts = 0;
-
-    private LocalDateTime loginBlockedUntil;
-
-
-    @Column(nullable = false)
-    private int failedLoginAttempts = 0;
-
-
-
-    // Getters & Setters
+    //  GETTERS & SETTERS
 
     public Long getId() {
         return id;
@@ -119,6 +127,22 @@ public class User {
         this.role = role;
     }
 
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
     public int getFailedPasswordResetAttempts() {
         return failedPasswordResetAttempts;
     }
@@ -130,15 +154,24 @@ public class User {
     public LocalDateTime getLoginBlockedUntil() {
         return loginBlockedUntil;
     }
+
     public void setLoginBlockedUntil(LocalDateTime loginBlockedUntil) {
         this.loginBlockedUntil = loginBlockedUntil;
     }
 
-    public int getFailedLoginAttempts() {
-        return failedLoginAttempts;
+    public String getAuthProvider() {
+        return authProvider;
     }
 
-    public void setFailedLoginAttempts(int attempts) {
-        this.failedLoginAttempts = attempts;
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 }
