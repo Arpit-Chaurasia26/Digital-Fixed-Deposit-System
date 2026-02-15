@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import router from '@/router';
 
 
 // Create axios instance
@@ -55,14 +54,6 @@ apiClient.interceptors.response.use(
        return Promise.reject(refreshError);
      }
    }
-
-
-   // Handle 403 Forbidden
-   if (error.response?.status === 403) {
-     console.error('Access forbidden');
-     router.push('/');
-   }
-
 
    return Promise.reject(error);
  }

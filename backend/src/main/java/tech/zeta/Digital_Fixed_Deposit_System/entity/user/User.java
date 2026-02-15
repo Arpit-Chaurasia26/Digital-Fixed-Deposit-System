@@ -71,8 +71,6 @@ public class User {
 
     private LocalDateTime loginBlockedUntil;
 
-    @Column(nullable = false)
-    private boolean emailVerified = false;
 
     @Column(nullable = false)
     private int failedLoginAttempts = 0;
