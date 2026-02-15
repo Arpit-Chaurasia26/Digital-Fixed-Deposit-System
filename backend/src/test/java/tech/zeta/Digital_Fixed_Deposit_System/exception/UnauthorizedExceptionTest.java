@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @DisplayName("UnauthorizedException Tests")
 class UnauthorizedExceptionTest {
 

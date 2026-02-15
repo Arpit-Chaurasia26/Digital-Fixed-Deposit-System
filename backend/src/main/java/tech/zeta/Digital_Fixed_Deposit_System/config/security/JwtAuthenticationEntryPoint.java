@@ -12,6 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+/*
+Author : Priyanshu Mishra
+*/
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {

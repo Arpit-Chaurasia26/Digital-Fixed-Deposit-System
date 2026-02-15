@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

@@ -3,6 +3,11 @@ package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 public enum Role {
     USER,
     ADMIN;

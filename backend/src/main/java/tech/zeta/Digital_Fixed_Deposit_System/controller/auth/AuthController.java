@@ -19,6 +19,11 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
 import tech.zeta.Digital_Fixed_Deposit_System.service.email.EmailOtpService;
 import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -42,6 +47,10 @@ public class AuthController {
 
     @PostMapping("/email/send-otp")
     public ResponseEntity<Void> sendOtp(@RequestParam String email) {
+        if (userRepository.existsByEmail(email)) {
+            logger.warn("The email is already register with another account = {}", email);
+            throw new ResourceNotFoundException("Account has been already registered with this email address");
+        }
         logger.info("Send OTP requested for email={}", email);
         emailOtpService.sendOtp(email);
         logger.info("Send OTP completed for email={}", email);

@@ -108,6 +108,9 @@ public class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody());
         assertEquals("invalid", response.getBody().getMessage());
     }
+/*
+Author : Priyanshu Mishra
+*/
 
     @Test
     void handleMissingServletRequestParameterException_returnsBadRequest() {
@@ -121,6 +124,10 @@ public class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody());
         assertEquals(exception.getMessage(), response.getBody().getMessage());
     }
+
+/*
+Author : Priyanshu Mishra
+*/
 
     @Test
     void handleAccountLocked_returnsTooManyRequests() {

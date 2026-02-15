@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+/*
+Author : Priyanshu Mishra
+*/
 
 // Jackson sets fields via reflection; setters are not required
 public class LoginRequest {

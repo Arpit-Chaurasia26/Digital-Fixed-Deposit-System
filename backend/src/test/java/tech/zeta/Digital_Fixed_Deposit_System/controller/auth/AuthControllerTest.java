@@ -23,6 +23,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/*
+Author : Priyanshu Mishra
+*/
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AuthController Unit Tests")
 class AuthControllerTest {
@@ -168,6 +172,16 @@ class AuthControllerTest {
         controller.sendPasswordResetOtp("u@example.com");
 
         verify(emailOtpService).sendOtp("u@example.com");
+    }
+
+    @Test
+    void sendOtp_existingEmail_throws() {
+        when(userRepository.existsByEmail("u@example.com")).thenReturn(true);
+
+        assertThatThrownBy(() -> controller.sendOtp("u@example.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        verify(emailOtpService, never()).sendOtp(anyString());
     }
 
     private void setField(Object target, String field, Object value) {

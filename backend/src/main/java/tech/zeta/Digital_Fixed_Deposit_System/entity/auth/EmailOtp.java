@@ -6,6 +6,11 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @Entity
 @Table(name = "email_otp")
 @Getter

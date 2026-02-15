@@ -13,6 +13,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("EmailService Unit Tests")
 class EmailServiceTest {

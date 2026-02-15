@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @DisplayName("EmailOtp Entity Tests")
 class EmailOtpTest {
 

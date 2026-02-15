@@ -17,7 +17,10 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Author - Arpit Chaurasia
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse> handleBusinessException(
             BusinessException ex
@@ -31,7 +34,10 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Author - Arpit Chaurasia
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(
             UnauthorizedException ex
@@ -113,6 +119,9 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
+/*
+Author : Priyanshu Mishra
+*/
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
@@ -126,6 +135,11 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
+
+/*
+Author : Priyanshu Mishra
+*/
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException ex
@@ -154,6 +168,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+/*
+Author : Priyanshu Mishra
+*/
 
 
 

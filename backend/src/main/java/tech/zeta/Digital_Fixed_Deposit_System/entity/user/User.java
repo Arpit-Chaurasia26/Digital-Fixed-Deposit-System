@@ -7,6 +7,11 @@ import org.apache.logging.log4j.Logger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @Entity
 @Table(
         name = "users",

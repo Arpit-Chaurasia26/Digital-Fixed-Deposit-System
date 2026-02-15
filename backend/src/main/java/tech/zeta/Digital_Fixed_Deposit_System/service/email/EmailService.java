@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+Author : Priyanshu Mishra
+*/
+
+
 @Service
 public class EmailService {
 
@@ -37,4 +42,3 @@ public class EmailService {
 
 
 //   xufvbxsmunkuhhrb
-
