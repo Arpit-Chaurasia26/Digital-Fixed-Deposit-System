@@ -6,8 +6,8 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.support.SupportTicketResponseD
 import tech.zeta.Digital_Fixed_Deposit_System.entity.support.SupportTicket;
 
 
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
 @Component
 public class SupportTicketMapper {

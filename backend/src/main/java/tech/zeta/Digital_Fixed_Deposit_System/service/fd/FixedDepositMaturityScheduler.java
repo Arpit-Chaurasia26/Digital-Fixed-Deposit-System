@@ -1,5 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,27 +10,28 @@ import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
+@Slf4j
 @Component
 public class FixedDepositMaturityScheduler {
-
-    private static final Logger logger = LoggerFactory.getLogger(FixedDepositMaturityScheduler.class);
-
+    
     private final FixedDepositRepository fixedDepositRepository;
 
     public FixedDepositMaturityScheduler(FixedDepositRepository fixedDepositRepository) {
         this.fixedDepositRepository = fixedDepositRepository;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Runs once every minute to mark eligible FDs as MATURED.
     @Scheduled(cron = "0 * * * * ?")
     @Transactional
     public void markMaturedFDs() {
-        logger.info("Starting FD maturity scheduler run");
+        log.info("Starting FD maturity scheduler run");
 
         List<FixedDeposit> activeFDs = fixedDepositRepository.findByStatus(FDStatus.ACTIVE);
 
@@ -44,6 +46,6 @@ public class FixedDepositMaturityScheduler {
         }
 
         fixedDepositRepository.saveAll(activeFDs);
-        logger.info("FD maturity scheduler completed: active={}, matured={}", activeFDs.size(), maturedCount);
+        log.info("FD maturity scheduler completed: active={}, matured={}", activeFDs.size(), maturedCount);
     }
 }

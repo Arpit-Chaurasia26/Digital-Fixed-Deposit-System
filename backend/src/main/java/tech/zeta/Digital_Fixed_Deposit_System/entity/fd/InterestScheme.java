@@ -2,6 +2,9 @@ package tech.zeta.Digital_Fixed_Deposit_System.entity.fd;
 
 import java.math.BigDecimal;
 
+/**
+ * @author Arpit Chaurasia
+ */
 public enum InterestScheme {
 
     STANDARD_6_MONTHS(

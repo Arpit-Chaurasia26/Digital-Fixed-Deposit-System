@@ -12,7 +12,9 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("ActiveToBrokenTransitionHandler Unit Tests")
 class ActiveToBrokenTransitionHandlerTest {
 

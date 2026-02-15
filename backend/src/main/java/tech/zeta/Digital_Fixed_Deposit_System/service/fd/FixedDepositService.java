@@ -1,7 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.fd;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FixedDeposit;
@@ -21,10 +20,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Arpit Chaurasia
+ */
+@Slf4j
 @Service
 public class FixedDepositService {
-
-    private static final Logger logger = LoggerFactory.getLogger(FixedDepositService.class);
 
     private static final BigDecimal MIN_FD_AMOUNT = new BigDecimal("5000");
 
@@ -42,17 +43,19 @@ public class FixedDepositService {
         this.statusTransitionHandlers = statusTransitionHandlers;
     }
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Book a new Fixed Deposit.
     @Transactional
     public FixedDeposit bookFixedDeposit(Long userId, BookFDRequest request) {
-        logger.info("Booking fixed deposit: userId={}, amount={}, scheme={}", userId, request.getAmount(), request.getInterestScheme());
+        log.info("Booking fixed deposit: userId={}, amount={}, scheme={}", userId, request.getAmount(), request.getInterestScheme());
 
         validateAmount(request.getAmount());
 
         InterestScheme scheme = request.getInterestScheme();
         if (scheme == null) {
-            logger.warn("Booking failed: missing interest scheme for userId={}", userId);
+            log.warn("Booking failed: missing interest scheme for userId={}", userId);
             throw new BusinessException("Interest scheme must be selected");
         }
 
@@ -72,34 +75,38 @@ public class FixedDepositService {
         fd.setAccruedInterest(BigDecimal.ZERO);
 
         FixedDeposit saved = fixedDepositRepository.save(fd);
-        logger.info("Fixed deposit booked: fdId={}, userId={}", saved.getId(), userId);
+        log.info("Fixed deposit booked: fdId={}, userId={}", saved.getId(), userId);
         return saved;
     }
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Fetch all Fixed Deposits of a user with dynamically calculated accrued interest.
     @Transactional(readOnly = true)
     public List<FixedDeposit> getFixedDepositsByUser(Long userId) {
-        logger.info("Fetching FDs for user: userId={}", userId);
+        log.info("Fetching FDs for user: userId={}", userId);
 
         List<FixedDeposit> fds = fixedDepositRepository.findByUserId(userId);
 
         fds.forEach(this::enrichWithAccruedInterest);
 
-        logger.debug("Fetched FDs for user: userId={}, count={}", userId, fds.size());
+        log.debug("Fetched FDs for user: userId={}, count={}", userId, fds.size());
         return fds;
     }
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Fetch a specific Fixed Deposit of a user.
     @Transactional(readOnly = true)
     public FixedDeposit getFixedDepositById(Long userId, Long fdId) {
-        logger.info("Fetching FD by id for user: userId={}, fdId={}", userId, fdId);
+        log.info("Fetching FD by id for user: userId={}, fdId={}", userId, fdId);
 
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
                 .orElseThrow(() -> {
-                    logger.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
+                    log.warn("Fixed deposit not found for user: userId={}, fdId={}", userId, fdId);
                     return new ResourceNotFoundException("Fixed Deposit not found for user");
                 });
 
@@ -108,18 +115,20 @@ public class FixedDepositService {
         return fd;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Update Fixed Deposit Status of a particular FD of a user
     @Transactional
     public FixedDeposit updateFixedDepositStatus(
             Long fdId,
             FDStatus newStatus
     ) {
-        logger.info("Updating FD status: fdId={}, newStatus={}", fdId, newStatus);
+        log.info("Updating FD status: fdId={}, newStatus={}", fdId, newStatus);
         FixedDeposit fd = fixedDepositRepository
                 .findById(fdId)
                 .orElseThrow(() -> {
-                    logger.warn("Fixed deposit not found for status update: fdId={}", fdId);
+                    log.warn("Fixed deposit not found for status update: fdId={}", fdId);
                     return new ResourceNotFoundException("Fixed Deposit not found for user");
                 });
 
@@ -129,7 +138,7 @@ public class FixedDepositService {
                 .filter(h -> h.supports(currentStatus, newStatus))
                 .findFirst()
                 .orElseThrow(() -> {
-                    logger.warn("Invalid FD status transition: fdId={}, from={}, to={}", fdId, currentStatus, newStatus);
+                    log.warn("Invalid FD status transition: fdId={}, from={}, to={}", fdId, currentStatus, newStatus);
                     return new BusinessException(String.format(
                             "Invalid FD status transition from %s to %s", currentStatus, newStatus
                     ));
@@ -140,11 +149,13 @@ public class FixedDepositService {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     @Transactional(readOnly = true)
     public List<FixedDeposit> getFixedDepositsByFilters(
             Long userId, FDStatus status, BigDecimal minAmount, BigDecimal maxAmount) {
-        logger.info("Fetching FDs with filters: userId={}, status={}, minAmount={}, maxAmount={}",
+        log.info("Fetching FDs with filters: userId={}, status={}, minAmount={}, maxAmount={}",
                 userId, status, minAmount, maxAmount);
 
         BigDecimal effectiveMin = (minAmount != null) ? minAmount : BigDecimal.ZERO;
@@ -168,18 +179,20 @@ public class FixedDepositService {
         }
 
         fds.forEach(this::enrichWithAccruedInterest);
-        logger.debug("Fetched FDs with filters: userId={}, count={}", userId, fds.size());
+        log.debug("Fetched FDs with filters: userId={}, count={}", userId, fds.size());
         return fds;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getUserFDsMaturingWithinDays(Long userId, int days) {
-        logger.info("Fetching user maturing FDs: userId={}, days={}", userId, days);
+        log.info("Fetching user maturing FDs: userId={}, days={}", userId, days);
 
         if (days <= 0) {
-            logger.warn("Invalid days parameter for user maturing FDs: userId={}, days={}", userId, days);
+            log.warn("Invalid days parameter for user maturing FDs: userId={}, days={}", userId, days);
             throw new BusinessException("Days must be positive");
         }
 
@@ -195,14 +208,16 @@ public class FixedDepositService {
         return mapToMaturityResponse(fds, today);
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch all fixed deposits maturing within N days
     @Transactional(readOnly = true)
     public List<FDMaturityResponse> getAllFDsMaturingWithinDays(int days) {
-        logger.info("Fetching all maturing FDs: days={}", days);
+        log.info("Fetching all maturing FDs: days={}", days);
 
         if (days <= 0) {
-            logger.warn("Invalid days parameter for all maturing FDs: days={}", days);
+            log.warn("Invalid days parameter for all maturing FDs: days={}", days);
             throw new BusinessException("Days must be positive");
         }
 
@@ -218,11 +233,13 @@ public class FixedDepositService {
         return mapToMaturityResponse(fds, today);
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch financial year fixed deposit summary analytics for user
     @Transactional(readOnly = true)
     public FDFinancialYearSummaryResponse getUserFinancialYearSummary(Long userId, Integer year) {
-        logger.info("Fetching user financial year summary: userId={}, year={}", userId, year);
+        log.info("Fetching user financial year summary: userId={}, year={}", userId, year);
 
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
@@ -238,11 +255,13 @@ public class FixedDepositService {
         return buildFinancialYearSummary(fds, fy);
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch financial year fixed deposit summary analytics for admin
     @Transactional(readOnly = true)
     public FDFinancialYearSummaryResponse getAdminFinancialYearSummary(Integer year) {
-        logger.info("Fetching admin financial year summary: year={}", year);
+        log.info("Fetching admin financial year summary: year={}", year);
 
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
@@ -257,11 +276,13 @@ public class FixedDepositService {
         return buildFinancialYearSummary(fds, fy);
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch all fixed deposits created in a financial year (admin)
     @Transactional(readOnly = true)
     public List<FixedDeposit> getAdminFDsByFinancialYear(Integer year) {
-        logger.info("Fetching admin FDs by financial year: year={}", year);
+        log.info("Fetching admin FDs by financial year: year={}", year);
 
         int fy = (year != null) ? year : DateUtils.getCurrentFinancialYear();
 
@@ -273,15 +294,17 @@ public class FixedDepositService {
 
         List<FixedDeposit> fds = fixedDepositRepository.findByCreatedAtBetween(startDateTime, endDateTime);
         fds.forEach(this::enrichWithAccruedInterest);
-        logger.debug("Fetched admin FDs by financial year: year={}, count={}", year, fds.size());
+        log.debug("Fetched admin FDs by financial year: year={}, count={}", year, fds.size());
         return fds;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch all fixed deposits in chronological order (admin)
     @Transactional(readOnly = true)
     public List<FixedDeposit> getAllFDsChronological(String order) {
-        logger.info("Fetching all FDs chronological: order={}", order);
+        log.info("Fetching all FDs chronological: order={}", order);
 
         Sort sort = "asc".equalsIgnoreCase(order)
                 ? Sort.by("createdAt").ascending()
@@ -289,15 +312,17 @@ public class FixedDepositService {
 
         List<FixedDeposit> fds = fixedDepositRepository.findAll(sort);
         fds.forEach(this::enrichWithAccruedInterest);
-        logger.debug("Fetched all FDs chronological: count={}", fds.size());
+        log.debug("Fetched all FDs chronological: count={}", fds.size());
         return fds;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch user fixed deposit portfolio
     @Transactional(readOnly = true)
     public FDPortfolioResponse getUserFDPortfolio(Long userId) {
-        logger.info("Fetching user FD portfolio: userId={}", userId);
+        log.info("Fetching user FD portfolio: userId={}", userId);
 
         List<FixedDeposit> fds = fixedDepositRepository.findByUserId(userId);
 
@@ -341,25 +366,29 @@ public class FixedDepositService {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     @Transactional(readOnly = true)
     public FixedDeposit getFixedDepositByIdForAdmin(Long fdId) {
-        logger.info("Fetching FD by id for admin: fdId={}", fdId);
+        log.info("Fetching FD by id for admin: fdId={}", fdId);
 
         return fixedDepositRepository
                 .findById(fdId)
                 .orElseThrow(() -> {
-                    logger.warn("Fixed deposit not found for admin: fdId={}", fdId);
+                    log.warn("Fixed deposit not found for admin: fdId={}", fdId);
                     return new ResourceNotFoundException("Fixed Deposit not found with id: " + fdId);
                 });
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch FD interest accrual timeline
     @Transactional(readOnly = true)
     public FDInterestTimelineResponse getInterestTimeline(FixedDeposit fd, String interval) {
-        logger.info("Fetching interest timeline: fdId={}, interval={}", fd.getId(), interval);
+        log.info("Fetching interest timeline: fdId={}, interval={}", fd.getId(), interval);
 
         List<InterestTimelinePoint> timeline = new ArrayList<>();
 
@@ -406,16 +435,18 @@ public class FixedDepositService {
         );
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Get current accrued interest for a Fixed Deposit of a particular user
     @Transactional(readOnly = true)
     public FDInterestResponse getCurrentInterestForUser(Long userId, Long fdId) {
-        logger.info("Fetching current interest: userId={}, fdId={}", userId, fdId);
+        log.info("Fetching current interest: userId={}, fdId={}", userId, fdId);
 
         FixedDeposit fd = fixedDepositRepository
                 .findByIdAndUserId(fdId, userId)
                 .orElseThrow(() -> {
-                    logger.warn("Fixed deposit not found for user interest: userId={}, fdId={}", userId, fdId);
+                    log.warn("Fixed deposit not found for user interest: userId={}, fdId={}", userId, fdId);
                     return new ResourceNotFoundException("Fixed Deposit not found for user");
                 });
 
@@ -439,9 +470,11 @@ public class FixedDepositService {
 
     // Helper methods
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     private void enrichWithAccruedInterest(FixedDeposit fd) {
-        logger.debug("Enriching accrued interest: fdId={}, status={}", fd.getId(), fd.getStatus());
+        log.debug("Enriching accrued interest: fdId={}, status={}", fd.getId(), fd.getStatus());
 
         if (fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED) {
 
@@ -449,19 +482,23 @@ public class FixedDepositService {
         }
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     private void validateAmount(BigDecimal amount) {
-        logger.debug("Validating FD amount: amount={}", amount);
+        log.debug("Validating FD amount: amount={}", amount);
 
         if (amount == null || amount.compareTo(MIN_FD_AMOUNT) < 0) {
-            logger.warn("Invalid FD amount: amount={}, min={}", amount, MIN_FD_AMOUNT);
+            log.warn("Invalid FD amount: amount={}, min={}", amount, MIN_FD_AMOUNT);
             throw new BusinessException("Minimum Fixed Deposit amount is " + MIN_FD_AMOUNT);
         }
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     private FDFinancialYearSummaryResponse buildFinancialYearSummary(List<FixedDeposit> fds, int financialYear) {
-        logger.debug("Building financial year summary: year={}, count={}", financialYear, fds.size());
+        log.debug("Building financial year summary: year={}, count={}", financialYear, fds.size());
 
         long totalFDs = fds.size();
 
@@ -483,9 +520,11 @@ public class FixedDepositService {
         );
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     private FixedDeposit buildInterestSnapshot(FixedDeposit original, LocalDate asOfDate) {
-        logger.debug("Building interest snapshot: fdId={}, asOfDate={}", original.getId(), asOfDate);
+        log.debug("Building interest snapshot: fdId={}, asOfDate={}", original.getId(), asOfDate);
 
         FixedDeposit snapshot = new FixedDeposit();
 
@@ -504,12 +543,14 @@ public class FixedDepositService {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     private List<FDMaturityResponse> mapToMaturityResponse(List<FixedDeposit> fds, LocalDate today) {
-        logger.debug("Mapping maturity response: count={}, today={}", fds.size(), today);
+        log.debug("Mapping maturity response: count={}, today={}", fds.size(), today);
 
         if (fds.isEmpty()) {
-            logger.debug("No FDs found for maturity response on date={}", today);
+            log.debug("No FDs found for maturity response on date={}", today);
         }
         return fds.stream()
                 .map(fd -> new FDMaturityResponse(

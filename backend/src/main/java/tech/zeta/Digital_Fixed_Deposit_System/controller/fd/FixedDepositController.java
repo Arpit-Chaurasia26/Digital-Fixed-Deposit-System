@@ -1,7 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.fd;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.fd.*;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.fd.FDStatus;
@@ -19,11 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/fd")
 public class FixedDepositController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FixedDepositController.class);
 
     private final FixedDepositService fixedDepositService;
     private final CurrentUserProvider currentUserProvider;
@@ -33,11 +31,13 @@ public class FixedDepositController {
         this.currentUserProvider = currentUserProvider;
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Get all available FD schemes (public endpoint)
     @GetMapping("/schemes")
     public ResponseEntity<List<SchemeResponse>> getAllSchemes() {
-        logger.info("Fetching all FD schemes");
+        log.info("Fetching all FD schemes");
         List<SchemeResponse> schemes = Arrays.stream(InterestScheme.values())
                 .map(scheme -> new SchemeResponse(
                         scheme.name(),
@@ -51,12 +51,14 @@ public class FixedDepositController {
         return ResponseEntity.ok(schemes);
     }
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Book a new Fixed Deposit.
     @PostMapping("/book")
     public ResponseEntity<FixedDeposit> bookFixedDeposit(@Valid @RequestBody BookFDRequest request) {
         Long userId = currentUserProvider.getCurrentUserId();
-        logger.info("Booking FD: userId={}, amount={}, scheme={}", userId, request.getAmount(), request.getInterestScheme());
+        log.info("Booking FD: userId={}, amount={}, scheme={}", userId, request.getAmount(), request.getInterestScheme());
 
         FixedDeposit fd = fixedDepositService.bookFixedDeposit(userId, request);
 
@@ -65,7 +67,9 @@ public class FixedDepositController {
                 .body(fd);
     }
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Fetch Fixed Deposits of logged-in user (optionally filtered by status and amount range)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FixedDeposit>> getUserFixedDeposits(
@@ -75,7 +79,7 @@ public class FixedDepositController {
         @RequestParam(required = false) BigDecimal maxAmount
     ) {
     Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-    logger.info("Fetching user FDs: userId={}, status={}, minAmount={}, maxAmount={}", userId, status, minAmount, maxAmount);
+    log.info("Fetching user FDs: userId={}, status={}, minAmount={}, maxAmount={}", userId, status, minAmount, maxAmount);
 
 
     if (!authenticatedUserId.equals(userId)) {
@@ -91,12 +95,14 @@ public class FixedDepositController {
     }
 
 
-    // Author - Yogendra Kavuru
+    /**
+     * @author Yogendra Kavuru
+     */
     // Fetch a specific Fixed Deposit of logged-in user.
     @GetMapping("/user/{userId}/{fdId}")
     public ResponseEntity<FixedDeposit> getFixedDepositById(@PathVariable Long userId, @PathVariable Long fdId) {
     Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-    logger.info("Fetching user FD by id: userId={}, fdId={}", userId, fdId);
+    log.info("Fetching user FD by id: userId={}, fdId={}", userId, fdId);
 
 
     if (!authenticatedUserId.equals(userId)) {
@@ -111,13 +117,15 @@ public class FixedDepositController {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch fixed deposits maturing within N days
     @GetMapping("/user/{userId}/maturing")
     public ResponseEntity<List<FDMaturityResponse>> getUserMaturingFDs(
             @PathVariable Long userId, @RequestParam(defaultValue = "7") int days) {
         Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching user maturing FDs: userId={}, days={}", userId, days);
+        log.info("Fetching user maturing FDs: userId={}, days={}", userId, days);
 
         if (!authenticatedUserId.equals(userId)) {
             throw new UnauthorizedException("You are not allowed to access other user's FDs");
@@ -129,7 +137,9 @@ public class FixedDepositController {
         return ResponseEntity.ok(response);
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch financial year fixed deposit summary analytics for user
     @GetMapping("/user/{userId}/summary/financial-year")
     public ResponseEntity<FDFinancialYearSummaryResponse> getUserFinancialYearSummary(
@@ -137,7 +147,7 @@ public class FixedDepositController {
             @RequestParam(required = false) Integer year
     ) {
         Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching user financial year summary: userId={}, year={}", userId, year);
+        log.info("Fetching user financial year summary: userId={}, year={}", userId, year);
 
         if (!authenticatedUserId.equals(userId)) {
             throw new UnauthorizedException("You are not allowed to access other user's summary");
@@ -146,12 +156,14 @@ public class FixedDepositController {
         return ResponseEntity.ok(fixedDepositService.getUserFinancialYearSummary(userId, year));
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch user fixed deposit portfolio
     @GetMapping("/user/{userId}/portfolio")
     public ResponseEntity<FDPortfolioResponse> getUserFDPortfolio(@PathVariable Long userId) {
         Long authenticatedUserId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching user portfolio: userId={}", userId);
+        log.info("Fetching user portfolio: userId={}", userId);
 
         if (!authenticatedUserId.equals(userId)) {
             throw new UnauthorizedException("You are not allowed to access other user's portfolio");
@@ -161,7 +173,9 @@ public class FixedDepositController {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Fetch FD interest accrual timeline
     @GetMapping("/{fdId}/interest/timeline")
     public ResponseEntity<FDInterestTimelineResponse> getInterestTimeline(
@@ -169,7 +183,7 @@ public class FixedDepositController {
             @RequestParam(required = false) String interval
     ) {
         Long userId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching interest timeline: userId={}, fdId={}, interval={}", userId, fdId, interval);
+        log.info("Fetching interest timeline: userId={}, fdId={}, interval={}", userId, fdId, interval);
 
         FixedDeposit fd = fixedDepositService.getFixedDepositById(userId, fdId);
 
@@ -179,12 +193,14 @@ public class FixedDepositController {
         return ResponseEntity.ok(fixedDepositService.getInterestTimeline(fd, effectiveInterval));
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     // Get current accrued interest for a Fixed Deposit.
     @GetMapping("/{fdId}/interest")
     public ResponseEntity<FDInterestResponse> getAccruedInterest(@PathVariable Long fdId) {
         Long userId = currentUserProvider.getCurrentUserId();
-        logger.info("Fetching accrued interest: userId={}, fdId={}", userId, fdId);
+        log.info("Fetching accrued interest: userId={}, fdId={}", userId, fdId);
 
         return ResponseEntity.ok(fixedDepositService.getCurrentInterestForUser(userId, fdId));
     }

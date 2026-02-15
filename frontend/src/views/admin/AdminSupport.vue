@@ -250,6 +250,13 @@ import AdminSidebar from '@/components/admin/AdminSidebar.vue';
 import { supportService } from '@/services/supportService';
 import type { SupportTicket, SupportTicketPage, TicketStatus } from '@/types';
 
+const getAvailableStatusesForTicket = (status: string): TicketStatus[] => {
+  if (status === 'OPEN' || status === 'IN_PROGRESS') {
+    return ['RESOLVED' as TicketStatus];
+  }
+  return [];
+};
+
 // State
 const tickets = ref<SupportTicketPage>({ content: [], totalPages: 0, totalElements: 0, size: 10, number: 0 });
 const page = ref(0);
@@ -343,8 +350,8 @@ const openTicketModal = (ticket: SupportTicket) => {
   console.log('Opening ticket modal for ticket:', ticket);
   selectedTicket.value = ticket;
   responseText.value = ticket.response || '';
-  // Set newStatus to first available status option, will be computed
-  newStatus.value = 'OPEN' as TicketStatus;
+  const nextStatuses = getAvailableStatusesForTicket(ticket.status);
+  newStatus.value = (nextStatuses.length > 0 ? nextStatuses[0] : ticket.status) as TicketStatus;
   modalError.value = '';
 };
 
@@ -367,36 +374,29 @@ const submitTicketChanges = async () => {
 
   try {
     console.log('Submitting changes for ticket:', selectedTicket.value.id);
-    
+
+    let latestStatus = selectedTicket.value.status;
+
+    // Update status first (avoids invalid transition after response auto-resolves OPEN tickets)
+    if (newStatus.value !== latestStatus) {
+      console.log('Updating status to:', newStatus.value);
+      await supportService.updateTicketStatus(selectedTicket.value.id, newStatus.value as TicketStatus);
+      latestStatus = newStatus.value as TicketStatus;
+      console.log('Status updated successfully');
+    }
+
     // Update response if changed
     if (responseText.value !== selectedTicket.value.response) {
       console.log('Updating response to:', responseText.value);
-      try {
-        await supportService.updateTicketResponse(selectedTicket.value.id, responseText.value);
-        console.log('Response updated successfully');
-      } catch (err: any) {
-        console.error('Response update error:', err);
-        // Don't stop - response might still have been saved
-      }
-    }
-
-    // Update status if changed
-    if (newStatus.value !== selectedTicket.value.status) {
-      console.log('Updating status to:', newStatus.value);
-      try {
-        await supportService.updateTicketStatus(selectedTicket.value.id, newStatus.value as TicketStatus);
-        console.log('Status updated successfully');
-      } catch (err: any) {
-        console.error('Status update error:', err);
-        // Don't stop - status might still have been saved
-      }
+      await supportService.updateTicketResponse(selectedTicket.value.id, responseText.value);
+      console.log('Response updated successfully');
     }
 
     console.log('Changes submitted successfully');
     
     // Update the ticket in the modal to reflect changes
     selectedTicket.value.response = responseText.value;
-    selectedTicket.value.status = newStatus.value;
+    selectedTicket.value.status = latestStatus;
     
     // Refresh the ticket list to show updated statuses
     await fetchTickets();
@@ -418,17 +418,8 @@ const submitTicketChanges = async () => {
 // CLOSED -> cannot modify
 const availableStatuses = computed(() => {
   if (!selectedTicket.value) return [];
-  
-  const currentStatus = selectedTicket.value.status;
-  
-  if (currentStatus === 'OPEN') {
-    return ['RESOLVED']; // Admin can resolve an open ticket
-  } else if (currentStatus === 'IN_PROGRESS') {
-    return ['RESOLVED']; // Admin can resolve in-progress ticket
-  }
-  
-  // RESOLVED and CLOSED - no transitions available
-  return [];
+
+  return getAvailableStatusesForTicket(selectedTicket.value.status);
 });
 
 // Format date

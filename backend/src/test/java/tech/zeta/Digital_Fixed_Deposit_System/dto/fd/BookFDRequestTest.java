@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("BookFDRequest DTO Tests")
 class BookFDRequestTest {
 

@@ -10,8 +10,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Priyanshu Mishra
  */
-
-
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken,Long> {
 
     Logger logger = LogManager.getLogger(RefreshTokenRepository.class);

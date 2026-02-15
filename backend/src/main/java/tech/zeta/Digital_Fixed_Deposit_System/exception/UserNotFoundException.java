@@ -1,8 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.exception;
 
-
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
 public class UserNotFoundException extends RuntimeException {
 

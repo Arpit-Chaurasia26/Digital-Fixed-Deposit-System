@@ -10,7 +10,9 @@ import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
-// Author - Yogendra Kavuru
+/**
+ * @author Yogendra Kavuru
+ */
 public class BookFDRequest {
 
 

@@ -1,6 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.withdrawal;
 
 import jakarta.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
@@ -19,18 +20,15 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.FixedDepositRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.TransactionRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.util.InterestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class WithdrawalServiceImpl implements WithdrawalService{
-
-    private static final Logger logger = LoggerFactory.getLogger(WithdrawalServiceImpl.class);
 
     private FixedDepositRepository fixedDepositRepository;
     private CurrentUserProvider currentUserProvider;
@@ -45,13 +43,13 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     private FixedDeposit validateFixedDeposit(Long id){
         FixedDeposit fixedDeposit = fixedDepositRepository.findById(id)
                 .orElseThrow(()-> {
-                    logger.error("No Fixed Deposit Found with ID {}", id);
+                    log.error("No Fixed Deposit Found with ID {}", id);
                     return new AccountNotFoundException("FD account not found");
                 });
 
         Long userId = currentUserProvider.getCurrentUserId();
         if(!Objects.equals(fixedDeposit.getUserId(), userId)){
-            logger.error("User with userId: {} can not access fixed deposit with id: {}", userId, id);
+            log.error("User with userId: {} can not access fixed deposit with id: {}", userId, id);
             throw new UnauthorizedException("Unauthorized Access");
         }
 
@@ -61,14 +59,14 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     @Override
     public WithdrawalPreview getWithdrawalPreview(Long id, BigDecimal withdrawalAmount) {
 
-        logger.info("Processing withdrawal preview for Fixed Deposit with ID: {} of amount {}", id, withdrawalAmount);
+        log.info("Processing withdrawal preview for Fixed Deposit with ID: {} of amount {}", id, withdrawalAmount);
 
         if(withdrawalAmount.compareTo(BigDecimal.ZERO)<=0)throw new ValidationException("Amount should be positive");
 
         FixedDeposit fixedDeposit = validateFixedDeposit(id);
 
         if(fixedDeposit.getStatus()!=FDStatus.ACTIVE && fixedDeposit.getStatus()!=FDStatus.MATURED ){
-            logger.error("Request failed due to accessing closed/broken fixed deposit with Id: {}", id);
+            log.error("Request failed due to accessing closed/broken fixed deposit with Id: {}", id);
             throw new InvalidOperationException("Fixed Deposit has been CLOSED");
         }
 
@@ -77,7 +75,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         BigDecimal interestAccrued;
         BigDecimal principleAmount = fixedDeposit.getAmount();
         if(withdrawalAmount.compareTo(principleAmount)>0){
-            logger.error("Attempted to withdraw {} for fixed deposit Id: {}",withdrawalAmount, id);
+            log.error("Attempted to withdraw {} for fixed deposit Id: {}",withdrawalAmount, id);
             throw new InSufficientFundsException("Can not withdraw more amount greater than the principal amount");
         }
         BigDecimal actualInterestRate = fixedDeposit.getInterestRate();
@@ -110,10 +108,10 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         }
         //Breaking FD Not Allowed
         else{
-            logger.error("Request failed due to break is not applicable on fixed deposit Id: {}", id);
+            log.error("Request failed due to break is not applicable on fixed deposit Id: {}", id);
             throw new InvalidOperationException("You can not break a this Fixed Deposit");
         }
-        logger.info("Withdrawal preview generated successfully for FD ID: {}", id);
+        log.info("Withdrawal preview generated successfully for FD ID: {}", id);
         return preview;
 
     }
@@ -122,10 +120,10 @@ public class WithdrawalServiceImpl implements WithdrawalService{
     @Transactional
     public WithdrawalReceipt confirmWithdrawal(Long id, BigDecimal withdrawalAmount) {
 
-        logger.info("Processing for confirming withdrawal of fixed deposit Id: {}", id);
+        log.info("Processing for confirming withdrawal of fixed deposit Id: {}", id);
         FixedDeposit fixedDeposit = validateFixedDeposit(id);
         if(fixedDeposit.getStatus()!=FDStatus.ACTIVE && fixedDeposit.getStatus()!=FDStatus.MATURED ){
-            logger.error("Request failed due to accessing closed/broken fixed deposit Id: {}", id);
+            log.error("Request failed due to accessing closed/broken fixed deposit Id: {}", id);
             throw new InvalidOperationException("Fixed Deposit has been CLOSED");
         }
 
@@ -161,14 +159,14 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         transaction.setUserId(currentUserProvider.getCurrentUserId());
         transactionRepository.save(transaction);
         fixedDepositRepository.save(fixedDeposit);
-        logger.info("Successfully withdrawn amount of {} from the fixed deposit Id: {} to {}",withdrawalAmount, id, fixedDeposit.getStatus());
+        log.info("Successfully withdrawn amount of {} from the fixed deposit Id: {} to {}",withdrawalAmount, id, fixedDeposit.getStatus());
         return withdrawalReceipt;
 
     }
 
     //Checking Withdrawal Eligibility
     public WithdrawalEligibility checkWithdrawalEligibility(Long id){
-        logger.info("Processing the eligibility check for fixed deposit Id: {}", id);
+        log.info("Processing the eligibility check for fixed deposit Id: {}", id);
         FixedDeposit fixedDeposit = validateFixedDeposit(id);
 
         WithdrawalEligibility withdrawalEligibility;
@@ -185,7 +183,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         }else{
             withdrawalEligibility = new WithdrawalEligibility(false, "You can not Withdraw");
         }
-        logger.info("Eligibility Checked successfully for fixed deposit Id: {}", id);
+        log.info("Eligibility Checked successfully for fixed deposit Id: {}", id);
         return withdrawalEligibility;
     }
 

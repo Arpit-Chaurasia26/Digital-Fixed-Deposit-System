@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,8 +20,6 @@ public class GlobalExceptionHandler {
     /**
      * @author Priyanshu Mishra
      */
-
-
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse> handleBusinessException(
             BusinessException ex
@@ -36,8 +36,6 @@ public class GlobalExceptionHandler {
     /**
      * @author Priyanshu Mishra
      */
-
-
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(
             UnauthorizedException ex
@@ -51,7 +49,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(
             ResourceNotFoundException ex
@@ -65,7 +65,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
             MethodArgumentNotValidException ex
@@ -81,7 +83,9 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(message, 400));
     }
 
-    //AccountNotFound
+    /**
+     * @author Pavan Kalloji
+     */
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ApiResponse> handleAccountNotFoundException(
             AccountNotFoundException ex
@@ -95,6 +99,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    /**
+     * @author Pavan Kalloji
+     */
     @ExceptionHandler(InvalidOperationException.class)
     public ResponseEntity<ApiResponse> handleInvalidOperationException(
             InvalidOperationException ex
@@ -108,6 +115,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    /**
+     * @author Pavan Kalloji
+     */
     @ExceptionHandler(InSufficientFundsException.class)
     public ResponseEntity<ApiResponse> handleInSufficientFundsException(
             InSufficientFundsException ex
@@ -124,8 +134,6 @@ public class GlobalExceptionHandler {
     /**
      * @author Priyanshu Mishra
      */
-
-
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
             ValidationException ex
@@ -142,8 +150,6 @@ public class GlobalExceptionHandler {
     /**
      * @author Priyanshu Mishra
      */
-
-
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException ex
@@ -181,13 +187,9 @@ public class GlobalExceptionHandler {
     }
 
 
-/*
-    Author - Akshaya Siripuram
- */
-    // ===== Support Ticket Module Exceptions =====
-
-
-    // Ticket not found (404)
+    /**
+     * @author Akshaya Siripuram
+     */
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<ApiResponse> handleTicketNotFoundException(
             TicketNotFoundException ex
@@ -201,7 +203,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Unauthorized ticket actions (403)
+    /**
+     * @author Akshaya Siripuram
+     */
     @ExceptionHandler(UnauthorizedTicketActionException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedTicketActionException(
             UnauthorizedTicketActionException ex
@@ -215,7 +219,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Invalid ticket status transitions (400)
+    /**
+     * @author Akshaya Siripuram
+     */
     @ExceptionHandler(InvalidTicketStatusException.class)
     public ResponseEntity<ApiResponse> handleInvalidTicketStatusException(
             InvalidTicketStatusException ex
@@ -229,7 +235,9 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // User not found (404)
+    /**
+     * @author Arpit Chaurasia
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiResponse> handleUserNotFoundException(
             UserNotFoundException ex
@@ -244,7 +252,9 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Author - Arpit Chaurasia
+    /**
+     * @author Arpit Chaurasia
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(
             Exception ex

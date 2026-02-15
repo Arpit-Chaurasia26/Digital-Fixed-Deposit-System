@@ -8,11 +8,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
-
 public interface SupportTicketService {
 
     // Create a new support ticket for logged-in user.

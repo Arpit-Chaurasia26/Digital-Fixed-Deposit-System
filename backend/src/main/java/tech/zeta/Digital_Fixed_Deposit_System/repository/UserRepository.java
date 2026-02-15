@@ -10,9 +10,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Priyanshu Mishra
  */
-
-
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

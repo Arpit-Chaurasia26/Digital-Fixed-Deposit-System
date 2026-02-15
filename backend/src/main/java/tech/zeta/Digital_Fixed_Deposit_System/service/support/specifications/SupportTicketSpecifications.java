@@ -6,8 +6,8 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 import java.time.LocalDateTime;
 
 
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
 public class SupportTicketSpecifications {
 

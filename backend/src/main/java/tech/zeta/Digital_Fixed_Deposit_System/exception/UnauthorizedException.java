@@ -1,6 +1,8 @@
 package tech.zeta.Digital_Fixed_Deposit_System.exception;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {
         super(message);

@@ -9,9 +9,6 @@ import java.util.Optional;
 /**
  * @author Priyanshu Mishra
  */
-
-
-
 public interface EmailOtpRepository extends JpaRepository<EmailOtp, Long> {
     Optional<EmailOtp> findByEmailAndOtpAndVerifiedFalse(String email, String otp);
     Optional<EmailOtp> findTopByEmailOrderByExpiresAtDesc(String email);
