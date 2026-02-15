@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -13,47 +14,46 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
-import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthService;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
 import tech.zeta.Digital_Fixed_Deposit_System.service.email.EmailOtpService;
+import tech.zeta.Digital_Fixed_Deposit_System.service.user.UserService;
 import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final Logger logger = LogManager.getLogger(AuthController.class);
-
     private final AuthService authService;
     private final CookieUtil cookieUtil;
     private final EmailOtpService emailOtpService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
 
-    public AuthController(AuthService authService, CookieUtil cookieUtil, EmailOtpService emailOtpService, UserRepository userRepository) {
+    public AuthController(AuthService authService, CookieUtil cookieUtil, EmailOtpService emailOtpService, UserService userService) {
         this.authService = authService;
         this.cookieUtil = cookieUtil;
         this.emailOtpService = emailOtpService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     // SEND OTP FOR EMAIL VERIFICATION
 
     @PostMapping("/email/send-otp")
     public ResponseEntity<Void> sendOtp(@RequestParam String email) {
-        if (userRepository.existsByEmail(email)) {
-            logger.warn("The email is already register with another account = {}", email);
+        if (userService.checkByEmail(email)) {
+            log.warn("The email is already register with another account = {}", email);
             throw new ResourceNotFoundException("Account has been already registered with this email address");
         }
-        logger.info("Send OTP requested for email={}", email);
+        log.info("Send OTP requested for email={}", email);
         emailOtpService.sendOtp(email);
-        logger.info("Send OTP completed for email={}", email);
+        log.info("Send OTP completed for email={}", email);
         return ResponseEntity.ok().build();
     }
 
@@ -65,7 +65,7 @@ public class AuthController {
             @RequestParam String email,
             @RequestParam String otp
     ) {
-        logger.info("Verify OTP requested for email={}", email);
+        log.info("Verify OTP requested for email={}", email);
         emailOtpService.verifyOtp(email, otp);
         return ResponseEntity.ok().build();
     }
@@ -78,13 +78,13 @@ public class AuthController {
             @Valid @RequestBody RegisterRequest request,
             HttpServletResponse response
     ) {
-        logger.info("Register endpoint called");
+        log.info("Register endpoint called");
         AuthTokens tokens = authService.register(request);
 
         cookieUtil.setAccessToken(response, tokens.accessToken());
         cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-        logger.info("Register endpoint completed");
+        log.info("Register endpoint completed");
         return ResponseEntity.ok().build();
     }
 
@@ -95,13 +95,13 @@ public class AuthController {
             @Valid @RequestBody LoginRequest request,
             HttpServletResponse response
     ) {
-        logger.info("Login endpoint called");
+        log.info("Login endpoint called");
         AuthTokens tokens = authService.login(request);
 
         cookieUtil.setAccessToken(response, tokens.accessToken());
         cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-        logger.info("Login endpoint completed");
+        log.info("Login endpoint completed");
         return ResponseEntity.ok().build();
     }
 
@@ -112,12 +112,12 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        logger.info("Refresh endpoint called");
+        log.info("Refresh endpoint called");
         String refreshToken = cookieUtil.extractRefreshToken(request);
 
         if (refreshToken == null) {
             cookieUtil.clearAuthCookies(response);
-            logger.warn("Refresh token missing");
+            log.warn("Refresh token missing");
             throw new UnauthorizedException("Refresh token missing");
         }
 
@@ -126,11 +126,11 @@ public class AuthController {
             cookieUtil.setAccessToken(response, tokens.accessToken());
             cookieUtil.setRefreshToken(response, tokens.refreshToken());
 
-            logger.info("Refresh endpoint completed");
+            log.info("Refresh endpoint completed");
             return ResponseEntity.ok().build();
         } catch (UnauthorizedException ex) {
             cookieUtil.clearAuthCookies(response);
-            logger.warn("Refresh token invalid");
+            log.warn("Refresh token invalid");
             throw ex;
         }
     }
@@ -142,7 +142,7 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        logger.info("Logout endpoint called");
+        log.info("Logout endpoint called");
         String refreshToken = cookieUtil.extractRefreshToken(request);
 
         if (refreshToken != null) {
@@ -150,12 +150,12 @@ public class AuthController {
                 authService.logout(refreshToken);
             } catch (UnauthorizedException ex) {
                 // Idempotent logout: ignore invalid/expired token
-                logger.debug("Logout ignored: token invalid or expired");
+                log.debug("Logout ignored: token invalid or expired");
             }
         }
 
         cookieUtil.clearAuthCookies(response);
-        logger.info("Logout endpoint completed");
+        log.info("Logout endpoint completed");
         return ResponseEntity.noContent().build();
     }
 
@@ -165,13 +165,13 @@ public class AuthController {
     public ResponseEntity<Void> sendPasswordResetOtp(
             @RequestParam String email
     ) {
-        logger.info("Password reset OTP requested for email={}", email);
-        if (!userRepository.existsByEmail(email)) {
-            logger.warn("Password reset requested for unknown email={}", email);
+        log.info("Password reset OTP requested for email={}", email);
+        if (!userService.checkByEmail(email)) {
+            log.warn("Password reset requested for unknown email={}", email);
             throw new ResourceNotFoundException("No account found with this email address");
         }
         emailOtpService.sendOtp(email);
-        logger.info("Password reset OTP sent for email={}", email);
+        log.info("Password reset OTP sent for email={}", email);
         return ResponseEntity.ok().build();
     }
 
@@ -183,9 +183,9 @@ public class AuthController {
             @RequestParam String otp,
             @RequestParam String newPassword
     ) {
-        logger.info("Password reset requested for email={}", email);
+        log.info("Password reset requested for email={}", email);
         authService.resetPassword(email, otp, newPassword);
-        logger.info("Password reset completed for email={}", email);
+        log.info("Password reset completed for email={}", email);
         return ResponseEntity.ok().build();
     }
 

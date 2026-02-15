@@ -12,6 +12,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * @author Priyanshu Mishra
+ */
+
 public class GlobalExceptionHandlerTest {
 
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
@@ -108,9 +112,9 @@ public class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody());
         assertEquals("invalid", response.getBody().getMessage());
     }
-/*
-Author : Priyanshu Mishra
-*/
+    /**
+     * @author Priyanshu Mishra
+     */
 
     @Test
     void handleMissingServletRequestParameterException_returnsBadRequest() {
@@ -125,18 +129,82 @@ Author : Priyanshu Mishra
         assertEquals(exception.getMessage(), response.getBody().getMessage());
     }
 
-/*
-Author : Priyanshu Mishra
-*/
-
+    /**
+     * @author Priyanshu Mishra
+     */
     @Test
     void handleAccountLocked_returnsTooManyRequests() {
-        ResponseEntity<ApiResponse> response = handler.handleAccountLocked(
+        ResponseEntity<ApiResponse> response = handler.handleAccountLockedException(
                 new AccountLockedException("locked", 125L)
         );
 
         assertEquals(429, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertEquals("Too many attempts. Try again in 2 min 5 sec", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleInvalidTicketStatusException_returnsBadRequest() {
+        ResponseEntity<ApiResponse> response =
+                handler.handleInvalidTicketStatusException(new InvalidTicketStatusException("bad-status"));
+
+        assertEquals(400, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("bad-status", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleUnauthorizedTicketActionException_returnsForbidden() {
+        ResponseEntity<ApiResponse> response =
+                handler.handleUnauthorizedTicketActionException(new UnauthorizedTicketActionException("denied"));
+
+        assertEquals(403, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("denied", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleTicketNotFoundException_returnsNotFound() {
+        ResponseEntity<ApiResponse> response =
+                handler.handleTicketNotFoundException(new TicketNotFoundException(12L));
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("Support ticket not found with id: 12", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleUserNotFoundException_returnsNotFound() {
+        ResponseEntity<ApiResponse> response =
+                handler.handleUserNotFoundException(new UserNotFoundException(12L));
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("User not found with id: 12", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleMethodArgumentNotValid_usesFirstFieldError_whenMultipleErrors() {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "req");
+        bindingResult.addError(new FieldError("req", "field", "first"));
+        bindingResult.addError(new FieldError("req", "other", "second"));
+        MethodArgumentNotValidException ex = new MethodArgumentNotValidException(null, bindingResult);
+
+        ResponseEntity<ApiResponse> response = handler.handleValidationException(ex);
+
+        assertEquals(400, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("first", response.getBody().getMessage());
+    }
+
+    @Test
+    void handleAccountLocked_formatsZeroSeconds() {
+        ResponseEntity<ApiResponse> response = handler.handleAccountLockedException(
+                new AccountLockedException("locked", 60L)
+        );
+
+        assertEquals(429, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("Too many attempts. Try again in 1 min 0 sec", response.getBody().getMessage());
     }
 }

@@ -9,6 +9,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * @author Priyanshu Mishra
+ */
+
 public class CurrentUserProviderTest {
 
     private final CurrentUserProvider provider = new CurrentUserProvider();

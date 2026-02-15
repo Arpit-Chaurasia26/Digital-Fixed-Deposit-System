@@ -5,14 +5,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.time.Instant;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
+
 
 // Response DTO for authenticated user's profile.
 public class UserProfileResponse {
 
-    private static final Logger logger = LogManager.getLogger(UserProfileResponse.class);
 
     private final Long id;
     private final String name;

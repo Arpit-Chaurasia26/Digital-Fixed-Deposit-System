@@ -1,20 +1,21 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
+@Slf4j
 public record AuthTokens(
         String accessToken,
         String refreshToken
 ) {
-    private static final Logger logger = LogManager.getLogger(AuthTokens.class);
 
     public AuthTokens {
-        logger.debug("AuthTokens created");
+        log.debug("AuthTokens created");
     }
 }

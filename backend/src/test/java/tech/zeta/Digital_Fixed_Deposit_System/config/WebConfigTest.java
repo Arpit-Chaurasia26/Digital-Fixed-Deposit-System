@@ -8,10 +8,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 public class WebConfigTest {
 

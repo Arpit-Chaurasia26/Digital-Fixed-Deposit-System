@@ -4,13 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 public class RefreshTokenTest {
 

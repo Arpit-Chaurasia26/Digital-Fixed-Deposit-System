@@ -1,8 +1,7 @@
 package tech.zeta.Digital_Fixed_Deposit_System.exception;
 
 import jakarta.validation.ValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,20 +11,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.common.ApiResponse;
 
 // Author - Arpit Chaurasia
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    /**
+     * @author Priyanshu Mishra
+     */
 
-/*
-Author : Priyanshu Mishra
-*/
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse> handleBusinessException(
             BusinessException ex
     ) {
-        logger.warn("Business exception: {}", ex.getMessage());
+        log.warn("Business exception: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -34,15 +33,16 @@ Author : Priyanshu Mishra
                 ));
     }
 
-/*
-Author : Priyanshu Mishra
-*/
+    /**
+     * @author Priyanshu Mishra
+     */
+
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(
             UnauthorizedException ex
     ) {
-        logger.warn("Unauthorized exception: {}", ex.getMessage());
+        log.warn("Unauthorized exception: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ApiResponse(
@@ -56,7 +56,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(
             ResourceNotFoundException ex
     ) {
-        logger.warn("Resource not found: {}", ex.getMessage());
+        log.warn("Resource not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(
@@ -75,7 +75,7 @@ Author : Priyanshu Mishra
                 .get(0)
                 .getDefaultMessage();
 
-        logger.warn("Validation exception: {}", message);
+        log.warn("Validation exception: {}", message);
         return ResponseEntity
                 .badRequest()
                 .body(new ApiResponse(message, 400));
@@ -86,7 +86,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleAccountNotFoundException(
             AccountNotFoundException ex
     ) {
-        logger.warn("Account not found: {}", ex.getMessage());
+        log.warn("Account not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(
@@ -99,7 +99,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleInvalidOperationException(
             InvalidOperationException ex
     ) {
-        logger.warn("Invalid operation: {}", ex.getMessage());
+        log.warn("Invalid operation: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -107,11 +107,12 @@ Author : Priyanshu Mishra
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
+
     @ExceptionHandler(InSufficientFundsException.class)
     public ResponseEntity<ApiResponse> handleInSufficientFundsException(
             InSufficientFundsException ex
     ) {
-        logger.warn("Insufficient funds: {}", ex.getMessage());
+        log.warn("Insufficient funds: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -119,15 +120,17 @@ Author : Priyanshu Mishra
                         HttpStatus.BAD_REQUEST.value()
                 ));
     }
-/*
-Author : Priyanshu Mishra
-*/
+
+    /**
+     * @author Priyanshu Mishra
+     */
+
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse> handleValidationException(
             ValidationException ex
     ) {
-        logger.warn("Validation exception: {}", ex.getMessage());
+        log.warn("Validation exception: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -136,15 +139,16 @@ Author : Priyanshu Mishra
                 ));
     }
 
-/*
-Author : Priyanshu Mishra
-*/
+    /**
+     * @author Priyanshu Mishra
+     */
+
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException ex
     ) {
-        logger.warn("Missing request parameter: {}", ex.getMessage());
+        log.warn("Missing request parameter: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -154,25 +158,27 @@ Author : Priyanshu Mishra
     }
 
 
-    // Author - Arpit Chaurasia
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleGenericException(
-            Exception ex
+    /**
+     * @author Priyanshu Mishra
+     */
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<ApiResponse> handleAccountLockedException(
+            AccountLockedException ex
     ) {
-        logger.error("Unhandled exception", ex);
+        long minutes = ex.getRemainingSeconds() / 60;
+        long seconds = ex.getRemainingSeconds() % 60;
+
+        String message = String.format(
+                "Too many attempts. Try again in %d min %d sec",
+                minutes,
+                seconds
+        );
+
+        log.warn("Account locked: {}", message);
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse(
-                        "Internal server error",
-                        HttpStatus.INTERNAL_SERVER_ERROR.value()
-                ));
+                .status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new ApiResponse(message, 429));
     }
-
-/*
-Author : Priyanshu Mishra
-*/
-
-
 
 
 /*
@@ -186,7 +192,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleTicketNotFoundException(
             TicketNotFoundException ex
     ) {
-        logger.warn("Ticket not found: {}", ex.getMessage());
+        log.warn("Ticket not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(
@@ -200,7 +206,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleUnauthorizedTicketActionException(
             UnauthorizedTicketActionException ex
     ) {
-        logger.warn("Unauthorized ticket action: {}", ex.getMessage());
+        log.warn("Unauthorized ticket action: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ApiResponse(
@@ -214,7 +220,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleInvalidTicketStatusException(
             InvalidTicketStatusException ex
     ) {
-        logger.warn("Invalid ticket status: {}", ex.getMessage());
+        log.warn("Invalid ticket status: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(
@@ -228,7 +234,7 @@ Author : Priyanshu Mishra
     public ResponseEntity<ApiResponse> handleUserNotFoundException(
             UserNotFoundException ex
     ) {
-        logger.warn("User not found: {}", ex.getMessage());
+        log.warn("User not found: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(
@@ -238,23 +244,19 @@ Author : Priyanshu Mishra
     }
 
 
-    @ExceptionHandler(AccountLockedException.class)
-    public ResponseEntity<ApiResponse> handleAccountLocked(
-            AccountLockedException ex
+    // Author - Arpit Chaurasia
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleGenericException(
+            Exception ex
     ) {
-        long minutes = ex.getRemainingSeconds() / 60;
-        long seconds = ex.getRemainingSeconds() % 60;
-
-        String message = String.format(
-                "Too many attempts. Try again in %d min %d sec",
-                minutes,
-                seconds
-        );
-
-        logger.warn("Account locked: {}", message);
+        log.error("Unhandled exception", ex);
         return ResponseEntity
-                .status(HttpStatus.TOO_MANY_REQUESTS)
-                .body(new ApiResponse(message, 429));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse(
+                        "Internal server error",
+                        HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ));
     }
 
 }
+

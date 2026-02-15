@@ -30,10 +30,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AuthService Unit Tests")
@@ -42,7 +41,7 @@ class AuthServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private TokenService tokenService;
-    @Mock private IRefreshTokenService refreshTokenService;
+    @Mock private RefreshTokenService refreshTokenService;
     @Mock private EmailOtpRepository emailOtpRepository;
 
     @InjectMocks
@@ -114,7 +113,7 @@ class AuthServiceTest {
                 setField(u, "id", USER_ID);
                 return u;
             });
-            when(tokenService.generateAccessToken(USER_ID, Role.USER.name())).thenReturn("access");
+            when(tokenService.generateAccessToken(USER_ID, Role.ADMIN.name())).thenReturn("access");
             when(refreshTokenService.createRefreshToken(USER_ID)).thenReturn(refreshToken);
 
             AuthTokens tokens = authService.register(request);

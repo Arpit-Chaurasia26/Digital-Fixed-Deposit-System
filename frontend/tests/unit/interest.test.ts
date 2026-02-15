@@ -71,7 +71,7 @@ describe('Module 3 - FD Interest and Maturity Tests', () => {
       
       for (let month = 1; month <= months; month++) {
         const currentValue = principal * Math.pow(1 + rate / 12, month);
-        const monthInterest = currentValue - (timeline.length > 0 ? timeline[timeline.length - 1].totalValue : principal);
+        const monthInterest: number = currentValue - (timeline.length > 0 ? timeline[timeline.length - 1].totalValue : principal);
         cumulativeInterest += monthInterest;
         
         timeline.push({
@@ -96,7 +96,7 @@ describe('Module 3 - FD Interest and Maturity Tests', () => {
       
       for (let q = 1; q <= quarters; q++) {
         const currentValue = principal * Math.pow(1 + rate / 4, q);
-        const quarterInterest = currentValue - (q === 1 ? principal : timeline[q - 2].totalValue);
+        const quarterInterest: number = currentValue - (q === 1 ? principal : timeline[q - 2].totalValue);
         
         timeline.push({
           quarter: q,
@@ -184,7 +184,6 @@ describe('Module 3 - FD Interest and Maturity Tests', () => {
         maturityDate: new Date('2026-01-01').toISOString(),
       };
       
-      const currentDate = new Date('2026-02-10');
       const badge = fd.status === 'MATURED' ? 'MATURED' : 'ACTIVE';
       
       expect(badge).toBe('MATURED');

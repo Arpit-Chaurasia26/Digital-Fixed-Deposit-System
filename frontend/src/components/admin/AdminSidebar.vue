@@ -1,15 +1,11 @@
 <template>
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
-      <div class="logo">
-        <span class="logo-icon">Ζ</span>
-        <span class="logo-text">Admin</span>
-      </div>
+      <h3>Admin Panel</h3>
       <p>FD Operations</p>
     </div>
 
     <nav class="sidebar-nav">
-      <router-link to="/admin/dashboard" class="sidebar-link">Dashboard</router-link>
       <router-link to="/admin/fd-management" class="sidebar-link">FD Management</router-link>
       <router-link to="/admin/fd-management/all" class="sidebar-link">All FDs</router-link>
       <router-link to="/admin/fd-management/maturing" class="sidebar-link">Maturing FDs</router-link>
@@ -27,34 +23,23 @@
 <style scoped lang="scss">
 .admin-sidebar {
   width: 260px;
-  min-height: 100vh;
+  min-height: calc(100vh - 76px);
   background: linear-gradient(180deg, rgba(49, 46, 129, 0.98) 0%, rgba(79, 70, 229, 0.92) 60%, rgba(6, 182, 212, 0.85) 100%);
   color: white;
   padding: var(--spacing-2xl) var(--spacing-lg);
   position: fixed;
-  top: 0;
+  top: 76px;
   left: 0;
-  z-index: var(--z-sticky);
+  z-index: 900;
   box-shadow: 10px 0 30px rgba(15, 23, 42, 0.15);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
 }
 
-.sidebar-brand .logo {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.logo-icon {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  color: var(--zeta-secondary-light);
-}
-
-.logo-text {
-  font-size: var(--font-size-xl);
+.sidebar-brand h3 {
+  margin: 0;
+  font-size: var(--font-size-2xl);
   font-weight: 700;
 }
 
@@ -87,6 +72,7 @@
 @media (max-width: 1024px) {
   .admin-sidebar {
     position: static;
+    top: auto;
     width: 100%;
     min-height: auto;
     border-radius: var(--radius-xl);

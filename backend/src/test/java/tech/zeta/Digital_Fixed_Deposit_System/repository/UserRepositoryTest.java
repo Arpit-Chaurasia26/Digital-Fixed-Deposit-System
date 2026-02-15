@@ -10,6 +10,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.user.User;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Priyanshu Mishra
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional

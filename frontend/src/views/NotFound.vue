@@ -2,7 +2,8 @@
   <div>
     <!-- <Navbar /> -->
      <div class="logo">
-          <span class="logo-icon">Ζ</span>
+      <img src="/fd-logo.svg" alt="Zeta FD logo" class="logo-mark" />
+      <span class="logo-classic" aria-hidden="true">Ζ</span>
           <span class="logo-text">Zeta FD</span>
         </div>
     <div class="container" style="padding: var(--spacing-3xl) 0;">
@@ -25,10 +26,17 @@
     background: var(--zeta-gradient-primary);
   }
 
-  .logo-icon {
-    font-size: 40px;
-    font-weight: 700;
-    color: var(--zeta-secondary);
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+    display: block;
+  }
+
+  .logo-classic {
+    font-size: 24px;
+    font-weight: 800;
+    color: #67e8f9;
+    line-height: 1;
   }
 
   .logo-text {

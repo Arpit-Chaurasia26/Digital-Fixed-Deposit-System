@@ -8,6 +8,9 @@ describe('router', () => {
 
     expect(names).toContain('Home');
     expect(names).toContain('Login');
+    expect(names).toContain('PrivacyPolicy');
+    expect(names).toContain('TermsOfService');
+    expect(names).toContain('CookiePolicy');
     expect(names).toContain('UserDashboard');
     expect(names).toContain('AdminDashboard');
     expect(names).toContain('NotFound');

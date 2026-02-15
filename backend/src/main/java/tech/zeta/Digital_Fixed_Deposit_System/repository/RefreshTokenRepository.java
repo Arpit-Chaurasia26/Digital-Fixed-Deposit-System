@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken,Long> {

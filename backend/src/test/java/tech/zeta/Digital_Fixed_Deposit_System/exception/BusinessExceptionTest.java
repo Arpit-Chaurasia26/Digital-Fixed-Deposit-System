@@ -5,10 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @DisplayName("BusinessException Tests")
 class BusinessExceptionTest {

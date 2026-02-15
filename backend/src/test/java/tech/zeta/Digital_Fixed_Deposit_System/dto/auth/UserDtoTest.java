@@ -11,10 +11,9 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 public class UserDtoTest {
 

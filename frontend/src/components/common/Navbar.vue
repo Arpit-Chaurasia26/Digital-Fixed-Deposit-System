@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar">
     <div class="container navbar-container">
-      <router-link to="/" class="navbar-brand">
+      <router-link :to="homeRoute" class="navbar-brand">
         <div class="logo">
-          <span class="logo-icon">Ζ</span>
+          <img src="/fd-logo.svg" alt="Zeta FD logo" class="logo-mark" />
           <span class="logo-text">Zeta FD</span>
         </div>
       </router-link>
@@ -59,6 +59,7 @@
       </div>
     </div>
   </nav>
+  <div class="navbar-spacer" aria-hidden="true"></div>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +76,7 @@ const { theme, toggleTheme } = useTheme();
 const isAuthenticated = computed(() => store.getters['auth/isAuthenticated']);
 const isAdmin = computed(() => store.getters['auth/isAdmin']);
 const user = computed(() => store.getters['auth/user']);
+const homeRoute = computed(() => '/');
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -97,12 +99,24 @@ const handleLogout = async () => {
 
 <style scoped lang="scss">
 .navbar {
-  background: var(--zeta-gradient-primary);
+  background: linear-gradient(90deg, #171a52 0%, #20276a 45%, #0e6b86 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow-md);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: var(--z-sticky);
   padding: var(--spacing-md) 0;
+}
+
+.navbar-spacer {
+  height: 76px;
+
+  @media (max-width: 768px) {
+    height: 70px;
+  }
 }
 
 .navbar-container {
@@ -118,19 +132,36 @@ const handleLogout = async () => {
   .logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 12px;
   }
 
-  .logo-icon {
-    font-size: var(--font-size-3xl);
-    font-weight: 700;
-    color: var(--zeta-secondary);
+  .logo-mark {
+    width: 40px;
+    height: 40px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
   }
 
   .logo-text {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #67e8f9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 768px) {
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+    }
   }
 }
 
@@ -166,7 +197,7 @@ const handleLogout = async () => {
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 
-  &:hover, &.router-link-active {
+  &:hover {
     color: white;
     background: rgba(255, 255, 255, 0.1);
   }

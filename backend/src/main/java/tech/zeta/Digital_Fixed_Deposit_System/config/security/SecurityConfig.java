@@ -14,9 +14,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
 @Configuration

@@ -6,10 +6,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 public class TokenServiceTest {
 

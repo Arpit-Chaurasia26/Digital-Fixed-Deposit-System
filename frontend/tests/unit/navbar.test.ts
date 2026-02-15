@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, RouterLinkStub } from '@vue/test-utils';
 import { createStore } from 'vuex';
 import { createRouter as createVueRouter, createMemoryHistory } from 'vue-router';
 import Navbar from '@/components/common/Navbar.vue';
@@ -33,6 +33,38 @@ const createTestRouter = () =>
   });
 
 describe('Navbar', () => {
+  it('uses home route on brand logo click target', async () => {
+    const guest = createAuthStore({ isAuthenticated: false, isAdmin: false }).store;
+    const user = createAuthStore({ isAuthenticated: true, isAdmin: false }).store;
+    const admin = createAuthStore({ isAuthenticated: true, isAdmin: true }).store;
+    const router = createTestRouter();
+    await router.push('/');
+    await router.isReady();
+
+    const guestWrapper = mount(Navbar, {
+      global: {
+        plugins: [guest as any, router],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    });
+    const userWrapper = mount(Navbar, {
+      global: {
+        plugins: [user as any, router],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    });
+    const adminWrapper = mount(Navbar, {
+      global: {
+        plugins: [admin as any, router],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    });
+
+    expect(guestWrapper.findComponent(RouterLinkStub).props('to')).toBe('/');
+    expect(userWrapper.findComponent(RouterLinkStub).props('to')).toBe('/');
+    expect(adminWrapper.findComponent(RouterLinkStub).props('to')).toBe('/');
+  });
+
   it('renders guest links when not authenticated', async () => {
     const { store } = createAuthStore({ isAuthenticated: false, isAdmin: false });
     const router = createTestRouter();
@@ -41,7 +73,7 @@ describe('Navbar', () => {
 
     const wrapper = mount(Navbar, {
       global: {
-        plugins: [store, router],
+        plugins: [store as any, router],
         stubs: {
           RouterLink: { template: '<a><slot /></a>' },
         },
@@ -62,7 +94,7 @@ describe('Navbar', () => {
 
     const wrapper = mount(Navbar, {
       global: {
-        plugins: [store, router],
+        plugins: [store as any, router],
         stubs: {
           RouterLink: { template: '<a><slot /></a>' },
         },

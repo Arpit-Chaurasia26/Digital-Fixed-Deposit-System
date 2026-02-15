@@ -56,7 +56,6 @@ describe('Module 4 - Break FD (Premature Withdrawal) Tests', () => {
 
 
    it('should handle zero penalty for matured FD', () => {
-     const principal = 100000;
      const maturityAmount = 107186;
      const penalty = 0;
     
@@ -264,7 +263,6 @@ describe('Module 4 - Break FD (Premature Withdrawal) Tests', () => {
 
 
    it('should show penalty impact on returns', () => {
-     const principal = 50000;
      const expectedReturns = 53500; // Without penalty
      const actualReturns = 52370; // With penalty
     

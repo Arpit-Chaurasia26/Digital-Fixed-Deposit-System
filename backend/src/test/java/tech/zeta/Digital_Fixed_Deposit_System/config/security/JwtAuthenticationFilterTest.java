@@ -13,10 +13,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.service.auth.TokenService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 public class JwtAuthenticationFilterTest {
 

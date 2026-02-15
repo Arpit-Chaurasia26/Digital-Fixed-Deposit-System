@@ -11,12 +11,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("EmailService Unit Tests")
@@ -44,4 +43,3 @@ class EmailServiceTest {
         assertThat(message.getText()).contains("valid for 5 minutes");
     }
 }
-

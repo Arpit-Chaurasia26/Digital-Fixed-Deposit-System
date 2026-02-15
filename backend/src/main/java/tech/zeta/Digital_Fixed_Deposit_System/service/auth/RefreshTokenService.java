@@ -1,5 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
-
+@Slf4j
 @Service
-public class RefreshTokenService implements IRefreshTokenService{
+public class RefreshTokenService{
 
-    private static final Logger logger = LogManager.getLogger(RefreshTokenService.class);
     private static final long REFRESH_TOKEN_DAYS = 7;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -29,7 +29,6 @@ public class RefreshTokenService implements IRefreshTokenService{
     }
 
 
-    @Override
     public RefreshToken createRefreshToken(Long userId) {
        String tokenValue= UUID.randomUUID().toString();
         Instant creationOfToken=Instant.now();
@@ -44,7 +43,7 @@ public class RefreshTokenService implements IRefreshTokenService{
                 .revoked(false)
                 .build();
        RefreshToken saved = refreshTokenRepository.save(refreshToken);
-       logger.info("Refresh token created for user id={}", userId);
+       log.info("Refresh token created for user id={}", userId);
        return saved;
     }
 
@@ -58,16 +57,16 @@ public class RefreshTokenService implements IRefreshTokenService{
                         );
 
         if (refreshToken.isRevoked()) {
-            logger.warn("Refresh token revoked");
+            log.warn("Refresh token revoked");
             throw new UnauthorizedException("Refresh token has been revoked");
         }
 
         if (refreshToken.isExpired()) {
-            logger.warn("Refresh token expired");
+            log.warn("Refresh token expired");
             throw new UnauthorizedException("Refresh token has expired");
         }
 
-        logger.debug("Refresh token validated");
+        log.debug("Refresh token validated");
         return refreshToken;
     }
 
@@ -81,6 +80,6 @@ public class RefreshTokenService implements IRefreshTokenService{
                                 new UnauthorizedException("Invalid refresh token")
                         );
         refreshTokenRepository.delete(refreshToken);
-        logger.info("Refresh token revoked for user id={}", refreshToken.getUserId());
+        log.info("Refresh token revoked for user id={}", refreshToken.getUserId());
     }
 }
