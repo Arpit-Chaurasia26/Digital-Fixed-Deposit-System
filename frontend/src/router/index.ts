@@ -59,6 +59,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false, requiresGuest: true },
   },
   {
+    path: '/oauth/callback',
+    name: 'OAuthCallback',
+    component: () => import('@/views/auth/OAuthCallback.vue'),
+    meta: { requiresAuth: false },
+  },
+  {
     path: '/user/dashboard',
     name: 'UserDashboard',
     component: () => import('@/views/user/UserDashboard.vue'),

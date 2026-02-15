@@ -14,6 +14,7 @@
     
      <div class="filters-section card">
        <div class="filters-row">
+         <input v-model.number="searchFdId" type="number" class="form-control" placeholder="Search by FD ID" min="1" />
          <select v-model="filterStatus" class="form-control">
            <option value="">All Status</option>
            <option value="ACTIVE">Active</option>
@@ -72,6 +73,7 @@ import { formatCurrency, formatDate } from '@/utils/helpers';
 
 
 const store = useStore();
+const searchFdId = ref<number | null>(null);
 const filterStatus = ref('');
 const minAmount = ref<number | null>(null);
 const maxAmount = ref<number | null>(null);
@@ -82,7 +84,12 @@ const fds = computed(() => store.getters['fd/allFDs']);
 const loading = computed(() => store.getters['fd/loading']);
 
 
-const displayedFDs = computed(() => fds.value);
+const displayedFDs = computed(() => {
+  if (searchFdId.value) {
+    return fds.value.filter((fd: any) => fd.id === searchFdId.value);
+  }
+  return fds.value;
+});
 
 
 const applyFilters = async () => {

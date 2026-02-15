@@ -26,13 +26,16 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtAuthenticationEntryPoint authenticationEntryPoint
+            JwtAuthenticationEntryPoint authenticationEntryPoint,
+            OAuthSuccessHandler oAuthSuccessHandler
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.oAuthSuccessHandler = oAuthSuccessHandler;
     }
 
     // Main security filter chain configuration
@@ -59,14 +62,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers(
-                                "/auth/login",
-                                "/auth/register",
-                                "/auth/refresh",
-                                "/auth/email/send-otp",
-                                "/auth/email/verify-otp",
-                                "/auth/password/send-otp",
-                                "/auth/password/verify-otp",
-                                "/auth/password/reset",
+                                "/auth/**",
+                                "/oauth2/**",
+                                "/login/oauth2/**",
                                 "/fd/schemes"
                         ).permitAll()
 
@@ -77,6 +75,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // Google OAuth
+                .oauth2Login(oauth -> oauth
+                        .successHandler(oAuthSuccessHandler)
+                )
                 // Add JWT filter before default authentication filter
                 .addFilterBefore(
                         jwtAuthenticationFilter,
