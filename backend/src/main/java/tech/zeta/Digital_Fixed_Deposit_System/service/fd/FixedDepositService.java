@@ -62,17 +62,17 @@ public class FixedDepositService {
         LocalDate startDate = LocalDate.now();
         LocalDate maturityDate = startDate.plusMonths(scheme.getTenureInMonths());
 
-        FixedDeposit fd = new FixedDeposit();
-
-        fd.setUserId(userId);
-        fd.setAmount(request.getAmount());
-        fd.setInterestScheme(scheme);
-        fd.setInterestRate(scheme.getAnnualInterestRate());
-        fd.setTenureMonths(scheme.getTenureInMonths());
-        fd.setStartDate(startDate);
-        fd.setMaturityDate(maturityDate);
-        fd.setStatus(FDStatus.ACTIVE);
-        fd.setAccruedInterest(BigDecimal.ZERO);
+        FixedDeposit fd = FixedDeposit.builder()
+                .userId(userId)
+                .amount(request.getAmount())
+                .interestScheme(scheme)
+                .interestRate(scheme.getAnnualInterestRate())
+                .tenureMonths(scheme.getTenureInMonths())
+                .startDate(startDate)
+                .maturityDate(maturityDate)
+                .status(FDStatus.ACTIVE)
+                .accruedInterest(BigDecimal.ZERO)
+                .build();
 
         FixedDeposit saved = fixedDepositRepository.save(fd);
         log.info("Fixed deposit booked: fdId={}, userId={}", saved.getId(), userId);
@@ -200,10 +200,10 @@ public class FixedDepositService {
         LocalDate endDate = today.plusDays(days);
 
         List<FixedDeposit> fds =
-            fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate)
-                .stream()
-                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
-                .toList();
+                fixedDepositRepository.findByUserIdAndMaturityDateBetween(userId, today, endDate)
+                        .stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
+                        .toList();
 
         return mapToMaturityResponse(fds, today);
     }
@@ -225,10 +225,10 @@ public class FixedDepositService {
         LocalDate endDate = today.plusDays(days);
 
         List<FixedDeposit> fds =
-            fixedDepositRepository.findByMaturityDateBetween(today, endDate)
-                .stream()
-                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
-                .toList();
+                fixedDepositRepository.findByMaturityDateBetween(today, endDate)
+                        .stream()
+                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE || fd.getStatus() == FDStatus.MATURED)
+                        .toList();
 
         return mapToMaturityResponse(fds, today);
     }
@@ -250,7 +250,7 @@ public class FixedDepositService {
         java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999_999_999);
 
         List<FixedDeposit> fds =
-            fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, startDateTime, endDateTime);
+                fixedDepositRepository.findByUserIdAndCreatedAtBetween(userId, startDateTime, endDateTime);
 
         return buildFinancialYearSummary(fds, fy);
     }
@@ -329,40 +329,40 @@ public class FixedDepositService {
         long totalFDs = fds.size();
 
         long activeFDs = fds.stream()
-                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
-                        .count();
+                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
+                .count();
 
         long maturedFDs = fds.stream()
-                        .filter(fd -> fd.getStatus() == FDStatus.MATURED)
-                        .count();
+                .filter(fd -> fd.getStatus() == FDStatus.MATURED)
+                .count();
 
         long brokenFDs = fds.stream()
-                        .filter(fd -> fd.getStatus() == FDStatus.BROKEN)
-                        .count();
+                .filter(fd -> fd.getStatus() == FDStatus.BROKEN)
+                .count();
 
         BigDecimal totalPrincipal = fds.stream()
-                        .map(FixedDeposit::getAmount)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(FixedDeposit::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal totalInterest = fds.stream()
-                        .map(interestCalculationService::calculateAccruedInterest)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(interestCalculationService::calculateAccruedInterest)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         LocalDate nextMaturityDate = fds.stream()
-                        .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
-                        .map(FixedDeposit::getMaturityDate)
-                        .min(LocalDate::compareTo)
-                        .orElse(null);
+                .filter(fd -> fd.getStatus() == FDStatus.ACTIVE)
+                .map(FixedDeposit::getMaturityDate)
+                .min(LocalDate::compareTo)
+                .orElse(null);
 
-        return new FDPortfolioResponse(
-                totalFDs,
-                activeFDs,
-                maturedFDs,
-                brokenFDs,
-                totalPrincipal,
-                totalInterest,
-                nextMaturityDate
-        );
+        return FDPortfolioResponse.builder()
+                .totalFDs(totalFDs)
+                .activeFDs(activeFDs)
+                .maturedFDs(maturedFDs)
+                .brokenFDs(brokenFDs)
+                .totalPrincipal(totalPrincipal)
+                .totalInterestAccrued(totalInterest)
+                .nextMaturityDate(nextMaturityDate)
+                .build();
     }
 
 
@@ -433,13 +433,13 @@ public class FixedDepositService {
             cursor = nextDate;
         }
 
-        return new FDInterestTimelineResponse(
-                fd.getId(),
-                fd.getAmount(),
-                fd.getInterestRate(),
-                interval,
-                timeline
-        );
+        return FDInterestTimelineResponse.builder()
+                .fdId(fd.getId())
+                .principal(fd.getAmount())
+                .interestRate(fd.getInterestRate())
+                .interval(interval)
+                .timeline(timeline)
+                .build();
     }
 
     /**
@@ -459,20 +459,17 @@ public class FixedDepositService {
 
         BigDecimal accruedInterest = interestCalculationService.calculateAccruedInterest(fd);
 
-        return new FDInterestResponse(
-                fd.getId(),
-                fd.getStatus(),
-                fd.getAmount(),
-                accruedInterest,
-                fd.getInterestRate(),
-                fd.getInterestScheme().getInterestFrequency(),
-                fd.getStartDate(),
-                fd.getMaturityDate()
-        );
+        return FDInterestResponse.builder()
+                .fdId(fd.getId())
+                .status(fd.getStatus())
+                .amount(fd.getAmount())
+                .accruedInterest(accruedInterest)
+                .interestRate(fd.getInterestRate())
+                .interestFrequency(fd.getInterestScheme().getInterestFrequency())
+                .startDate(fd.getStartDate())
+                .maturityDate(fd.getMaturityDate())
+                .build();
     }
-
-
-
 
 
     // Helper methods
@@ -533,18 +530,14 @@ public class FixedDepositService {
     private FixedDeposit buildInterestSnapshot(FixedDeposit original, LocalDate asOfDate) {
         log.debug("Building interest snapshot: fdId={}, asOfDate={}", original.getId(), asOfDate);
 
-        FixedDeposit snapshot = new FixedDeposit();
-
-        snapshot.setAmount(original.getAmount());
-        snapshot.setInterestRate(original.getInterestRate());
-        snapshot.setInterestScheme(original.getInterestScheme());
-        snapshot.setStartDate(original.getStartDate());
-
-        // cap calculation at "asOfDate"
-        snapshot.setMaturityDate(asOfDate);
-
-        // Always ACTIVE for calculation purposes
-        snapshot.setStatus(FDStatus.ACTIVE);
+        FixedDeposit snapshot = FixedDeposit.builder()
+                .amount(original.getAmount())
+                .interestRate(original.getInterestRate())
+                .interestScheme(original.getInterestScheme())
+                .startDate(original.getStartDate())
+                .maturityDate(asOfDate) // cap calculation at "asOfDate"
+                .status(FDStatus.ACTIVE) // Always ACTIVE for calculation purposes
+                .build();
 
         return snapshot;
     }
