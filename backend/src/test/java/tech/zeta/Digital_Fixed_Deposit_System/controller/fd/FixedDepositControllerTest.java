@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 public class FixedDepositControllerTest {
 
     @Test

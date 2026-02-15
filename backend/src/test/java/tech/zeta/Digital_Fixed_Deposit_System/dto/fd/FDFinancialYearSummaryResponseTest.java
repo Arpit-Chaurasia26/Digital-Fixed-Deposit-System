@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("FDFinancialYearSummaryResponse DTO Tests")
 class FDFinancialYearSummaryResponseTest {
 

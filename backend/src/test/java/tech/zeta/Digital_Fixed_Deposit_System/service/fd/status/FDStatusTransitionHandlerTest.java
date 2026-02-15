@@ -7,7 +7,9 @@ import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("FDStatusTransitionHandler Interface Tests")
 class FDStatusTransitionHandlerTest {
 

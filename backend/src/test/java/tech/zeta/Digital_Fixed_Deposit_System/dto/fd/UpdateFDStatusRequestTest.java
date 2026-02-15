@@ -8,7 +8,9 @@ import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("UpdateFDStatusRequest DTO Tests")
 class UpdateFDStatusRequestTest {
 

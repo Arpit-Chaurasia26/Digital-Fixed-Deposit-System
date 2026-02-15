@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * @author Arpit Chaurasia
+ */
 @Entity
 @Table(
         name = "fixed_deposits",

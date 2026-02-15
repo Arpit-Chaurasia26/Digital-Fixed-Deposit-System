@@ -1,7 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.support;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import tech.zeta.Digital_Fixed_Deposit_System.config.security.CurrentUserProvider;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import tech.zeta.Digital_Fixed_Deposit_System.mapper.SupportTicketMapper;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.SupportTicketRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
 import org.springframework.data.jpa.domain.Specification;
-import tech.zeta.Digital_Fixed_Deposit_System.exception.InvalidTicketStatusException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.TicketNotFoundException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedTicketActionException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UserNotFoundException;
@@ -28,17 +26,14 @@ import java.util.stream.Collectors;
 
 
 
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
-
+@Slf4j
 @Service
 @Transactional
 public class SupportTicketServiceImpl implements SupportTicketService {
-
-    // Logger for this service
-    private static final Logger logger = LoggerFactory.getLogger(SupportTicketServiceImpl.class);
-
+    
     private final SupportTicketRepository repository;
     private final SupportTicketMapper mapper;
     private final CurrentUserProvider currentUserProvider;
@@ -66,7 +61,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
         // Admins are not allowed to create tickets
         if (isAdmin(currentUser)) {
-            logger.warn("Admin {} attempted to create a ticket, which is not allowed", currentUser.getId());
+            log.warn("Admin {} attempted to create a ticket, which is not allowed", currentUser.getId());
             throw new UnauthorizedTicketActionException("Admins cannot create tickets");
         }
 
@@ -74,7 +69,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
         // Validate FD ownership
         if (!checkUserOwnsFD(currentUser.getId(), requestDTO.getFdId())) {
-            logger.warn("User {} tried to create ticket for FD {} which they do not own", currentUser.getId(), requestDTO.getFdId());
+            log.warn("User {} tried to create ticket for FD {} which they do not own", currentUser.getId(), requestDTO.getFdId());
             throw new UnauthorizedTicketActionException("Invalid FD ID: You do not own this FD");
         }
 
@@ -87,7 +82,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         SupportTicket saved = repository.save(ticket);
 
         // Log ticket creation
-        logger.info("Ticket {} created by User {}", saved.getId(), currentUser.getId());
+        log.info("Ticket {} created by User {}", saved.getId(), currentUser.getId());
 
         return mapper.toResponseDTO(saved);
     }
@@ -100,14 +95,14 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         User currentUser = getCurrentUser();
 
         if (!isAdmin(currentUser)) {
-            logger.warn("User {} attempted to access ticket {} but is not an admin", currentUser.getId(), ticketId);
+            log.warn("User {} attempted to access ticket {} but is not an admin", currentUser.getId(), ticketId);
             throw new UnauthorizedTicketActionException("Only admins can access tickets by ID");
         }
 
         SupportTicket ticket = repository.findById(ticketId)
                 .orElseThrow(() -> new TicketNotFoundException(ticketId));
 
-        logger.info("Admin {} retrieved ticket {}", currentUser.getId(), ticketId);
+        log.info("Admin {} retrieved ticket {}", currentUser.getId(), ticketId);
 
         return mapper.toResponseDTO(ticket);
     }
@@ -120,7 +115,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         User currentUser = getCurrentUser();
 
         if (!isUser(currentUser)) {
-            logger.warn("Admin {} attempted to access personal tickets (not allowed)", currentUser.getId());
+            log.warn("Admin {} attempted to access personal tickets (not allowed)", currentUser.getId());
             throw new UnauthorizedTicketActionException("Admins do not have personal tickets");
         }
 
@@ -129,7 +124,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
                 .map(mapper::toResponseDTO)
                 .collect(Collectors.toList());
 
-        logger.info("User {} retrieved {} tickets", currentUser.getId(), tickets.size());
+        log.info("User {} retrieved {} tickets", currentUser.getId(), tickets.size());
 
         return tickets;
     }
@@ -148,7 +143,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
     ) {
         User currentUser = getCurrentUser();
         if (!isAdmin(currentUser)) {
-            logger.warn("User {} attempted to retrieve all tickets but is not admin", currentUser.getId());
+            log.warn("User {} attempted to retrieve all tickets but is not admin", currentUser.getId());
             throw new UnauthorizedTicketActionException("Only admins can access all tickets");
         }
 
@@ -165,7 +160,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         Page<SupportTicketResponseDTO> result = repository.findAll(spec, pageable)
                 .map(mapper::toResponseDTO);
 
-        logger.info("Admin {} retrieved {} tickets with filters", currentUser.getId(), result.getTotalElements());
+        log.info("Admin {} retrieved {} tickets with filters", currentUser.getId(), result.getTotalElements());
 
         return result;
     }
@@ -187,7 +182,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
                 .canTransition(newStatus, currentUser.getRole().name(), currentUser.getId(), ticket.getUserId());
 
         if (!allowed) {
-            logger.warn("User {} (role: {}) tried invalid status transition from {} to {} for ticket {}",
+            log.warn("User {} (role: {}) tried invalid status transition from {} to {} for ticket {}",
                     currentUser.getId(), currentUser.getRole().name(), ticket.getStatus(), newStatus, ticket.getId());
             throw new UnauthorizedTicketActionException(
                     "You cannot change ticket status from " + ticket.getStatus() + " to " + newStatus +
@@ -203,7 +198,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         SupportTicket updated = repository.save(ticket);
 
         // 6. Log status update
-        logger.info("Ticket {} status changed to {} by User {}", ticket.getId(), newStatus, currentUser.getId());
+        log.info("Ticket {} status changed to {} by User {}", ticket.getId(), newStatus, currentUser.getId());
 
         return mapper.toResponseDTO(updated);
     }
@@ -216,7 +211,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
         User currentUser = getCurrentUser();
 
         if (!isAdmin(currentUser)) {
-            logger.warn("User {} attempted to update ticket response but is not admin", currentUser.getId());
+            log.warn("User {} attempted to update ticket response but is not admin", currentUser.getId());
             throw new UnauthorizedTicketActionException("Only admins can update ticket responses");
         }
 
@@ -234,7 +229,7 @@ public class SupportTicketServiceImpl implements SupportTicketService {
 
         SupportTicket updated = repository.save(ticket);
 
-        logger.info("Admin {} updated response for Ticket {}. Status now {}", currentUser.getId(), ticket.getId(), ticket.getStatus());
+        log.info("Admin {} updated response for Ticket {}. Status now {}", currentUser.getId(), ticket.getId(), ticket.getStatus());
 
         return mapper.toResponseDTO(updated);
     }

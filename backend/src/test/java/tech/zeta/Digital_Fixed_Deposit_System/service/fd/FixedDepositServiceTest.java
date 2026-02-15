@@ -37,7 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 @ExtendWith(MockitoExtension.class)
 public class FixedDepositServiceTest {
 

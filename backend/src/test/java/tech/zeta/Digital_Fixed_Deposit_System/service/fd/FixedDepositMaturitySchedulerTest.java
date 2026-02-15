@@ -12,7 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Author - Arpit Chaurasia
+/**
+ * @author Arpit Chaurasia
+ */
 public class FixedDepositMaturitySchedulerTest {
 
     @Test
