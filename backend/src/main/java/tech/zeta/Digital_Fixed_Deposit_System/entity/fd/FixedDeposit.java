@@ -1,6 +1,8 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.fd;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
 /**
  * @author Arpit Chaurasia
  */
+@Builder
 @Entity
 @Table(
         name = "fixed_deposits",
