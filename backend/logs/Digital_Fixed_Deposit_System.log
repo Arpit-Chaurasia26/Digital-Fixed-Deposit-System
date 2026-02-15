@@ -1010,3 +1010,110 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "idx_fd_user" alre
 2026-02-15 19:31:00,007 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - FD maturity scheduler completed: active=8, matured=0
 2026-02-15 19:31:02,007 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
 2026-02-15 19:31:02,009 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
+2026-02-15 20:24:40,908 [main] INFO  t.z.D.DigitalFixedDepositSystemApplication.logStarting - Starting DigitalFixedDepositSystemApplication using Java 25.0.2 with PID 44860 (/Users/apritc/Desktop/Digital-Fixed-Deposit-System/backend/target/classes started by apritc in /Users/apritc/Desktop/Digital-Fixed-Deposit-System/backend)
+2026-02-15 20:24:40,909 [main] INFO  t.z.D.DigitalFixedDepositSystemApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2026-02-15 20:24:40,992 [background-preinit] INFO  o.h.validator.internal.util.Version.<clinit> - HV000001: Hibernate Validator 9.0.1.Final
+2026-02-15 20:24:41,428 [main] INFO  o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-15 20:24:41,429 [main] INFO  o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+2026-02-15 20:24:41,429 [main] INFO  o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-15 20:24:41,512 [main] INFO  org.hibernate.orm.jpa.logPersistenceUnitInformation - HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-15 20:24:41,527 [main] INFO  org.hibernate.orm.core.logVersion - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-15 20:24:41,654 [main] INFO  com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+2026-02-15 20:24:41,714 [main] INFO  com.zaxxer.hikari.pool.HikariPool.checkFailFast - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4d2bc56a
+2026-02-15 20:24:41,714 [main] INFO  com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+2026-02-15 20:24:41,743 [main] INFO  o.hibernate.orm.connections.pooling.logConnectionInfo - HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/Digital_Fixed_Deposit_System_DB]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 16.6
+	Default catalog/schema: Digital_Fixed_Deposit_System_DB/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-15 20:24:42,094 [main] INFO  org.hibernate.orm.core.initiateService - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-15 20:24:42,272 [main] INFO  t.z.D.config.PasswordConfig.passwordEncoder - PasswordEncoder bean created: bcrypt
+2026-02-15 20:24:42,322 [main] INFO  t.z.D.config.WebConfig.corsConfigurationSource - CORS configuration registered
+2026-02-15 20:24:42,331 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration.openEntityManagerInViewInterceptor - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-15 20:24:42,459 [main] INFO  t.z.D.config.security.SecurityConfig.securityFilterChain - Security filter chain configured
+2026-02-15 20:24:42,476 [main] INFO  t.z.D.config.security.SecurityConfig.authenticationManager - AuthenticationManager bean created
+2026-02-15 20:24:42,571 [main] INFO  o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-15 20:24:42,578 [main] INFO  t.z.D.DigitalFixedDepositSystemApplication.logStarted - Started DigitalFixedDepositSystemApplication in 1.867 seconds (process running for 2.049)
+2026-02-15 20:24:42,578 [main] INFO  t.z.D.DigitalFixedDepositSystemApplication.main - Digital Fixed Deposit System Application started successfully
+2026-02-15 20:25:00,005 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - Starting FD maturity scheduler run
+2026-02-15 20:25:00,152 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - FD maturity scheduler completed: active=0, matured=0
+2026-02-15 20:25:00,154 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Running OTP cleanup job at 2026-02-15T20:25:00.154524
+2026-02-15 20:25:00,158 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Expired OTP cleanup completed
+2026-02-15 20:25:10,679 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-15 20:25:10,699 [http-nio-8080-exec-1] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:25:10,715 [http-nio-8080-exec-3] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:25:10,716 [http-nio-8080-exec-3] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:25:10,717 [http-nio-8080-exec-3] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:25:10,753 [http-nio-8080-exec-4] INFO  t.z.D.c.fd.FixedDepositController.getAllSchemes - Fetching all FD schemes
+2026-02-15 20:25:26,471 [http-nio-8080-exec-5] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:25:26,487 [http-nio-8080-exec-7] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:25:26,488 [http-nio-8080-exec-7] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:25:26,490 [http-nio-8080-exec-7] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:25:28,243 [http-nio-8080-exec-8] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:25:28,254 [http-nio-8080-exec-9] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:25:28,254 [http-nio-8080-exec-9] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:25:28,255 [http-nio-8080-exec-9] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:25:44,503 [http-nio-8080-exec-1] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:25:44,513 [http-nio-8080-exec-3] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:25:44,514 [http-nio-8080-exec-3] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:25:44,515 [http-nio-8080-exec-3] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:26:00,002 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Running OTP cleanup job at 2026-02-15T20:26:00.002338
+2026-02-15 20:26:00,007 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Expired OTP cleanup completed
+2026-02-15 20:26:00,009 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - Starting FD maturity scheduler run
+2026-02-15 20:26:00,020 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - FD maturity scheduler completed: active=0, matured=0
+2026-02-15 20:26:26,268 [http-nio-8080-exec-7] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:26:26,281 [http-nio-8080-exec-9] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:26:26,282 [http-nio-8080-exec-9] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:26:26,283 [http-nio-8080-exec-9] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:26:26,953 [http-nio-8080-exec-10] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:26:26,962 [http-nio-8080-exec-1] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:26:26,963 [http-nio-8080-exec-1] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:26:26,965 [http-nio-8080-exec-1] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:26:35,568 [http-nio-8080-exec-3] INFO  t.z.D.s.auth.RefreshTokenService.createRefreshToken - Refresh token created for user id=1
+2026-02-15 20:26:35,635 [http-nio-8080-exec-6] INFO  t.z.D.controller.user.UserController.getCurrentUserProfile - User profile fetch requested
+2026-02-15 20:26:35,635 [http-nio-8080-exec-6] INFO  t.z.D.service.user.UserService.getCurrentUserProfile - Fetching current user profile: userId=1
+2026-02-15 20:26:35,640 [http-nio-8080-exec-6] INFO  t.z.D.controller.user.UserController.getCurrentUserProfile - User profile fetch completed
+2026-02-15 20:26:35,663 [http-nio-8080-exec-5] INFO  t.z.D.controller.user.UserController.getCurrentUserProfile - User profile fetch requested
+2026-02-15 20:26:35,663 [http-nio-8080-exec-5] INFO  t.z.D.service.user.UserService.getCurrentUserProfile - Fetching current user profile: userId=1
+2026-02-15 20:26:35,665 [http-nio-8080-exec-5] INFO  t.z.D.controller.user.UserController.getCurrentUserProfile - User profile fetch completed
+2026-02-15 20:26:35,710 [http-nio-8080-exec-4] INFO  t.z.D.c.fd.FixedDepositController.getUserFDPortfolio - Fetching user portfolio: userId=1
+2026-02-15 20:26:35,711 [http-nio-8080-exec-4] INFO  t.z.D.service.fd.FixedDepositService.getUserFDPortfolio - Fetching user FD portfolio: userId=1
+2026-02-15 20:26:35,711 [http-nio-8080-exec-7] INFO  t.z.D.c.fd.FixedDepositController.getUserFinancialYearSummary - Fetching user financial year summary: userId=1, year=2026
+2026-02-15 20:26:35,711 [http-nio-8080-exec-8] INFO  t.z.D.c.fd.FixedDepositController.getUserMaturingFDs - Fetching user maturing FDs: userId=1, days=30
+2026-02-15 20:26:35,711 [http-nio-8080-exec-8] INFO  t.z.D.service.fd.FixedDepositService.getUserFDsMaturingWithinDays - Fetching user maturing FDs: userId=1, days=30
+2026-02-15 20:26:35,711 [http-nio-8080-exec-7] INFO  t.z.D.service.fd.FixedDepositService.getUserFinancialYearSummary - Fetching user financial year summary: userId=1, year=2026
+2026-02-15 20:26:40,092 [http-nio-8080-exec-9] INFO  t.z.D.c.fd.FixedDepositController.getAllSchemes - Fetching all FD schemes
+2026-02-15 20:26:40,942 [http-nio-8080-exec-10] INFO  t.z.D.c.fd.FixedDepositController.getUserFixedDeposits - Fetching user FDs: userId=1, status=null, minAmount=null, maxAmount=null
+2026-02-15 20:26:40,943 [http-nio-8080-exec-10] INFO  t.z.D.service.fd.FixedDepositService.getFixedDepositsByFilters - Fetching FDs with filters: userId=1, status=null, minAmount=null, maxAmount=null
+2026-02-15 20:26:41,636 [http-nio-8080-exec-1] INFO  t.z.D.c.fd.FixedDepositController.getUserMaturingFDs - Fetching user maturing FDs: userId=1, days=30
+2026-02-15 20:26:41,637 [http-nio-8080-exec-1] INFO  t.z.D.service.fd.FixedDepositService.getUserFDsMaturingWithinDays - Fetching user maturing FDs: userId=1, days=30
+2026-02-15 20:26:42,753 [http-nio-8080-exec-2] INFO  t.z.D.c.fd.FixedDepositController.getUserFinancialYearSummary - Fetching user financial year summary: userId=1, year=2026
+2026-02-15 20:26:42,754 [http-nio-8080-exec-2] INFO  t.z.D.service.fd.FixedDepositService.getUserFinancialYearSummary - Fetching user financial year summary: userId=1, year=2026
+2026-02-15 20:26:43,444 [http-nio-8080-exec-3] INFO  t.z.D.c.fd.FixedDepositController.getUserFDPortfolio - Fetching user portfolio: userId=1
+2026-02-15 20:26:43,446 [http-nio-8080-exec-6] INFO  t.z.D.c.fd.FixedDepositController.getUserFixedDeposits - Fetching user FDs: userId=1, status=null, minAmount=null, maxAmount=null
+2026-02-15 20:26:43,447 [http-nio-8080-exec-6] INFO  t.z.D.service.fd.FixedDepositService.getFixedDepositsByFilters - Fetching FDs with filters: userId=1, status=null, minAmount=null, maxAmount=null
+2026-02-15 20:26:43,447 [http-nio-8080-exec-3] INFO  t.z.D.service.fd.FixedDepositService.getUserFDPortfolio - Fetching user FD portfolio: userId=1
+2026-02-15 20:26:44,087 [http-nio-8080-exec-5] INFO  t.z.D.c.w.WithdrawalController.getWithdrawalsHistory - Fetching withdrawal history for userId=1
+2026-02-15 20:26:59,972 [http-nio-8080-exec-4] INFO  t.z.D.controller.auth.AuthController.logout - Logout endpoint called
+2026-02-15 20:26:59,974 [http-nio-8080-exec-4] INFO  t.z.D.service.auth.AuthService.logout - Logout request received
+2026-02-15 20:26:59,991 [http-nio-8080-exec-4] INFO  t.z.D.s.auth.RefreshTokenService.revokeRefreshToken - Refresh token revoked for user id=1
+2026-02-15 20:26:59,992 [http-nio-8080-exec-4] INFO  t.z.D.service.auth.AuthService.logout - Logout completed
+2026-02-15 20:27:00,000 [http-nio-8080-exec-4] INFO  t.z.D.controller.auth.AuthController.logout - Logout endpoint completed
+2026-02-15 20:27:00,005 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - Starting FD maturity scheduler run
+2026-02-15 20:27:00,007 [scheduling-1] INFO  t.z.D.s.f.FixedDepositMaturityScheduler.markMaturedFDs - FD maturity scheduler completed: active=0, matured=0
+2026-02-15 20:27:00,008 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Running OTP cleanup job at 2026-02-15T20:27:00.008442
+2026-02-15 20:27:00,009 [scheduling-1] INFO  t.z.D.s.e.EmailOtpCleanupScheduler.cleanupExpiredOtps - Expired OTP cleanup completed
+2026-02-15 20:27:00,012 [http-nio-8080-exec-8] WARN  t.z.D.c.s.JwtAuthenticationEntryPoint.commence - Unauthorized access to path=/user/profile
+2026-02-15 20:27:00,021 [http-nio-8080-exec-9] INFO  t.z.D.controller.auth.AuthController.refresh - Refresh endpoint called
+2026-02-15 20:27:00,021 [http-nio-8080-exec-9] WARN  t.z.D.controller.auth.AuthController.refresh - Refresh token missing
+2026-02-15 20:27:00,021 [http-nio-8080-exec-9] WARN  t.z.D.e.GlobalExceptionHandler.handleUnauthorizedException - Unauthorized exception: Refresh token missing
+2026-02-15 20:27:00,029 [http-nio-8080-exec-10] INFO  t.z.D.c.fd.FixedDepositController.getAllSchemes - Fetching all FD schemes
+2026-02-15 20:27:14,486 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
+2026-02-15 20:27:14,489 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
