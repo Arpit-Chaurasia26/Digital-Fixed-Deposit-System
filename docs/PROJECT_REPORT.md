@@ -539,8 +539,8 @@ With focused improvements in secrets management, contract standardization, and o
 - Runbook for incident response and scheduler failures
 
 ## Appendix B — PlantUML Source Files
-- [docs/uml/system-architecture.puml](docs/uml/system-architecture.puml)
-- [docs/uml/domain-class-diagram.puml](docs/uml/domain-class-diagram.puml)
-- [docs/uml/auth-flow-sequence.puml](docs/uml/auth-flow-sequence.puml)
-- [docs/uml/fd-lifecycle-state.puml](docs/uml/fd-lifecycle-state.puml)
-- [docs/uml/support-ticket-lifecycle-state.puml](docs/uml/support-ticket-lifecycle-state.puml)
+- [docs/system-architecture.puml](docs/system-architecture.puml)
+- [docs/domain-class-diagram.puml](docs/domain-class-diagram.puml)
+- [docs/auth-flow-sequence.puml](docs/auth-flow-sequence.puml)
+- [docs/fd-lifecycle-state.puml](docs/fd-lifecycle-state.puml)
+- [docs/support-ticket-lifecycle-state.puml](docs/support-ticket-lifecycle-state.puml)
