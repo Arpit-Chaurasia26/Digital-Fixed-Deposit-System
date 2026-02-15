@@ -15,7 +15,7 @@
         <div class="fd-info card">
           <div class="fd-info-header">
             <h3>FD Details</h3>
-            <span class="info-chip">{{ interestTimeline.interval }}</span>
+            <span class="info-chip">{{ interestFrequencyBadge }}</span>
           </div>
           <div class="fd-info-grid">
             <div>
@@ -69,13 +69,42 @@ import { formatCurrency } from '@/utils/helpers';
 const store = useStore();
 const route = useRoute();
 const interestTimeline = computed(() => store.getters['fd/interestTimeline']);
+const currentFD = computed(() => store.getters['fd/currentFD']);
+const userId = computed(() => store.getters['auth/userId']);
 
 const displayIndex = (index: string | number) => Number(index) + 1;
+
+const getFrequencyFromScheme = (scheme: string): 'MONTHLY' | 'QUARTERLY' | 'YEARLY' => {
+  const frequencyByScheme: Record<string, 'MONTHLY' | 'QUARTERLY' | 'YEARLY'> = {
+    STANDARD_6_MONTHS: 'MONTHLY',
+    STANDARD_12_MONTHS: 'MONTHLY',
+    SENIOR_CITIZEN_12_MONTHS: 'MONTHLY',
+    TAX_SAVER_5_YEARS: 'YEARLY',
+  };
+
+  return frequencyByScheme[scheme] ?? 'MONTHLY';
+};
+
+const formatFrequencyLabel = (frequency: 'MONTHLY' | 'QUARTERLY' | 'YEARLY') => {
+  if (frequency === 'YEARLY') return 'Yearly';
+  if (frequency === 'QUARTERLY') return 'Quarterly';
+  return 'Monthly';
+};
+
+const interestFrequencyBadge = computed(() => {
+  if (currentFD.value?.interestScheme) {
+    return formatFrequencyLabel(getFrequencyFromScheme(currentFD.value.interestScheme));
+  }
+  return interestTimeline.value?.interval || '';
+});
 
 onMounted(async () => {
   const fdId = parseInt(route.params.id as string);
   if (fdId) {
-    await store.dispatch('fd/fetchInterestTimeline', { fdId });
+    await Promise.all([
+      store.dispatch('fd/fetchInterestTimeline', { fdId }),
+      userId.value ? store.dispatch('fd/fetchFDById', { userId: userId.value, fdId }) : Promise.resolve(),
+    ]);
   }
 });
 </script>

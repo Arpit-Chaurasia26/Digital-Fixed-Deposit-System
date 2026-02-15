@@ -99,6 +99,12 @@ export const fdService = {
     return response.data;
   },
 
+  // Get specific FD by ID as admin
+  async getAdminFDById(fdId: number): Promise<FixedDeposit> {
+    const response = await apiClient.get(`/admin/fd/${fdId}`);
+    return response.data;
+  },
+
   // Get user FD portfolio as admin
   async getAdminUserPortfolio(userId: number): Promise<FDPortfolio> {
     const response = await apiClient.get(`/admin/fd/user/${userId}/portfolio`);

@@ -373,12 +373,15 @@ public class FixedDepositService {
     public FixedDeposit getFixedDepositByIdForAdmin(Long fdId) {
         log.info("Fetching FD by id for admin: fdId={}", fdId);
 
-        return fixedDepositRepository
+        FixedDeposit fd = fixedDepositRepository
                 .findById(fdId)
                 .orElseThrow(() -> {
                     log.warn("Fixed deposit not found for admin: fdId={}", fdId);
                     return new ResourceNotFoundException("Fixed Deposit not found with id: " + fdId);
                 });
+
+        enrichWithAccruedInterest(fd);
+        return fd;
     }
 
 
@@ -407,6 +410,10 @@ public class FixedDepositService {
             if ("YEARLY".equalsIgnoreCase(interval)) {
                 nextDate = cursor.plusYears(1);
                 label = String.valueOf(cursor.getYear());
+            } else if ("QUARTERLY".equalsIgnoreCase(interval)) {
+                nextDate = cursor.plusMonths(3);
+                int quarter = ((cursor.getMonthValue() - 1) / 3) + 1;
+                label = cursor.getYear() + "-Q" + quarter;
             } else {
                 nextDate = cursor.plusMonths(1);
                 label = cursor.getYear() + "-" + String.format("%02d", cursor.getMonthValue());
