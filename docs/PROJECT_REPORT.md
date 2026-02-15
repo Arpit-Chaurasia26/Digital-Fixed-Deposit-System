@@ -529,18 +529,3 @@ The Digital Fixed Deposit System demonstrates a strong foundation for a producti
 - Significant testing coverage across layers
 
 With focused improvements in secrets management, contract standardization, and operational observability, the system can be elevated to enterprise-grade deployment readiness.
-
----
-
-## Appendix A — Suggested Documentation Extensions
-- API reference with request/response examples
-- ER diagram generated from live schema
-- Deployment architecture per environment (dev/stage/prod)
-- Runbook for incident response and scheduler failures
-
-## Appendix B — PlantUML Source Files
-- [docs/system-architecture.puml](docs/system-architecture.puml)
-- [docs/domain-class-diagram.puml](docs/domain-class-diagram.puml)
-- [docs/auth-flow-sequence.puml](docs/auth-flow-sequence.puml)
-- [docs/fd-lifecycle-state.puml](docs/fd-lifecycle-state.puml)
-- [docs/support-ticket-lifecycle-state.puml](docs/support-ticket-lifecycle-state.puml)
