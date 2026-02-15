@@ -161,6 +161,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true, role: 'ADMIN' },
   },
   {
+    path: '/admin/fd-management/fd/:id',
+    name: 'AdminFDDetails',
+    component: () => import('@/views/admin/fd/AdminFDDetails.vue'),
+    meta: { requiresAuth: true, role: 'ADMIN' },
+  },
+  {
     path: '/admin/fd-management/update-status',
     name: 'AdminFDStatus',
     component: () => import('@/views/admin/fd/AdminFDStatus.vue'),
