@@ -3,19 +3,18 @@ package tech.zeta.Digital_Fixed_Deposit_System.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
-
+@Slf4j
 @Component
 public class CookieUtil {
-
-    private static final Logger logger = LogManager.getLogger(CookieUtil.class);
 
     // Cookie Names
     private static final String ACCESS_TOKEN_COOKIE = "accessToken";
@@ -34,7 +33,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setMaxAge(ACCESS_TOKEN_MAX_AGE);
         response.addCookie(cookie);
-        logger.debug("Access token cookie set");
+        log.debug("Access token cookie set");
     }
 
     public void setRefreshToken(HttpServletResponse response, String refreshToken) {
@@ -44,7 +43,7 @@ public class CookieUtil {
         cookie.setPath("/auth"); // refresh only needed for auth
         cookie.setMaxAge(REFRESH_TOKEN_MAX_AGE);
         response.addCookie(cookie);
-        logger.debug("Refresh token cookie set");
+        log.debug("Refresh token cookie set");
     }
 
     // CLEAR
@@ -52,7 +51,7 @@ public class CookieUtil {
     public void clearAuthCookies(HttpServletResponse response) {
         clearCookie(response, ACCESS_TOKEN_COOKIE, "/");
         clearCookie(response, REFRESH_TOKEN_COOKIE, "/auth");
-        logger.debug("Auth cookies cleared");
+        log.debug("Auth cookies cleared");
     }
 
     private void clearCookie(HttpServletResponse response, String name, String path) {
@@ -62,24 +61,24 @@ public class CookieUtil {
         cookie.setPath(path);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        logger.debug("Cookie cleared for name={} path={}", name, path);
+        log.debug("Cookie cleared for name={} path={}", name, path);
     }
 
     //  EXTRACT
 
     public String extractRefreshToken(HttpServletRequest request) {
         if (request == null || request.getCookies() == null) {
-            logger.debug("No cookies available to extract refresh token");
+            log.debug("No cookies available to extract refresh token");
             return null;
         }
 
         for (Cookie cookie : request.getCookies()) {
             if (REFRESH_TOKEN_COOKIE.equals(cookie.getName())) {
-                logger.debug("Refresh token cookie found");
+                log.debug("Refresh token cookie found");
                 return cookie.getValue();
             }
         }
-        logger.debug("Refresh token cookie not found");
+        log.debug("Refresh token cookie not found");
         return null;
     }
 }

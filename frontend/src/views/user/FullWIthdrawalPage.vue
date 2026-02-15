@@ -130,13 +130,14 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, computed, reactive } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { withdrawalService } from '@/services/withdrawalService';
 import Navbar from '@/components/common/Navbar.vue';
 import Footer from '@/components/common/Footer.vue';
 import UserSidebar from '@/components/user/UserSidebar.vue';
 import { formatCurrency } from '@/utils/helpers';
+import { showConfirm } from '@/composables/useNotifications';
 
 
 const route = useRoute();
@@ -206,7 +207,7 @@ const confirmBreak = async () => {
   if(withdrawalAmount.value<=0){
       setMessage("Amount should be positive");
   }
- if (confirm('Are you sure you want to break this FD?')) {
+ if (await showConfirm('Are you sure you want to break this FD?')) {
    const fdId = parseInt(route.params.id as string);
    try{
       withdrawalReciept.value = await withdrawalService.confirmBreak(fdId, withdrawalAmount.value);

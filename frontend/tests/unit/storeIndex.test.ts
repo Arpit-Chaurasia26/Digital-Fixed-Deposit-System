@@ -3,9 +3,9 @@ import store from '@/store';
 
 describe('store index', () => {
   it('registers all root modules', () => {
-    expect(store.hasModule('auth')).toBe(true);
-    expect(store.hasModule('fd')).toBe(true);
-    expect(store.hasModule('support')).toBe(true);
+    expect((store as any).hasModule('auth')).toBe(true);
+    expect((store as any).hasModule('fd')).toBe(true);
+    expect((store as any).hasModule('support')).toBe(true);
   });
 
   it('exposes expected root state keys', () => {

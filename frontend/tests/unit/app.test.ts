@@ -27,7 +27,7 @@ describe('App shell classes', () => {
 
     mount(App, {
       global: {
-        plugins: [store, router],
+        plugins: [store as any, router],
       },
     });
 

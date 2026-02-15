@@ -13,10 +13,9 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @ExtendWith(MockitoExtension.class)
 class EmailOtpCleanupSchedulerTest {
@@ -43,4 +42,3 @@ class EmailOtpCleanupSchedulerTest {
         assertThat(passed).isBeforeOrEqualTo(afterCall);
     }
 }
-

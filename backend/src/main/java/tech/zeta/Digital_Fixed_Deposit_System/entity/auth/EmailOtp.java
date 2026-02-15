@@ -6,9 +6,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
+
 
 
 @Entity

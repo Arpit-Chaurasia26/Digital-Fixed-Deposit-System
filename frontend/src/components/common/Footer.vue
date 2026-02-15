@@ -6,7 +6,7 @@
           <h3>Zeta Fixed Deposit</h3>
           <p>Your trusted partner for secure and high-return fixed deposit investments.</p>
           <div class="social-links">
-            <a href="#" aria-label="Mail">
+            <a href="mailto:digitalfd.system@gmail.com" aria-label="Email">
               <span class="icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
@@ -14,15 +14,15 @@
                 </svg>
               </span>
             </a>
-            <a href="#" aria-label="X">
+            <a href="https://wa.me/9118001234567" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
               <span class="icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 4l14 16" />
-                  <path d="M19 4L5 20" />
+                  <path d="M20 11.5A8.5 8.5 0 0 1 7.8 19L4 20l1.1-3.6A8.5 8.5 0 1 1 20 11.5z" />
+                  <path d="M9.8 8.9c.2-.5.4-.5.6-.5h.5c.2 0 .4 0 .6.5l.3 1c.1.3 0 .5-.2.7l-.4.4c.5.9 1.2 1.6 2.1 2.1l.4-.4c.2-.2.4-.3.7-.2l1 .3c.5.2.5.4.5.6v.5c0 .2 0 .4-.5.6-.5.2-1.1.3-1.7.1-2.2-.7-4-2.5-4.7-4.7-.2-.6-.1-1.2.1-1.7z" />
                 </svg>
               </span>
             </a>
-            <a href="#" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <span class="icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -33,7 +33,7 @@
                 </svg>
               </span>
             </a>
-            <a href="#" aria-label="YouTube">
+            <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
               <span class="icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="7" width="18" height="10" rx="3" />
@@ -67,9 +67,18 @@
         <div class="footer-section">
           <h4>Contact Info</h4>
           <ul class="contact-info">
-            <li>📧 support@zetafd.com</li>
+            <li>📧 digitalfd.system@gmail.com</li>
             <li>📞 1800-123-4567</li>
-            <li>📍 123 Finance Street, Mumbai, India</li>
+            <li>
+              📍
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Sattva%20Knowledge%20Court%2C%2020%2C%2021%2C%20EPIP%20Zone%20Whitefield%20Rd%2C%20EPIP%20Zone%2C%20Brookefield%2C%20Bengaluru%2C%20Karnataka%20560048"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Sattva Knowledge Court, 20, 21, EPIP Zone Whitefield Rd, EPIP Zone, Brookefield, Bengaluru, Karnataka 560048
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -77,9 +86,9 @@
       <div class="footer-bottom">
         <p>&copy; {{ currentYear }} Zeta Fixed Deposit System. All rights reserved.</p>
         <div class="footer-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Cookie Policy</a>
+          <router-link to="/privacy-policy">Privacy Policy</router-link>
+          <router-link to="/terms-of-service">Terms of Service</router-link>
+          <router-link to="/cookie-policy">Cookie Policy</router-link>
         </div>
       </div>
     </div>

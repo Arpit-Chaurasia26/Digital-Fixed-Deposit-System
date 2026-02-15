@@ -1,20 +1,21 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
+@Slf4j
 @Service
 public class EmailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
 
@@ -23,7 +24,7 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String to, String otp) {
-        logger.info("Sending OTP email to {}", to);
+        log.info("Sending OTP email to {}", to);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -33,10 +34,13 @@ public class EmailService {
                         + otp
                         + "\n\nThis OTP is valid for 5 minutes.\n\n"
                         + "If you did not request this, please ignore this email."
+                        + "\n\nBest regards,\nDigital Fixed Deposit Team"
+
+
         );
 
         mailSender.send(message);
-        logger.info("OTP email sent to {}", to);
+        log.info("OTP email sent to {}", to);
     }
 }
 

@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import AdminDashboard from '@/views/admin/AdminDashboard.vue';
 import { fdService } from '@/services/fdService';
 
-const flushPromises = () => new Promise(process.nextTick);
+const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 jest.mock('@/services/fdService', () => ({
   fdService: {

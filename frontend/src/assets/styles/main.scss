@@ -487,28 +487,14 @@ a {
   }
 }
 
-body.admin-shell .navbar,
-body.admin-shell .footer {
-  margin-left: 260px;
-  width: calc(100% - 260px);
-}
-
-@media (max-width: 1024px) {
-  body.admin-shell .navbar,
-  body.admin-shell .footer {
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
-body.user-shell .navbar,
+body.admin-shell .footer,
 body.user-shell .footer {
   margin-left: 260px;
   width: calc(100% - 260px);
 }
 
 @media (max-width: 1024px) {
-  body.user-shell .navbar,
+  body.admin-shell .footer,
   body.user-shell .footer {
     margin-left: 0;
     width: 100%;

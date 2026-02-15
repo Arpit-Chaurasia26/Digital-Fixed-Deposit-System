@@ -12,10 +12,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.ResourceNotFoundException;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
-import tech.zeta.Digital_Fixed_Deposit_System.repository.UserRepository;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthService;
 import tech.zeta.Digital_Fixed_Deposit_System.service.auth.AuthTokens;
 import tech.zeta.Digital_Fixed_Deposit_System.service.email.EmailOtpService;
+import tech.zeta.Digital_Fixed_Deposit_System.service.user.UserService;
 import tech.zeta.Digital_Fixed_Deposit_System.util.CookieUtil;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,9 +23,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-/*
-Author : Priyanshu Mishra
-*/
+
+/**
+ * @author Priyanshu Mishra
+ */
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AuthController Unit Tests")
@@ -34,7 +35,7 @@ class AuthControllerTest {
     @Mock private AuthService authService;
     @Mock private CookieUtil cookieUtil;
     @Mock private EmailOtpService emailOtpService;
-    @Mock private UserRepository userRepository;
+    @Mock private UserService userService;;
 
     @InjectMocks
     private AuthController controller;
@@ -112,7 +113,7 @@ class AuthControllerTest {
 
     @Test
     void sendPasswordResetOtp_requiresExistingEmail() {
-        when(userRepository.existsByEmail("missing@example.com")).thenReturn(false);
+        when(userService.checkByEmail("missing@example.com")).thenReturn(false);
 
         assertThatThrownBy(() -> controller.sendPasswordResetOtp("missing@example.com"))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -167,7 +168,7 @@ class AuthControllerTest {
 
     @Test
     void sendPasswordResetOtp_succeedsWhenEmailExists() {
-        when(userRepository.existsByEmail("u@example.com")).thenReturn(true);
+        when(userService.checkByEmail("u@example.com")).thenReturn(true);
 
         controller.sendPasswordResetOtp("u@example.com");
 
@@ -176,7 +177,7 @@ class AuthControllerTest {
 
     @Test
     void sendOtp_existingEmail_throws() {
-        when(userRepository.existsByEmail("u@example.com")).thenReturn(true);
+        when(userService.checkByEmail("u@example.com")).thenReturn(true);
 
         assertThatThrownBy(() -> controller.sendOtp("u@example.com"))
                 .isInstanceOf(ResourceNotFoundException.class);

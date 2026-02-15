@@ -145,6 +145,7 @@ import Footer from '@/components/common/Footer.vue';
 import UserSidebar from '@/components/user/UserSidebar.vue';
 import { formatCurrency } from '@/utils/helpers';
 import { FDStatus } from '@/types';
+import { showConfirm } from '@/composables/useNotifications';
 
 
 const route = useRoute();
@@ -263,7 +264,7 @@ const confirmBreak = async () => {
  const confirmMessage = isMatured.value
    ? 'Are you sure you want to close this FD?'
    : 'Are you sure you want to break this FD?';
- if (confirm(confirmMessage)) {
+  if (await showConfirm(confirmMessage)) {
    const fdId = parseInt(route.params.id as string);
    try{
       withdrawalReciept.value = await withdrawalService.confirmBreak(fdId, withdrawalAmount.value);

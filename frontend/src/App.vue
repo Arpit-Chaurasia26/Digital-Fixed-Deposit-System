@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { watch } from 'vue';
-import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
-import { useTheme } from '@/composables/useTheme';
+import ConfirmNotificationBox from '@/components/common/ConfirmNotificationBox.vue';
 
-const store = useStore();
 const route = useRoute();
-const { initTheme } = useTheme();
 
 // Auth is handled by the router guard — no duplicate call needed here.
 
@@ -23,6 +20,7 @@ watch(() => route.path, syncShell, { immediate: true });
 <template>
   <div id="app">
     <router-view />
+    <ConfirmNotificationBox />
   </div>
 </template>
 

@@ -23,6 +23,24 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false },
   },
   {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: () => import('@/views/PrivacyPolicy.vue'),
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/terms-of-service',
+    name: 'TermsOfService',
+    component: () => import('@/views/TermsOfService.vue'),
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/cookie-policy',
+    name: 'CookiePolicy',
+    component: () => import('@/views/CookiePolicy.vue'),
+    meta: { requiresAuth: false },
+  },
+  {
     path: '/register',
     name: 'Register',
     component: () => import('@/views/auth/Register.vue'),
@@ -188,7 +206,7 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
     } else {
@@ -200,7 +218,7 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach(async (
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
@@ -212,7 +230,7 @@ router.beforeEach(async (
     if (store.state.auth.loading) {
       // Another call already started fetchProfile — wait for it to finish
       await new Promise<void>((resolve) => {
-        const unwatch = store.watch(
+        const unwatch = (store as any).watch(
           (state: any) => state.auth.loading,
           (loading: boolean) => {
             if (!loading) {

@@ -313,6 +313,7 @@ import Footer from '@/components/common/Footer.vue';
 import UserSidebar from '@/components/user/UserSidebar.vue';
 import { withdrawalService } from '@/services/withdrawalService';
 import { formatCurrency, formatDate, getErrorMessage } from '@/utils/helpers';
+import { showConfirm } from '@/composables/useNotifications';
 
 const store = useStore();
 const route = useRoute();
@@ -389,7 +390,7 @@ const fetchPartialPreview = async () => {
 const confirmPartialWithdrawal = async () => {
   const fdId = parseInt(route.params.id as string);
   if (!fdId || !partialAmount.value) return;
-  if (!confirm('Are you sure you want to proceed with this partial withdrawal?')) return;
+  if (!await showConfirm('Are you sure you want to proceed with this partial withdrawal?')) return;
   confirmingWithdrawal.value = true;
   try {
     const receipt = await withdrawalService.confirmBreak(fdId, partialAmount.value);

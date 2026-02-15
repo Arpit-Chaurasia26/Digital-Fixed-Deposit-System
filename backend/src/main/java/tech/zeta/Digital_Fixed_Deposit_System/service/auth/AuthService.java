@@ -1,5 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.LoginRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.RegisterRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.EmailOtp;
@@ -21,32 +22,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
-
+@Slf4j
 @Service
 public class AuthService {
 
-    private static final Logger logger = LogManager.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final IRefreshTokenService iRefreshTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final EmailOtpRepository emailOtpRepository;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             TokenService tokenService,
-            IRefreshTokenService iRefreshTokenService, EmailOtpRepository emailOtpRepository
+            RefreshTokenService refreshTokenService, RefreshTokenService refreshTokenService1, EmailOtpRepository emailOtpRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
-        this.iRefreshTokenService = iRefreshTokenService;
+        this.refreshTokenService = refreshTokenService1;
         this.emailOtpRepository = emailOtpRepository;
     }
 
@@ -55,7 +55,7 @@ public class AuthService {
     @Transactional
     public AuthTokens register(RegisterRequest request) {
 
-        logger.info("Register request received");
+        log.info("Register request received");
 
         boolean isVerified = emailOtpRepository
                 .existsByEmailAndVerifiedTrue(request.getEmail());
@@ -65,7 +65,7 @@ public class AuthService {
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            logger.warn("Register blocked: email already registered");
+            log.warn("Register blocked: email already registered");
             throw new BusinessException("Email already registered");
         }
 
@@ -80,7 +80,7 @@ public class AuthService {
 
 //        delete OTP records after success
         emailOtpRepository.deleteByEmail(request.getEmail());
-        logger.info("User registered with id={}", user.getId());
+        log.info("User registered with id={}", user.getId());
 
         String accessToken =
                 tokenService.generateAccessToken(
@@ -89,9 +89,9 @@ public class AuthService {
                 );
 
         RefreshToken refreshToken =
-                iRefreshTokenService.createRefreshToken(user.getId());
+                refreshTokenService.createRefreshToken(user.getId());
 
-        logger.debug("Auth tokens generated for user id={}", user.getId());
+        log.debug("Auth tokens generated for user id={}", user.getId());
         return new AuthTokens(accessToken, refreshToken.getToken());
     }
 
@@ -100,7 +100,7 @@ public class AuthService {
     @Transactional(noRollbackFor = { UnauthorizedException.class, AccountLockedException.class })
     public AuthTokens login(LoginRequest request) {
 
-        logger.info("Login request received");
+        log.info("Login request received");
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() ->
@@ -156,7 +156,7 @@ public class AuthService {
                 );
 
         RefreshToken refreshToken =
-                iRefreshTokenService.createRefreshToken(user.getId());
+                refreshTokenService.createRefreshToken(user.getId());
 
         return new AuthTokens(accessToken, refreshToken.getToken());
     }
@@ -165,10 +165,10 @@ public class AuthService {
 
     @Transactional
     public AuthTokens refresh(String refreshTokenValue) {
-        logger.info("Refresh request received");
+        log.info("Refresh request received");
 
         RefreshToken refreshToken =
-                iRefreshTokenService.validateRefreshToken(refreshTokenValue);
+                refreshTokenService.validateRefreshToken(refreshTokenValue);
 
         User user = userRepository.findById(refreshToken.getUserId())
                 .orElseThrow(() ->
@@ -180,10 +180,10 @@ public class AuthService {
                 user.getRole().name()
         );
 
-        iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
-        refreshToken = iRefreshTokenService.createRefreshToken(user.getId());
+        refreshTokenService.revokeRefreshToken(refreshTokenValue);
+        refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-        logger.info("Refresh token rotated for user id={}", user.getId());
+        log.info("Refresh token rotated for user id={}", user.getId());
         return new AuthTokens(accessToken, refreshToken.getToken());
     }
 
@@ -191,16 +191,16 @@ public class AuthService {
 
     @Transactional
     public void logout(String refreshTokenValue) {
-        logger.info("Logout request received");
-        iRefreshTokenService.revokeRefreshToken(refreshTokenValue);
-        logger.info("Logout completed");
+        log.info("Logout request received");
+        refreshTokenService.revokeRefreshToken(refreshTokenValue);
+        log.info("Logout completed");
     }
 
     //  PASSWORD RESET
 
     @Transactional(noRollbackFor = { BusinessException.class, AccountLockedException.class })
     public void resetPassword(String email, String otp, String newPassword) {
-        logger.info("Password reset flow started for email={}", email);
+        log.info("Password reset flow started for email={}", email);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
@@ -242,7 +242,7 @@ public class AuthService {
             record.setVerified(true);
             emailOtpRepository.save(record);
 
-            logger.info("Password reset completed for user id={}", user.getId());
+            log.info("Password reset completed for user id={}", user.getId());
         } catch (BusinessException ex) {
 
             // FAILED ATTEMPT
@@ -254,7 +254,7 @@ public class AuthService {
             }
 
             userRepository.save(user);
-            logger.warn("Password reset failed for user id={}, attempts={}", user.getId(), attempts);
+            log.warn("Password reset failed for user id={}, attempts={}", user.getId(), attempts);
             throw ex;
         }
     }

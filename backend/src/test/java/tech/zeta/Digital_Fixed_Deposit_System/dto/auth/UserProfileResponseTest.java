@@ -8,10 +8,9 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @DisplayName("UserProfileResponse DTO Tests")
 class UserProfileResponseTest {

@@ -1,5 +1,6 @@
 package tech.zeta.Digital_Fixed_Deposit_System.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,16 +10,14 @@ import tech.zeta.Digital_Fixed_Deposit_System.repository.EmailOtpRepository;
 
 import java.time.LocalDateTime;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
 
+@Slf4j
 @Component
 public class EmailOtpCleanupScheduler {
-
-    private static final Logger logger =
-            LogManager.getLogger(EmailOtpCleanupScheduler.class);
 
     private final EmailOtpRepository emailOtpRepository;
 
@@ -38,10 +37,10 @@ public class EmailOtpCleanupScheduler {
 
         LocalDateTime now = LocalDateTime.now();
 
-        logger.info("Running OTP cleanup job at {}", now);
+        log.info("Running OTP cleanup job at {}", now);
 
         emailOtpRepository.deleteByExpiresAtBefore(now);
 
-        logger.info("Expired OTP cleanup completed");
+        log.info("Expired OTP cleanup completed");
     }
 }

@@ -7,9 +7,10 @@ import org.apache.logging.log4j.Logger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
+
 
 
 @Entity
@@ -20,8 +21,6 @@ Author : Priyanshu Mishra
         }
 )
 public class User {
-
-    private static final Logger logger = LogManager.getLogger(User.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +64,6 @@ public class User {
         if (role == null) {
             role = Role.USER;
         }
-        logger.debug("User entity pre-persist initialized");
     }
 
     @Column(nullable = false)

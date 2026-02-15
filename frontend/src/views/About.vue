@@ -2,82 +2,70 @@
   <div class="about-page">
     <Navbar />
     <div class="container about-content">
-      <div class="about-header">
-        <h1>About Zeta FD</h1>
-        <p class="subtitle">Your trusted partner in secure financial investments</p>
-      </div>
-
-      <section class="about-section">
-        <h2>Who We Are</h2>
-        <p>
-          Zeta FD is a leading digital fixed deposit platform that brings together the security of traditional 
-          banking with the convenience of modern technology. With years of experience in the financial sector, 
-          we've helped thousands of investors achieve their financial goals through our innovative fixed deposit solutions.
-        </p>
-      </section>
-
-      <section class="about-section">
-        <h2>Our Mission</h2>
-        <p>
-          To democratize fixed deposit investments by providing a seamless, transparent, and secure platform 
-          that makes wealth creation accessible to everyone. We believe in empowering investors with the tools 
-          and information they need to make informed financial decisions.
-        </p>
-      </section>
-
-      <section class="about-section">
-        <h2>Why Choose Us</h2>
-        <div class="features-grid">
-          <div class="feature">
-            <div class="feature-icon">🔒</div>
-            <h3>100% Secure</h3>
-            <p>Bank-grade security with DICGC insurance coverage up to ₹5 lakhs</p>
+      <section class="about-hero card">
+        <div class="hero-copy">
+          <p class="kicker">ABOUT US</p>
+          <h1>Trusted Digital Infrastructure for Fixed Deposit Operations</h1>
+          <p class="subtitle">
+            Zeta FD is designed for secure, transparent, and scalable deposit management —
+            from booking to maturity and controlled withdrawal workflows.
+          </p>
+          <div class="hero-actions">
+            <router-link to="/register" class="btn btn-primary">Open Account</router-link>
+            <router-link to="/contact" class="btn btn-outline">Talk to Support</router-link>
           </div>
-          <div class="feature">
-            <div class="feature-icon">💹</div>
-            <h3>Competitive Rates</h3>
-            <p>Interest rates up to 7.25% per annum across different schemes</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">⚡</div>
-            <h3>Instant Processing</h3>
-            <p>Book your FD in minutes with our streamlined digital process</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">📱</div>
-            <h3>Easy Management</h3>
-            <p>Track and manage all your investments from a single dashboard</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">🎯</div>
-            <h3>Flexible Options</h3>
-            <p>Multiple schemes tailored to different investment needs and goals</p>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">💬</div>
-            <h3>24/7 Support</h3>
-            <p>Dedicated customer support team available round the clock</p>
-          </div>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric-card"><strong>99.9%</strong><span>Platform uptime</span></div>
+          <div class="metric-card"><strong>&lt; 2 hrs</strong><span>Priority response</span></div>
+          <div class="metric-card"><strong>Bank-grade</strong><span>Security controls</span></div>
+          <div class="metric-card"><strong>Realtime</strong><span>Portfolio insights</span></div>
         </div>
       </section>
 
+      <section class="about-section two-col">
+        <article class="card panel">
+          <h2>Who We Are</h2>
+          <p>
+            We are a product-focused finance technology team building dependable fixed deposit tools for everyday
+            users, support teams, and administrators.
+          </p>
+        </article>
+        <article class="card panel">
+          <h2>Our Mission</h2>
+          <p>
+            Deliver a professional, policy-driven platform that makes savings operations simpler while preserving
+            compliance, clarity, and customer trust.
+          </p>
+        </article>
+      </section>
+
       <section class="about-section">
-        <h2>Our Values</h2>
-        <ul class="values-list">
-          <li><strong>Transparency:</strong> Clear and honest communication about all terms and conditions</li>
-          <li><strong>Security:</strong> Your financial safety is our top priority</li>
-          <li><strong>Innovation:</strong> Continuously improving our platform to serve you better</li>
-          <li><strong>Customer First:</strong> Every decision we make puts you at the center</li>
-          <li><strong>Integrity:</strong> We operate with the highest ethical standards</li>
-        </ul>
+        <h2>Why Customers Choose Zeta FD</h2>
+        <div class="features-grid">
+          <article class="feature card"><h3>Secure by Design</h3><p>Role-based access, protected sessions, and controlled transaction actions.</p></article>
+          <article class="feature card"><h3>Transparent Returns</h3><p>Clear maturity, accrued interest, and withdrawal visibility at every step.</p></article>
+          <article class="feature card"><h3>Operational Speed</h3><p>Fast booking and workflow-driven operations for users and admins.</p></article>
+          <article class="feature card"><h3>Support Reliability</h3><p>Tracked support tickets with measurable response and resolution timelines.</p></article>
+        </div>
+      </section>
+
+      <section class="about-section compliance card">
+        <h2>Operating Principles</h2>
+        <div class="principles-grid">
+          <div><strong>Clarity</strong><span>Policy-first communication and transparent terms.</span></div>
+          <div><strong>Security</strong><span>Defensive controls for account and transaction safety.</span></div>
+          <div><strong>Reliability</strong><span>Stable architecture for consistent day-to-day operations.</span></div>
+          <div><strong>Accountability</strong><span>Traceable actions and auditable service workflows.</span></div>
+        </div>
       </section>
 
       <section class="about-section cta-section">
-        <h2>Ready to Start Your Investment Journey?</h2>
-        <p>Join thousands of satisfied investors who trust Zeta FD with their savings</p>
+        <h2>Start Investing with Confidence</h2>
+        <p>Experience a professional fixed deposit platform built for trust and long-term growth.</p>
         <div class="cta-buttons">
-          <router-link to="/register" class="btn btn-primary btn-lg">Get Started</router-link>
-          <router-link to="/contact" class="btn btn-outline btn-lg">Contact Us</router-link>
+          <router-link to="/register" class="btn btn-primary btn-lg">Open Account</router-link>
+          <router-link to="/contact" class="btn btn-outline btn-lg">Contact Support</router-link>
         </div>
       </section>
     </div>
@@ -100,26 +88,62 @@ import Footer from '@/components/common/Footer.vue';
 .about-content {
   flex: 1;
   padding: var(--spacing-3xl) var(--spacing-lg);
-  max-width: 1200px;
+  max-width: 1150px;
   margin: 0 auto;
 }
 
-.about-header {
-  text-align: center;
-  margin-bottom: var(--spacing-3xl);
-  padding: var(--spacing-2xl) 0;
-
-  h1 {
-    font-size: var(--font-size-4xl);
-    color: var(--zeta-primary);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .subtitle {
-    font-size: var(--font-size-xl);
-    color: var(--zeta-text-secondary);
-  }
+.about-hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
+  background: var(--zeta-gradient-hero);
+  color: white;
+  box-shadow: var(--shadow-lg);
 }
+
+.kicker {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero-copy h1 {
+  margin: 0 0 var(--spacing-md);
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  color: #ffffff;
+}
+
+.subtitle { color: rgba(255, 255, 255, 0.92); line-height: 1.75; margin: 0; }
+
+.hero-actions {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metric-card strong { color: #ffffff; font-size: var(--font-size-lg); }
+.metric-card span { color: rgba(255, 255, 255, 0.88); font-size: var(--font-size-sm); }
 
 .about-section {
   margin-bottom: var(--spacing-3xl);
@@ -137,19 +161,30 @@ import Footer from '@/components/common/Footer.vue';
   }
 }
 
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.panel { padding: var(--spacing-xl); }
+
+.panel,
+.feature,
+.compliance {
+  box-shadow: var(--shadow-md);
+}
+
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
   margin-top: var(--spacing-xl);
 }
 
 .feature {
-  text-align: center;
-  padding: var(--spacing-xl);
-  background: var(--zeta-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--zeta-divider);
   transition: all var(--transition-base);
 
   &:hover {
@@ -157,42 +192,45 @@ import Footer from '@/components/common/Footer.vue';
     box-shadow: var(--shadow-md);
   }
 
-  .feature-icon {
-    font-size: 48px;
-    margin-bottom: var(--spacing-md);
-  }
-
   h3 {
-    color: var(--zeta-primary);
+    margin: 0 0 var(--spacing-sm);
+    color: var(--zeta-primary-dark);
     margin-bottom: var(--spacing-sm);
     font-size: var(--font-size-lg);
   }
 
   p {
+    margin: 0;
     color: var(--zeta-text-secondary);
     font-size: var(--font-size-base);
   }
 }
 
-.values-list {
-  list-style: none;
-  padding: 0;
+.compliance {
+  padding: var(--spacing-xl);
+}
 
-  li {
-    padding: var(--spacing-md) 0;
-    color: var(--zeta-text-secondary);
-    font-size: var(--font-size-lg);
-    line-height: 1.8;
-    border-bottom: 1px solid var(--zeta-divider);
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+}
 
-    &:last-child {
-      border-bottom: none;
-    }
+.principles-grid div {
+  border: 1px solid var(--zeta-divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+  background: var(--zeta-surface);
+}
 
-    strong {
-      color: var(--zeta-primary);
-    }
-  }
+.principles-grid strong {
+  color: var(--zeta-primary);
+}
+
+.principles-grid span {
+  color: var(--zeta-text-secondary);
 }
 
 .cta-section {
@@ -235,5 +273,61 @@ import Footer from '@/components/common/Footer.vue';
       color: var(--zeta-primary);
     }
   }
+}
+
+@media (max-width: 900px) {
+  .about-hero,
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+:global([data-theme='dark']) .hero-copy h1,
+:global([data-theme='dark']) .feature h3,
+:global([data-theme='dark']) .about-section h2,
+:global([data-theme='dark']) .metric-card strong,
+:global([data-theme='dark']) .principles-grid strong {
+  color: #c7d2fe;
+}
+
+:global([data-theme='dark']) .hero-copy h1 {
+  color: #ffffff;
+}
+
+:global(html[data-theme='dark']) .about-page .hero-copy h1 {
+  color: #ffffff !important;
+}
+
+:global([data-theme='dark']) .subtitle,
+:global([data-theme='dark']) .about-section p,
+:global([data-theme='dark']) .feature p,
+:global([data-theme='dark']) .metric-card span,
+:global([data-theme='dark']) .principles-grid span {
+  color: #d1d5db;
+}
+
+:global([data-theme='dark']) .about-hero.card,
+:global([data-theme='dark']) .panel.card,
+:global([data-theme='dark']) .feature.card,
+:global([data-theme='dark']) .metric-card,
+:global([data-theme='dark']) .compliance.card,
+:global([data-theme='dark']) .principles-grid div {
+  background: rgba(17, 24, 39, 0.9);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme='dark']) .about-hero.card {
+  background: var(--zeta-gradient-hero);
+}
+
+:global([data-theme='dark']) .about-hero .subtitle,
+:global([data-theme='dark']) .about-hero .kicker,
+:global([data-theme='dark']) .about-hero .metric-card span,
+:global([data-theme='dark']) .about-hero .metric-card strong {
+  color: #ffffff;
 }
 </style>

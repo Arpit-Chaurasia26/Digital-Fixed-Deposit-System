@@ -13,10 +13,9 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @SpringBootTest
 @ActiveProfiles("test")

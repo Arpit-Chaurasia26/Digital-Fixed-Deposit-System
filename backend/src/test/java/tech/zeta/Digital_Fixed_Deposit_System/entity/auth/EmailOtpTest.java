@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
-/*
-Author : Priyanshu Mishra
-*/
-
+/**
+ * @author Priyanshu Mishra
+ */
 
 @DisplayName("EmailOtp Entity Tests")
 class EmailOtpTest {
@@ -33,4 +32,3 @@ class EmailOtpTest {
         assertThat(otp.isVerified()).isTrue();
     }
 }
-

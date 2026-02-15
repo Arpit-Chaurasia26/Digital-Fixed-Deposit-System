@@ -6,9 +6,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.auth.EmailOtp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
+
 
 
 public interface EmailOtpRepository extends JpaRepository<EmailOtp, Long> {

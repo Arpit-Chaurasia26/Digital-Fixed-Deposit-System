@@ -1,20 +1,21 @@
 package tech.zeta.Digital_Fixed_Deposit_System.dto.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-/*
-Author : Priyanshu Mishra
-*/
+/**
+ * @author Priyanshu Mishra
+ */
 
+@Slf4j
 public class AuthResponse {
 
-    private static final Logger logger = LogManager.getLogger(AuthResponse.class);
 
     private final String accessToken;
 
     public AuthResponse(String accessToken) {
         this.accessToken = accessToken;
-        logger.debug("AuthResponse created");
+        log.debug("AuthResponse created");
     }
 
     public String getAccessToken() {

@@ -1,37 +1,39 @@
 package tech.zeta.Digital_Fixed_Deposit_System.controller.user;
  
+import lombok.extern.slf4j.Slf4j;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UserProfileResponse;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.UpdateUserProfileRequest;
 import tech.zeta.Digital_Fixed_Deposit_System.dto.auth.ChangePasswordRequest;
-import tech.zeta.Digital_Fixed_Deposit_System.service.user.IUserService;
- 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/*
-Author : Priyanshu Mishra
-*/
+import tech.zeta.Digital_Fixed_Deposit_System.service.user.UserService;
 
+/**
+ * @author Priyanshu Mishra
+ */
+
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
- 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private final IUserService userService;
+
+    private final UserService userService;
  
-    public UserController(IUserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
  
     // Get current logged-in user's profile
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getCurrentUserProfile() {
-        logger.info("User profile fetch requested");
+        log.info("User profile fetch requested");
         UserProfileResponse profile = userService.getCurrentUserProfile();
-        logger.info("User profile fetch completed");
+        log.info("User profile fetch completed");
         return ResponseEntity.ok(profile);
     }
  
@@ -40,9 +42,9 @@ public class UserController {
     public ResponseEntity<UserProfileResponse> updateCurrentUserProfile(
             @Valid @RequestBody UpdateUserProfileRequest request
     ) {
-        logger.info("User profile update requested");
+        log.info("User profile update requested");
         ResponseEntity<UserProfileResponse> response = ResponseEntity.ok(userService.updateCurrentUserProfile(request));
-        logger.info("User profile update completed");
+        log.info("User profile update completed");
         return response;
     }
  
@@ -51,9 +53,9 @@ public class UserController {
     public ResponseEntity<String> changePassword(
             @Valid @RequestBody ChangePasswordRequest request
     ) {
-        logger.info("Password change requested");
+        log.info("Password change requested");
         userService.changePassword(request);
-        logger.info("Password change completed");
+        log.info("Password change completed");
         return ResponseEntity.ok("Password updated successfully");
     }
 }

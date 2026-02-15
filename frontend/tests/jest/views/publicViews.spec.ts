@@ -3,6 +3,9 @@ import { createTestStore } from '../utils/createStore';
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Contact from '@/views/Contact.vue';
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+import TermsOfService from '@/views/TermsOfService.vue';
+import CookiePolicy from '@/views/CookiePolicy.vue';
 import NotFound from '@/views/NotFound.vue';
 import Profile from '@/views/Profile.vue';
 import Login from '@/views/auth/Login.vue';
@@ -54,12 +57,27 @@ describe('Public and auth views', () => {
 
   it('renders About view', () => {
     const wrapper = mountView(About);
-    expect(wrapper.text()).toContain('About');
+    expect(wrapper.text()).toMatch(/about us/i);
   });
 
   it('renders Contact view', () => {
     const wrapper = mountView(Contact);
     expect(wrapper.text()).toContain('Contact');
+  });
+
+  it('renders Privacy Policy view', () => {
+    const wrapper = mountView(PrivacyPolicy);
+    expect(wrapper.text()).toContain('Privacy Policy');
+  });
+
+  it('renders Terms of Service view', () => {
+    const wrapper = mountView(TermsOfService);
+    expect(wrapper.text()).toContain('Terms of Service');
+  });
+
+  it('renders Cookie Policy view', () => {
+    const wrapper = mountView(CookiePolicy);
+    expect(wrapper.text()).toContain('Cookie Policy');
   });
 
   it('renders NotFound view', () => {

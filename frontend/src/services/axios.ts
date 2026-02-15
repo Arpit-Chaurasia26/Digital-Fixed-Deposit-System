@@ -31,8 +31,6 @@ apiClient.interceptors.response.use(
  async (error: AxiosError) => {
    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
    const requestUrl = originalRequest?.url || '';
-   const isProfileCheck = requestUrl.includes('/user/profile');
-
 
    // Handle 401 Unauthorized - try to refresh token
    // Skip refresh for public auth endpoints (login, register, OTP, password reset)

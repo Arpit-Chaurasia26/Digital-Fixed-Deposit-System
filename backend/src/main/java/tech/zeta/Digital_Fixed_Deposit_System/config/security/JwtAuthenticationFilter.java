@@ -20,9 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-/*
-Author : Priyanshu Mishra
-*/
+
+/**
+ * @author Priyanshu Mishra
+ */
+
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
