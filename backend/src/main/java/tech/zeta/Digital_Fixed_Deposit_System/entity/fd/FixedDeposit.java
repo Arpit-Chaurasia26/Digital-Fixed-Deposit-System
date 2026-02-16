@@ -1,7 +1,10 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.fd;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +15,8 @@ import java.time.LocalDateTime;
  */
 @Builder
 @Entity
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 @Table(
         name = "fixed_deposits",
         indexes = {
