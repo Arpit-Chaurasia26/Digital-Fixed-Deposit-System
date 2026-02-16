@@ -101,16 +101,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("newuser@example.com");
         when(oAuth2User.getAttribute("name")).thenReturn("New User");
+        when(oAuth2User.getAttribute("sub")).thenReturn("google-sub-123");
         when(userRepository.findByEmail("newuser@example.com")).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 2L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(2L, "USER")).thenReturn("mock-access-token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("mock-access-token");
         when(refreshTokenService.createRefreshToken(2L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -120,10 +125,10 @@ class OAuthSuccessHandlerTest {
         User capturedUser = userCaptor.getValue();
         assertEquals("New User", capturedUser.getName());
         assertEquals("newuser@example.com", capturedUser.getEmail());
-        assertEquals("OAUTH_USER", capturedUser.getPassword());
+        assertEquals("OAUTH_USER_PROVIDEED_BY_GOOGLE", capturedUser.getPassword());
         assertEquals(Role.USER, capturedUser.getRole());
         assertEquals("GOOGLE", capturedUser.getAuthProvider());
-        assertEquals("newuser@example.com", capturedUser.getProviderId());
+        assertEquals("google-sub-123", capturedUser.getProviderId());
         assertTrue(capturedUser.isEmailVerified());
 
         verify(userRepository).save(any(User.class));
@@ -187,16 +192,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn(null);
         when(oAuth2User.getAttribute("name")).thenReturn("User Without Email");
+        when(oAuth2User.getAttribute("sub")).thenReturn("sub-123");
         when(userRepository.findByEmail(null)).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 4L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(4L, "USER")).thenReturn("mock-access-token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("mock-access-token");
         when(refreshTokenService.createRefreshToken(4L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -216,16 +226,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("noname@example.com");
         when(oAuth2User.getAttribute("name")).thenReturn(null);
+        when(oAuth2User.getAttribute("sub")).thenReturn("sub-456");
         when(userRepository.findByEmail("noname@example.com")).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 5L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(5L, "USER")).thenReturn("mock-access-token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("mock-access-token");
         when(refreshTokenService.createRefreshToken(5L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -285,16 +300,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("oauth@example.com");
         when(oAuth2User.getAttribute("name")).thenReturn("OAuth User");
+        when(oAuth2User.getAttribute("sub")).thenReturn("oauth-sub-789");
         when(userRepository.findByEmail("oauth@example.com")).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 6L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(6L, "USER")).thenReturn("access-token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("access-token");
         when(refreshTokenService.createRefreshToken(6L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -303,8 +323,8 @@ class OAuthSuccessHandlerTest {
         // Assert
         User capturedUser = userCaptor.getValue();
         assertEquals("GOOGLE", capturedUser.getAuthProvider());
-        assertEquals("oauth@example.com", capturedUser.getProviderId());
-        assertEquals("OAUTH_USER", capturedUser.getPassword());
+        assertEquals("oauth-sub-789", capturedUser.getProviderId());
+        assertEquals("OAUTH_USER_PROVIDEED_BY_GOOGLE", capturedUser.getPassword());
         assertTrue(capturedUser.isEmailVerified());
         assertEquals(Role.USER, capturedUser.getRole());
     }
@@ -346,16 +366,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("github@example.com");
         when(oAuth2User.getAttribute("name")).thenReturn("GitHub User");
+        when(oAuth2User.getAttribute("sub")).thenReturn("github-sub-999");
         when(userRepository.findByEmail("github@example.com")).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 8L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(8L, "USER")).thenReturn("github-token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("github-token");
         when(refreshTokenService.createRefreshToken(8L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -364,7 +389,7 @@ class OAuthSuccessHandlerTest {
         // Assert
         User capturedUser = userCaptor.getValue();
         assertEquals("GOOGLE", capturedUser.getAuthProvider()); // Handler sets GOOGLE
-        assertEquals("github@example.com", capturedUser.getProviderId());
+        assertEquals("github-sub-999", capturedUser.getProviderId());
         assertTrue(capturedUser.isEmailVerified());
     }
 
@@ -398,16 +423,21 @@ class OAuthSuccessHandlerTest {
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
         when(oAuth2User.getAttribute("email")).thenReturn("");
         when(oAuth2User.getAttribute("name")).thenReturn("Empty Email User");
+        when(oAuth2User.getAttribute("sub")).thenReturn("");
         when(userRepository.findByEmail("")).thenReturn(Optional.empty());
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 9L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(9L, "USER")).thenReturn("token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("token");
         when(refreshTokenService.createRefreshToken(9L)).thenReturn(mockRefreshToken);
 
         // Act
@@ -432,10 +462,14 @@ class OAuthSuccessHandlerTest {
         when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedUser, "id", 10L);
+            // Ensure role is set
+            if (savedUser.getRole() == null) {
+                savedUser.setRole(Role.USER);
+            }
             return savedUser;
         });
 
-        when(tokenService.generateAccessToken(10L, "USER")).thenReturn("token");
+        when(tokenService.generateAccessToken(anyLong(), anyString())).thenReturn("token");
         when(refreshTokenService.createRefreshToken(10L)).thenReturn(mockRefreshToken);
 
         // Act

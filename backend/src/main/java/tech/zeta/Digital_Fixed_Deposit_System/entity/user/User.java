@@ -1,6 +1,9 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -17,6 +20,9 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_user_email", columnList = "email")
         }
 )
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -36,41 +42,50 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role;
+    private Role role = Role.USER;
 
     // SECURITY & AUTH
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean emailVerified = false;
 
+    @Builder.Default
     @Column(nullable = false)
     private int failedLoginAttempts = 0;
 
+    @Builder.Default
     @Column(nullable = false)
     private int failedPasswordResetAttempts = 0;
 
-    private LocalDateTime loginBlockedUntil;
+    @Builder.Default
+    private LocalDateTime loginBlockedUntil = null;
 
     // OAUTH SUPPORT
 
+    @Builder.Default
     @Column(length = 20)
-    private String authProvider; // LOCAL / GOOGLE
+    private String authProvider = "LOCAL"; // LOCAL / GOOGLE
 
+    @Builder.Default
     @Column(length = 100)
-    private String providerId; // Google sub ID
+    private String providerId = null; // Google sub ID
 
     //  CONSTRUCTORS
 
-    protected User() {}
-
+    // Custom constructor for backward compatibility
     public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
         this.authProvider = "LOCAL";
+        this.emailVerified = false;
+        this.failedLoginAttempts = 0;
+        this.failedPasswordResetAttempts = 0;
     }
 
     //JPA HOOK

@@ -52,26 +52,31 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         String email = oauthUser.getAttribute("email");
         String name = oauthUser.getAttribute("name");
+        String providerId=oauthUser.getAttribute("sub");
 
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> {
-                    User newUser = new User(
-                            name,
-                            email,
-                            "OAUTH_USER",
-                            Role.USER
-                    );
-                    newUser.setAuthProvider("GOOGLE");
-                    newUser.setProviderId(email);
-                    newUser.setEmailVerified(true);
+                    User newUser=User
+                            .builder()
+                            .name(name)
+                            .email(email)
+                            .password("OAUTH_USER_PROVIDEED_BY_GOOGLE")
+                            .authProvider("GOOGLE")
+                            .providerId(providerId)
+                            .emailVerified(true)
+                            .role(Role.USER)
+                            .build();
 
                     return userRepository.save(newUser);
                 });
 
+        // Ensure role is set (fallback to USER if null)
+        Role userRole = user.getRole() != null ? user.getRole() : Role.USER;
+
         String accessToken =
                 tokenService.generateAccessToken(
                         user.getId(),
-                        user.getRole().name()
+                        userRole.name()
                 );
 
         RefreshToken refreshToken =

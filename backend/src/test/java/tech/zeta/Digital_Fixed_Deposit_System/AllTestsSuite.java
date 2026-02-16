@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
  */
 
 @Suite
-@SuiteDisplayName("Digital Fixed Deposit System - Complete Test Suite (500+ Tests)")
+@SuiteDisplayName("Digital Fixed Deposit System - Complete Test Suite (300+ Tests)")
 @SelectPackages({
     "tech.zeta.Digital_Fixed_Deposit_System.config",
     "tech.zeta.Digital_Fixed_Deposit_System.controller",
@@ -22,7 +22,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "tech.zeta.Digital_Fixed_Deposit_System.mapper",
     "tech.zeta.Digital_Fixed_Deposit_System.util"
 })
-@IncludeClassNamePatterns({".*Test", ".*Tests", ".*IT", ".*Suite", ".*Spec"})
+@IncludeClassNamePatterns({".*Test", ".*Tests", ".*IT", ".*Spec"})
 public class AllTestsSuite {
     static {
         System.setProperty("spring.profiles.active", "test");

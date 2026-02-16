@@ -55,13 +55,15 @@ public class UserService {
                         new UnauthorizedException("User not found")
                 );
 
-        return new UserProfileResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getCreatedAt()
-        );
+        return  UserProfileResponse
+                .builder()
+                .id( user.getId())
+                .name( user.getName())
+                .email(user.getEmail())
+                .role( user.getRole())
+                .createdAt(user.getCreatedAt())
+                .build();
+
     }
 
         @Transactional
@@ -85,13 +87,14 @@ public class UserService {
                 User saved = userRepository.save(user);
                 log.info("User profile updated: userId={}", saved.getId());
 
-                return new UserProfileResponse(
-                                saved.getId(),
-                                saved.getName(),
-                                saved.getEmail(),
-                                saved.getRole(),
-                                saved.getCreatedAt()
-                );
+            return  UserProfileResponse
+                    .builder()
+                    .id( user.getId())
+                    .name( user.getName())
+                    .email(user.getEmail())
+                    .role( user.getRole())
+                    .createdAt(user.getCreatedAt())
+                    .build();
         }
 
         @Transactional
