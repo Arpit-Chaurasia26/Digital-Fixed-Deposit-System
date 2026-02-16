@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class SupportTicketScheduler {
+public class    SupportTicketScheduler {
     
     private final SupportTicketRepository repository;
 
