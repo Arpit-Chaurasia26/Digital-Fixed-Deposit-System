@@ -49,6 +49,7 @@ public class RefreshToken {
 
     // Used to invalidate token on logout
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean revoked = false;
 

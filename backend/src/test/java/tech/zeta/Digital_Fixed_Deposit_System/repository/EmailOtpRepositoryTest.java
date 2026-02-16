@@ -65,11 +65,12 @@ class EmailOtpRepositoryTest {
     }
 
     private EmailOtp otp(String email, String code, boolean verified, LocalDateTime expires) {
-        EmailOtp otp = new EmailOtp();
-        otp.setEmail(email);
-        otp.setOtp(code);
-        otp.setVerified(verified);
-        otp.setExpiresAt(expires);
+        EmailOtp otp = EmailOtp.builder()
+                        .email(email)
+                        .otp(code)
+                        .verified(verified)
+                        .expiresAt(expires)
+                        .build();
         return otp;
     }
 }
