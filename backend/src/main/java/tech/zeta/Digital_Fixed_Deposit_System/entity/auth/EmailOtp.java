@@ -1,7 +1,10 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.auth;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -12,10 +15,14 @@ import java.time.LocalDateTime;
 
 
 
-@Entity
-@Table(name = "email_otp")
+
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "email_otp")
 public class EmailOtp {
 
     @Id
@@ -31,5 +38,3 @@ public class EmailOtp {
     private boolean verified;
 
 }
-
-

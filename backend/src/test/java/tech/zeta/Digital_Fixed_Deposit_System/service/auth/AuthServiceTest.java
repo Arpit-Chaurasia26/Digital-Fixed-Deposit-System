@@ -333,11 +333,12 @@ class AuthServiceTest {
         @Test
         void resetPassword_expiredOtp_incrementsAttempts() {
             User user = new User("User", EMAIL, "hash", Role.USER);
-            EmailOtp otp = new EmailOtp();
-            otp.setEmail(EMAIL);
-            otp.setOtp("123456");
-            otp.setVerified(false);
-            otp.setExpiresAt(java.time.LocalDateTime.now().minusMinutes(1));
+            EmailOtp otp = EmailOtp.builder()
+                    .email(EMAIL)
+                    .otp("123456")
+                    .verified(false)
+                    .expiresAt(java.time.LocalDateTime.now().minusMinutes(1))
+                    .build();
 
             when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(emailOtpRepository.findByEmailAndOtpAndVerifiedFalse(EMAIL, "123456"))
@@ -370,11 +371,12 @@ class AuthServiceTest {
         @Test
         void resetPassword_success_resetsState() {
             User user = new User("User", EMAIL, "hash", Role.USER);
-            EmailOtp otp = new EmailOtp();
-            otp.setEmail(EMAIL);
-            otp.setOtp("123456");
-            otp.setVerified(false);
-            otp.setExpiresAt(java.time.LocalDateTime.now().plusMinutes(5));
+            EmailOtp otp = EmailOtp.builder()
+                    .email(EMAIL)
+                    .otp("123456")
+                    .verified(false)
+                    .expiresAt(java.time.LocalDateTime.now().plusMinutes(5))
+                    .build();
 
             when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
             when(emailOtpRepository.findByEmailAndOtpAndVerifiedFalse(EMAIL, "123456"))

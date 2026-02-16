@@ -37,10 +37,13 @@ public class EmailOtpService {
         String otp =
                 String.valueOf(100000 + new SecureRandom().nextInt(900000));
 
-        EmailOtp entity = new EmailOtp();
-        entity.setEmail(email);
-        entity.setOtp(otp);
-        entity.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+        EmailOtp entity =EmailOtp
+                .builder()
+                .email(email)
+                .otp(otp)
+                .expiresAt(LocalDateTime.now().plusMinutes(5))
+                .verified(false)
+                .build();
         entity.setVerified(false);
 
         emailOtpRepository.save(entity);

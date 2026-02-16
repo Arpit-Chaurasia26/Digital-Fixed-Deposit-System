@@ -149,11 +149,12 @@ class EmailOtpServiceTest {
     }
 
     private EmailOtp createEmailOtp(boolean verified, LocalDateTime expiresAt) {
-        EmailOtp otp = new EmailOtp();
-        otp.setEmail(TEST_EMAIL);
-        otp.setOtp(TEST_OTP);
-        otp.setVerified(verified);
-        otp.setExpiresAt(expiresAt);
+        EmailOtp otp = EmailOtp
+                .builder()
+                .email(TEST_EMAIL)
+                .otp(TEST_OTP)
+                .verified(verified)
+                .expiresAt(expiresAt).build();
         return otp;
     }
 }
