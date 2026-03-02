@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 import { describe, it, expect, vi } from 'vitest';
 import { mount, RouterLinkStub } from '@vue/test-utils';
 import { createStore } from 'vuex';

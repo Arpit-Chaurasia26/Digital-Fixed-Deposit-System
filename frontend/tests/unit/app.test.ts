@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { describe, it, expect, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';

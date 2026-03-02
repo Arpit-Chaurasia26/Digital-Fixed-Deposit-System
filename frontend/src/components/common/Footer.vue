@@ -1,3 +1,7 @@
+<!--
+ * @author Arpit Chaurasia
+ -->
+
 <template>
   <footer class="footer">
     <div class="container">

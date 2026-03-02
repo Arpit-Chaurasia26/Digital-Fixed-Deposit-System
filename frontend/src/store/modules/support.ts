@@ -1,3 +1,6 @@
+/**
+ * @author Akshaya Siripuram
+ */
 import { supportService } from '@/services/supportService';
 import {
   SupportTicket,

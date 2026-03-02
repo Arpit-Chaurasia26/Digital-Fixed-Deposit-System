@@ -1,3 +1,7 @@
+<!--
+ * @author Priyanshu Mishra
+ -->
+
 <template>
   <div class="auth-page">
     <Navbar />

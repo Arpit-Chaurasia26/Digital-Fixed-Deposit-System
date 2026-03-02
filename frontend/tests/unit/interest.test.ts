@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { describe, it, expect } from 'vitest';
 
 describe('Module 3 - FD Interest and Maturity Tests', () => {

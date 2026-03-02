@@ -1,3 +1,7 @@
+<!--
+ * @author Arpit Chaurasia
+ -->
+
 <template>
   <aside class="admin-sidebar">
     <div class="sidebar-brand">

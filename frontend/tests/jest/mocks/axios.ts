@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 const apiClient = {
   get: jest.fn(),
   post: jest.fn(),

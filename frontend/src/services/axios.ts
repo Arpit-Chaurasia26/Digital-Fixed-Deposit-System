@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 

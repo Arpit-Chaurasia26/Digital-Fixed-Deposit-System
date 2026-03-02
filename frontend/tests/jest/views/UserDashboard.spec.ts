@@ -1,3 +1,6 @@
+/**
+ * @author Yogendra Kavuru
+ */
 import { mount } from '@vue/test-utils';
 import { createStore } from 'vuex';
 import UserDashboard from '@/views/user/UserDashboard.vue';

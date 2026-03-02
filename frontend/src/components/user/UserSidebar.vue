@@ -1,3 +1,7 @@
+<!--
+ * @author Yogendra Kavuru
+ -->
+
 <template>
   <aside class="user-sidebar">
     <div class="sidebar-brand">

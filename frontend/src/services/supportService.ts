@@ -1,3 +1,6 @@
+/**
+ * @author Akshaya Siripuram
+ */
 import apiClient from './axios';
 import {
   SupportTicket,

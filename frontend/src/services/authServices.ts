@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 import apiClient from './axios';
 import { LoginRequest, RegisterRequest, UserProfile, UpdateProfileRequest, ChangePasswordRequest } from '@/types';
 

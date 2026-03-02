@@ -1,3 +1,6 @@
+/**
+ * @author Yogendra Kavuru
+ */
 import { describe, it, expect } from 'vitest';
 import * as userViews from '@/views/user';
 

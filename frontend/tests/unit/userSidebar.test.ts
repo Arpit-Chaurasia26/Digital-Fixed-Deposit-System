@@ -1,3 +1,6 @@
+/**
+ * @author Yogendra Kavuru
+ */
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import UserSidebar from '@/components/user/UserSidebar.vue';

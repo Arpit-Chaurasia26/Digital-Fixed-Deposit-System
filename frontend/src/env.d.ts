@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 /// <reference path="./shims-vue.d.ts" />
 /// <reference path="./vuex-shim.d.ts" />
 

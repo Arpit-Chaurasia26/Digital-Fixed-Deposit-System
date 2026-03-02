@@ -1,3 +1,6 @@
+/**
+ * @author Akshaya Siripuram
+ */
 import supportModule from '@/store/modules/support';
 import { supportService } from '@/services/supportService';
 import { TicketStatus } from '@/types';
