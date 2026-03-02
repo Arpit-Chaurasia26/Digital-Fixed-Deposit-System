@@ -1,4 +1,8 @@
 package tech.zeta.Digital_Fixed_Deposit_System.entity.support;
+
+/**
+ * @author Akshaya Siripuram
+ */
 public enum TicketStatus {
     OPEN,
     RESOLVED,

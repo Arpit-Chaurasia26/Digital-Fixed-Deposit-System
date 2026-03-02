@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Application Tests
- * Verifies that the main application class is configured correctly
+ * @author Arpit Chaurasia
  */
 @DisplayName("Application Tests")
 class DigitalFixedDepositSystemApplicationTests {

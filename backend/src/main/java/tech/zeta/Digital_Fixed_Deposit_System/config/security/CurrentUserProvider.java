@@ -7,6 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import tech.zeta.Digital_Fixed_Deposit_System.exception.UnauthorizedException;
 
+/**
+ * @author Priyanshu Mishra
+ */
 @Component
 public class CurrentUserProvider {
 

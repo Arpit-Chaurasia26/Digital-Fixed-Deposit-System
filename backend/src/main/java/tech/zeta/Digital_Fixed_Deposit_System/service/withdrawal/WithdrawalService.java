@@ -7,7 +7,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.dto.withdrawal.WithdrawalReceipt;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+/**
+ * @author Pavan Kalloji
+ */
 public interface WithdrawalService {
 
     public WithdrawalPreview getWithdrawalPreview(Long id, BigDecimal amount);

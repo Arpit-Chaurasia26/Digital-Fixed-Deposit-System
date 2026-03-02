@@ -6,9 +6,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Priyanshu Mishra
  */
-
-
-
 public enum Role {
     USER,
     ADMIN;

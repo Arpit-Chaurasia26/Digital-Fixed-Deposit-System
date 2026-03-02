@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * @author Pavan Kalloji
+ */
 @Setter
 @Getter
 @AllArgsConstructor

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Arpit Chaurasia
+ * @author Yogendra Kavuru
  */
 @DisplayName("BookFDRequest DTO Tests")
 class BookFDRequestTest {

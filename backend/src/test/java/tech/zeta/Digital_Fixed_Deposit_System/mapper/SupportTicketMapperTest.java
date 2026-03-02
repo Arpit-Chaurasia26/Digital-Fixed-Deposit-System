@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @author Akshaya Siripuram
+ */
 @DisplayName("SupportTicketMapper Tests")
 class SupportTicketMapperTest {
 

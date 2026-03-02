@@ -6,9 +6,8 @@ import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
 
 /**
- * @author Priyanshu Mishra
+ * @author Arpit Chaurasia
  */
-
 @Suite
 @SuiteDisplayName("Digital Fixed Deposit System - Complete Test Suite (300+ Tests)")
 @SelectPackages({

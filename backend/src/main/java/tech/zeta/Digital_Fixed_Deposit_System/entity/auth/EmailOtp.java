@@ -12,10 +12,6 @@ import java.time.LocalDateTime;
 /**
  * @author Priyanshu Mishra
  */
-
-
-
-
 @Getter
 @Setter
 @Builder

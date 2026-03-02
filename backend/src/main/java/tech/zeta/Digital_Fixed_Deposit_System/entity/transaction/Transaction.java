@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * @author Pavan Kalloji
+ */
 @Entity
 @Table(
         name = "fd_transaction",
