@@ -1,3 +1,7 @@
+<!--
+ * @author Arpit Chaurasia
+ -->
+
 <template>
   <div class="home-page">
     <Navbar />

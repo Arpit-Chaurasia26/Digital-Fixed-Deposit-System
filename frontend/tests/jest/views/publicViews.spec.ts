@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 import { mount } from '@vue/test-utils';
 import { createTestStore } from '../utils/createStore';
 import Home from '@/views/Home.vue';

@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @author Arpit Chaurasia
+ */
 @DisplayName("InterestUtils Tests")
 class InterestUtilsTest {
 

@@ -6,6 +6,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.transaction.Transaction;
 
 import java.util.List;
 
+/**
+ * @author Pavan Kalloji
+ */
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByUserId(Long UserId);
 }

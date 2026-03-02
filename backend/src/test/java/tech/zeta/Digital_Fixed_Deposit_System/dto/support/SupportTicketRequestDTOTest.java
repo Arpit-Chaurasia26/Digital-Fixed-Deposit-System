@@ -6,6 +6,10 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+/**
+ * @author Akshaya Siripuram
+ */
 @DisplayName("SupportTicketRequestDTO Tests")
 class SupportTicketRequestDTOTest {
 

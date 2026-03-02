@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-/*
-    Author - Akshaya Siripuram
+/**
+ * @author Akshaya Siripuram
  */
 
 @RestController

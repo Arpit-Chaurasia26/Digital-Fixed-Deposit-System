@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { createStore } from 'vuex';
 
 export const createTestStore = (overrides?: {

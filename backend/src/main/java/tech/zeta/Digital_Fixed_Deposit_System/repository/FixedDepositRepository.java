@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Yogendra Kavuru
+ */
 @Repository
 public interface FixedDepositRepository extends JpaRepository<FixedDeposit, Long> {
 

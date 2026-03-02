@@ -9,6 +9,9 @@ import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @author Akshaya Siripuram
+ */
 @Repository
 public interface SupportTicketRepository extends JpaRepository<SupportTicket, Long>, JpaSpecificationExecutor<SupportTicket> {
 

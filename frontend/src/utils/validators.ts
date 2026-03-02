@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 // Validation rules
 export const required = (value: any): boolean | string => {
  return !!value || 'This field is required';

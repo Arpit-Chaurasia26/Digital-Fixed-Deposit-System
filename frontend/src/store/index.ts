@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { createStore } from 'vuex';
 import authModule, { AuthState } from './modules/auth';
 import fdModule, { FDState } from './modules/fd';

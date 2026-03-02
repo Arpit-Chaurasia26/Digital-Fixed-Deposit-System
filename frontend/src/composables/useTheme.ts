@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { ref, watch, onMounted } from 'vue';
 
 export type Theme = 'light' | 'dark';

@@ -1,3 +1,7 @@
+<!--
+ * @author Priyanshu Mishra
+ -->
+
 <template>
   <div class="oauth-callback-page">
     <div class="callback-container">

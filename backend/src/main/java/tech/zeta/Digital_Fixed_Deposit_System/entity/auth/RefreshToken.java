@@ -12,9 +12,6 @@ import java.time.Instant;
 /**
  * @author Priyanshu Mishra
  */
-
-
-
 @Entity
 @Getter
 @Builder

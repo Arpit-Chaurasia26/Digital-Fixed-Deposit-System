@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ * @author Akshaya Siripuram
+ */
 @Setter
 @Getter
 public class SupportTicketResponseDTO {

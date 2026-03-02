@@ -1,3 +1,6 @@
+/**
+ * @author Priyanshu Mishra
+ */
 import authModule from '@/store/modules/auth';
 import { authService } from '@/services/authServices';
 

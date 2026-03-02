@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 declare module 'vuex' {
   export interface Store<S = any> {
     state: S;

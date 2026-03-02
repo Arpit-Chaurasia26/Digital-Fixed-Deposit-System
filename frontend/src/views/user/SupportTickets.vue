@@ -1,3 +1,7 @@
+<!--
+ * @author Akshaya Siripuram
+ -->
+
 <template>
   <div class="page">
     <Navbar />

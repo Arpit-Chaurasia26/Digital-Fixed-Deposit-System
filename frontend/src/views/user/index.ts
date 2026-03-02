@@ -1,3 +1,6 @@
+/**
+ * @author Yogendra Kavuru
+ */
 // Placeholder for comprehensive user/admin views
 // These files implement all required functionality as per the modules
 

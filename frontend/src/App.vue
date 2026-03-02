@@ -1,3 +1,7 @@
+<!--
+ * @author Arpit Chaurasia
+ -->
+
 <script setup lang="ts">
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';

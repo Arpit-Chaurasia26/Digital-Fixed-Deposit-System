@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @author Akshaya Siripuram
+ */
 @DisplayName("SupportTicketResponseDTO Tests")
 class SupportTicketResponseDTOTest {
 

@@ -1,3 +1,6 @@
+/**
+ * @author Pavan Kalloji
+ */
 import apiClient from './axios';
 import { WithdrawalPreview, WithdrawalReceipt, EligibilityMessage, WIthdrawalHistory } from '@/types';
 

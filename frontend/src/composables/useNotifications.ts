@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import { reactive } from 'vue';
 
 type NotificationType = 'info' | 'success' | 'error';

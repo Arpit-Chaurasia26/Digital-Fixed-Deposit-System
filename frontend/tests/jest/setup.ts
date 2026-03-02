@@ -1,3 +1,6 @@
+/**
+ * @author Arpit Chaurasia
+ */
 import '@testing-library/jest-dom';
 
 class ResizeObserverMock {

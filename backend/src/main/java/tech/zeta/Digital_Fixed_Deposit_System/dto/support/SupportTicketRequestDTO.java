@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import tech.zeta.Digital_Fixed_Deposit_System.entity.support.TicketStatus;
 
+/**
+ * @author Akshaya Siripuram
+ */
 @Setter
 @Getter
 public class SupportTicketRequestDTO {
